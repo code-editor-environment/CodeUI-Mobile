@@ -37,8 +37,15 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_fonts: ^5.1.0
   get: ^4.6.5
+  google_sign_in: ^5.4.4
+  http: ^1.0.0
+  jwt_decoder: ^2.0.1
+  provider: ^6.0.5
   material_design_icons_flutter: ^7.0.7296
   flutter_screenutil: ^5.9.0
+  firebase_core: ^2.16.0
+  firebase_auth: ^4.7.1
+  shared_preferences: ^2.2.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

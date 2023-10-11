@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-class ReusableText extends StatelessWidget {
-  const ReusableText({super.key, required this.text, required this.style});
+class ReusableTextForLongText extends StatelessWidget {
+  const ReusableTextForLongText(
+      {super.key, required this.text, required this.style});
 
   final String text;
   final TextStyle style;
@@ -10,10 +11,9 @@ class ReusableText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text,
-      maxLines: 2,
       softWrap: true,
-      textAlign: TextAlign.left,
-      overflow: TextOverflow.clip,
+      textAlign: TextAlign.center,
+      overflow: TextOverflow.ellipsis,
       style: style,
     );
   }

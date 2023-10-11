@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'app_constants.dart';
 import 'app_style.dart';
 
-class CustomTextField extends StatelessWidget {
-  const CustomTextField({
+class CustomTextFieldBio extends StatelessWidget {
+  const CustomTextFieldBio({
     super.key,
     required this.controller,
     required this.keyboardType,
@@ -12,6 +12,7 @@ class CustomTextField extends StatelessWidget {
     this.suffixIcon,
     this.obscureText,
     required this.heightBox,
+    this.enabled = false,
   });
 
   final TextEditingController controller;
@@ -20,6 +21,7 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffixIcon;
   final bool? obscureText;
   final double heightBox;
+  final bool enabled;
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
@@ -29,10 +31,16 @@ class CustomTextField extends StatelessWidget {
       height: heightBox,
       color: Color(0xff292929),
       child: TextFormField(
+        enabled: enabled,
         keyboardType: keyboardType,
         obscureText: obscureText ?? false,
         decoration: InputDecoration(
           suffixIcon: suffixIcon,
+          disabledBorder: OutlineInputBorder(
+            borderRadius:
+                BorderRadius.circular(10), // Set the border radius here
+            borderSide: BorderSide(color: Color(kLightBlue.value), width: 0.5),
+          ),
           border: OutlineInputBorder(
             borderRadius:
                 BorderRadius.circular(10), // Set the border radius here
@@ -40,13 +48,10 @@ class CustomTextField extends StatelessWidget {
           ),
         ),
         controller: controller,
-        cursorHeight: 34,
+        cursorHeight: 24,
         style: appstyle(16, Color(0xffF6F0F0), FontWeight.w500),
         validator: validator,
-        maxLines: 1,
-        // onChanged: (text) {
-        //   print('First text field: $text (${text.characters.length})');
-        // },
+        maxLines: 4,
       ),
     );
   }

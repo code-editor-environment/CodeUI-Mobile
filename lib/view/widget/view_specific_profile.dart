@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:mobile/components/app_bar_guest.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mobile/constants/custom_textfield_bio.dart';
+import 'package:mobile/services/helpers/creator_helper.dart';
 import 'package:mobile/services/helpers/profile_helper.dart';
 import 'package:mobile/view/widget/edit_profile.dart';
 import 'package:mobile/view/widget/search_page.dart';
@@ -14,20 +15,22 @@ import '../../constants/app_style.dart';
 import '../../constants/custom_textfield.dart';
 import '../../constants/custom_textfield_lock.dart';
 import '../../models/response/functionals/profile_res_model.dart';
+import '../../models/response/functionals/view_profile_res_model.dart';
 import 'home_page_user_logged_in.dart';
 
-class ProfileWidget extends StatefulWidget {
-  const ProfileWidget({super.key});
+class ViewSpecificProfileWidget extends StatefulWidget {
+  const ViewSpecificProfileWidget({super.key});
 
   @override
-  State<ProfileWidget> createState() => _ProfileWidgetState();
+  State<ViewSpecificProfileWidget> createState() =>
+      _ViewSpecificProfileWidgetState();
 }
 
-class _ProfileWidgetState extends State<ProfileWidget> {
-  late Future<ViewProfileResponse> _profileFuture;
-  Future<ViewProfileResponse> _getData() async {
+class _ViewSpecificProfileWidgetState extends State<ViewSpecificProfileWidget> {
+  late Future<ViewSpecificProfileResponse> _profileFuture;
+  Future<ViewSpecificProfileResponse> _getData() async {
     try {
-      final items = await GetProfileService().getAll();
+      final items = await GetProfileService().getOne();
       return items;
     } catch (e) {
       throw e;
@@ -38,42 +41,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   void initState() {
     _profileFuture = _getData();
     super.initState();
-    _profileFuture.then((profileResponse) {
-      if (profileResponse != null) {
-        setState(() {
-          // Initialize controllers with data from the ProfileResponse object
-          bioController = TextEditingController(
-              text: profileResponse.data!.profileResponse!.description);
-          usernameController =
-              TextEditingController(text: profileResponse.data?.username);
-          firstNameController = TextEditingController(
-              text: profileResponse.data?.profileResponse?.firstName);
-          lastNameController = TextEditingController(
-              text: profileResponse.data?.profileResponse?.lastName);
-          phoneController = TextEditingController(
-              text: profileResponse.data?.profileResponse?.phone);
-          locationController = TextEditingController(
-              text: profileResponse.data?.profileResponse?.location);
-          genderController = TextEditingController(
-              text: profileResponse.data?.profileResponse?.gender);
-          dobController = TextEditingController(
-              text: profileResponse.data?.profileResponse?.dateOfBirth);
-          keyword1Controller = TextEditingController(
-              text: profileResponse.data?.profileResponse?.imageUrl);
-        });
-      }
-    });
   }
-
-  late TextEditingController keyword1Controller;
-  late TextEditingController usernameController;
-  late TextEditingController bioController;
-  late TextEditingController firstNameController;
-  late TextEditingController lastNameController;
-  late TextEditingController phoneController;
-  late TextEditingController locationController;
-  late TextEditingController genderController;
-  late TextEditingController dobController;
 
   @override
   Widget build(BuildContext context) {
@@ -135,7 +103,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           ],
         ),
       ),
-      body: FutureBuilder<ViewProfileResponse>(
+      body: FutureBuilder<ViewSpecificProfileResponse>(
           future: _profileFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -152,6 +120,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               );
             } else {
               // Build your UI using the items and controllers
+              var items = snapshot.data!;
               return SingleChildScrollView(
                 scrollDirection: Axis.vertical,
                 child: Container(
@@ -175,13 +144,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               icon: Icon(Icons.arrow_back),
                               color: Color(0xffEC4899),
                             ),
-                            IconButton(
-                              onPressed: () {
-                                Get.to(EditProfileWidget());
-                              },
-                              icon: Icon(Icons.edit),
-                              color: Color(0xffEC4899),
-                            ),
                           ],
                         ),
                         Padding(
@@ -193,9 +155,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 backgroundColor: Color(0xffA855F7),
                                 child: CircleAvatar(
                                   radius: 48,
-                                  backgroundImage: NetworkImage(
-                                      "${keyword1Controller.text}"),
-                                  // AssetImage("assets/images/123.png"),
+                                  backgroundImage:
+                                      NetworkImage("${items.data?.imageUrl}"),
+                                  // backgroundImage:
+                                  //     AssetImage("assets/images/123.png"),
                                 ),
                               ),
                               Column(
@@ -207,7 +170,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                         const EdgeInsets.fromLTRB(16, 0, 0, 0),
                                     child: ReusableText(
                                       text:
-                                          "${firstNameController.text} ${lastNameController.text} ",
+                                          "${items.data?.firstName} ${items.data?.lastName}",
                                       style: appstyle(20, Color(0xffF6F0F0),
                                           FontWeight.w600),
                                     ),
@@ -216,10 +179,65 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                     padding:
                                         const EdgeInsets.fromLTRB(16, 4, 0, 0),
                                     child: ReusableText(
-                                      text: "@${usernameController.text} ",
+                                      text: "@${items.data?.username}",
                                       style: appstyle(14, Color(0xffA0A0A0),
                                           FontWeight.w800),
                                     ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            16, 0, 0, 0),
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            GetAllCreatorService()
+                                                .followCreator();
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 8),
+                                            backgroundColor: Color(0xffEC4899),
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            'Follow ',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(kLight.value),
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            12, 0, 0, 0),
+                                        child: ElevatedButton(
+                                          onPressed: () {},
+                                          style: ElevatedButton.styleFrom(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 8),
+                                            backgroundColor: Colors.grey,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            'Message ',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(kLight.value),
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),
@@ -242,11 +260,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
                           child: ReusableText(
-                            text: "${bioController.text}",
+                            text: "${items.data?.description}",
                             style: appstyle(
                                 14, Color(0xffF6F0F0), FontWeight.w600),
                           ),
                         ),
+
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
                           child: Row(
@@ -256,10 +275,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 children: [
                                   Icon(
                                     Icons.location_city,
-                                    color: Colors.amber,
+                                    color: Color(0xffA855F7),
                                   ),
                                   ReusableText(
-                                    text: "${locationController.text}",
+                                    text: "${items.data?.location}",
                                     style: appstyle(
                                         14, Color(0xffF6F0F0), FontWeight.w400),
                                   ),
@@ -269,10 +288,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 children: [
                                   Icon(
                                     MdiIcons.genderTransgender,
-                                    color: Colors.amber,
+                                    color: Color(0xffA855F7),
                                   ),
                                   ReusableText(
-                                    text: "${genderController.text}",
+                                    text: "${items.data?.gender}",
                                     style: appstyle(
                                         14, Color(0xffF6F0F0), FontWeight.w400),
                                   ),
@@ -285,7 +304,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                     color: Colors.grey,
                                   ),
                                   ReusableText(
-                                    text: "${lastNameController.text}",
+                                    text: "dowe",
                                     style: appstyle(
                                         14, Color(0xffF6F0F0), FontWeight.w400),
                                   ),

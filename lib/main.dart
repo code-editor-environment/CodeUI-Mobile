@@ -1,10 +1,21 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile/model_validation.dart';
+import 'package:mobile/view/widget/admin_home_widget.dart';
+import 'package:provider/provider.dart';
+import 'firebase_options.dart';
 import 'splash_screen/splash_demo.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (context) => ValidateNotifier()),
+  ], child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -14,7 +25,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
         designSize: const Size(375, 812),
-        useInheritedMediaQuery: false,
+        useInheritedMediaQuery: true,
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (context, child) {
@@ -52,7 +63,8 @@ class _MyHomePageState extends State<MyHomePage> {
           // Reduce the button's tap target size
         ),
         onPressed: () {
-          Get.to(FakeSplashWidget());
+          Get.to(() => FakeSplashWidget());
+          //   Get.to(AdminScreen());
         },
         child: Center(
           child: Image.asset("assets/images/logo.png"),

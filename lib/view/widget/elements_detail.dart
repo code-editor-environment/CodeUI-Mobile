@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/components/app_bar_guest.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:mobile/view/widget/bookmarks_owned.dart';
+import 'package:mobile/view/widget/save_favourite.dart';
 import 'package:mobile/view/widget/search_page.dart';
 import '../../components/app_bar_logged_in_user.dart';
 import '../../components/reusable_text.dart';
@@ -94,15 +94,20 @@ class _DetailedWidgetState extends State<DetailedWidget> {
             color: Colors.black,
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              IconButton(
-                onPressed: () {
-                  Get.back();
-                },
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Color(0xffAB55F7),
-                  size: 22,
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    icon: Icon(
+                      Icons.arrow_back,
+                      color: Color(0xffAB55F7),
+                      size: 22,
+                    ),
+                  ),
+                ],
               ),
               // elements after built ,cái này về sau gắn html css qua package để chơi webview
               Padding(
@@ -121,19 +126,12 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                 height: 16,
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 0, 0),
+                padding: const EdgeInsets.fromLTRB(16, 16, 0, 0),
                 child: ReusableText(
                     text: "Button Learn more' ",
                     style: appstyle(15, Color(0xffF6F0F0), FontWeight.w600)),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 0, 0),
-                child: ReusableText(
-                  text: "đ100.000đ ",
-                  style: appstyle(
-                      18, Color(0xffAb55f7).withOpacity(1.0), FontWeight.w600),
-                ),
-              ),
+
               //bookmarked times
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -141,55 +139,81 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                 children: [
                   Row(children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                      padding: const EdgeInsets.fromLTRB(14, 10, 0, 0),
                       child: Icon(
-                        MdiIcons.heartOutline,
-                        color: Color(0xffF6F0F0),
+                        MdiIcons.heart,
+                        color: Color(0xffAB55F7),
                         size: 20,
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(2, 0, 0, 0),
+                      padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                       child: ReusableText(
-                          text: " 2099 ",
+                          text: " 2099",
                           style:
                               appstyle(13, Color(0xffF6F0F0), FontWeight.w400)),
                     ),
-                    Icon(
-                      MdiIcons.bookmarkOutline,
-                      color: Color(0xffF6F0F0),
-                      size: 20,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                      child: ReusableText(
-                          text: " 2099 ",
-                          style:
-                              appstyle(13, Color(0xffF6F0F0), FontWeight.w400)),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: Icon(
+                            MdiIcons.bookmark,
+                            color: Color(0xffAB55F7),
+                            size: 20,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: ReusableText(
+                              text: " 2099",
+                              style: appstyle(
+                                  13, Color(0xffF6F0F0), FontWeight.w400)),
+                        ),
+                      ],
                     ),
                   ]),
 
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
-                          child: Icon(
-                            MdiIcons.heartOutline,
-                            color: Color(0xffAB55F7),
-                            size: 20,
-                          ),
+                  Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors
+                              .transparent, // Set the button background color to transparent
+                          elevation: 0, // Remove the button shadow
+                          padding:
+                              EdgeInsets.zero, // Remove default button padding
+                          // Reduce the button's tap target size
                         ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 0, 16, 0),
-                          child: Icon(
-                            MdiIcons.share,
-                            color: Color(0xffAB55F7),
-                            size: 20,
-                          ),
+                        child: Icon(
+                          MdiIcons.thumbUpOutline,
+                          color: Color(0xffAB55F7),
+                          size: 20,
                         ),
-                      ]),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors
+                              .transparent, // Set the button background color to transparent
+                          elevation: 0, // Remove the button shadow
+                          padding:
+                              EdgeInsets.zero, // Remove default button padding
+                          // Reduce the button's tap target size
+                        ),
+                        child: Icon(
+                          MdiIcons.share,
+                          color: Color(0xffAB55F7),
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  ]),
 
                   //save times idk
                 ],
@@ -198,7 +222,7 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                 height: 32,
               ),
               Padding(
-                padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
+                padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
                 child: ReusableText(
                     text: " Comment ",
                     style: appstyle(16, Color(0xffF6F0F0), FontWeight.w800)),
