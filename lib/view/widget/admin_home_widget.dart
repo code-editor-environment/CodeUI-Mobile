@@ -6,8 +6,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:mobile/view/widget/search_page.dart';
 import '../../components/app_bar_logged_in_user.dart';
 import '../../components/reusable_text.dart';
-import '../../constants/app_constants.dart';
-import '../../constants/app_style.dart';
+import '../../common/constants/app_constants.dart';
+import '../../common/constants/app_style.dart';
 
 class AdminScreen extends StatefulWidget {
   const AdminScreen({super.key});

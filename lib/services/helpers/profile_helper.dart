@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile/models/response/functionals/profile_res_model.dart';
+import 'package:mobile/common/models/response/functionals/profile_res_model.dart';
 import 'package:mobile/view/widget/profile_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 
 import 'package:http/http.dart' as https;
 
-import '../../constants/app_constants.dart';
-import '../../models/request/functional/update_profile_model.dart';
-import '../../models/response/functionals/view_profile_res_model.dart';
+import '../../common/constants/app_constants.dart';
+import '../../common/models/request/functional/update_profile_model.dart';
+import '../../common/models/response/functionals/view_profile_res_model.dart';
 
 var client = https.Client();
 
@@ -25,7 +25,7 @@ class GetProfileService {
     var Client = https.Client();
 
     var uri =
-        Uri.parse("http://13.212.54.225:44360/api/account/getByAccessToken");
+        Uri.parse("https://dev.codeui-api.io.vn/api/account/getByAccessToken");
     var response = await Client.get(uri, headers: requestHeaders);
     if (response.statusCode == 200) {
       var json = response.body;
@@ -47,12 +47,12 @@ class GetProfileService {
     var Client = https.Client();
 
     var uri = Uri.parse(
-        "http://13.212.54.225:44360/api/profile/getByUsername?username=$accountIdToBeViewed");
+        "https://dev.codeui-api.io.vn/api/profile/getByUsername?username=$accountIdToBeViewed");
     var response = await Client.get(uri, headers: requestHeaders);
     if (response.statusCode == 200) {
       var json = response.body;
       print(json);
-      print(accountIdToBeViewed);
+
       return ViewSpecificProfileResponse.fromJson(jsonDecode(json));
     } else {
       throw Exception('Failed to load ');
@@ -69,7 +69,7 @@ class UpdateProfileService {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
     };
-    var url = Uri.parse("http://13.212.54.225:44360/api/profile/updatebyId");
+    var url = Uri.parse("https://dev.codeui-api.io.vn/api/profile/updatebyId");
     var response = await client.put(
       url,
       headers: requestHeaders,

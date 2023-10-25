@@ -5,9 +5,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as https;
 
-import '../../constants/app_constants.dart';
-import '../../models/request/functional/update_profile_model.dart';
-import '../../models/response/functionals/temp_creator_model.dart';
+import '../../common/constants/app_constants.dart';
+import '../../common/models/request/functional/update_profile_model.dart';
+import '../../common/models/response/functionals/temp_creator_model.dart';
 
 var client = https.Client();
 
@@ -21,7 +21,8 @@ class GetAllCreatorService {
     };
     var Client = https.Client();
 
-    var uri = Uri.parse("http://13.212.54.225:44360/api/account/getAll");
+    var uri = Uri.parse(
+        "https://dev.codeui-api.io.vn/api/account/getAll?Role=FreeCreator");
     var response = await Client.get(uri, headers: requestHeaders);
     if (response.statusCode == 200) {
       var json = response.body;
@@ -41,7 +42,7 @@ class GetAllCreatorService {
       'Authorization': 'Bearer $token'
     };
     var url = Uri.parse(
-        "http://13.212.54.225:44360/api/follow/followCreator?username=${accountIdToBeViewed}");
+        "https://dev.codeui-api.io.vn/api/follow/followCreator?username=${accountIdToBeViewed}");
     var response = await client.post(
       url,
       headers: requestHeaders,

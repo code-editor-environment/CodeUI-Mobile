@@ -5,17 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as https;
-import 'package:mobile/constants/app_constants.dart';
+import 'package:mobile/common/constants/app_constants.dart';
 import 'package:mobile/view/widget/home_page_user_logged_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../models/request/auth/login_model.dart';
-import '../../models/response/auth/login_res_model.dart';
+import '../../common/models/request/auth/login_model.dart';
+import '../../common/models/response/auth/login_res_model.dart';
 
 class AuthHelper {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: [],
+    scopes: ['https://www.googleapis.com/auth/userinfo.email'],
   );
 
   static var client = https.Client();
@@ -32,9 +32,7 @@ class AuthHelper {
           accessToken: googleAuth.accessToken,
         );
         //  print(googleAuth.accessToken);
-        await Future.delayed(Duration(seconds: 3), () {
-          //        print(googleAuth.idToken);
-        });
+
         final UserCredential userCredential =
             await _auth.signInWithCredential(credential);
         final User? user = userCredential.user;
@@ -66,11 +64,41 @@ class AuthHelper {
     return null;
   }
 
+  /// sign in github
+  Future<void> signInWithGithub() async {
+    // final userCredential =
+    //     await FirebaseAuth.instance.signInWithProvider(GithubAuthProvider());
+    // final accessToken = userCredential.credential?.accessToken;
+
+    // OAuthCredential credential = GithubAuthProvider.credential(accessToken!);
+    GithubAuthProvider githubAuthProvider = GithubAuthProvider();
+    githubAuthProvider.addScope('read:user');
+    final UserCredential userCredential1 =
+        await FirebaseAuth.instance.signInWithProvider(githubAuthProvider);
+
+    String? a = userCredential1.additionalUserInfo?.profile?['email'];
+    final User? user2 = userCredential1.user;
+    //  user2.email =
+    String? token = await user2?.getIdToken();
+    var tokentoPrint = token;
+    print(token);
+    if (tokentoPrint!.length > 0) {
+      int initLength = (tokentoPrint.length >= 500 ? 500 : tokentoPrint.length);
+      print(tokentoPrint.substring(0, initLength));
+      int endLength = tokentoPrint.length;
+      tokentoPrint = tokentoPrint.substring(initLength, endLength);
+    }
+    print("Token : $tokentoPrint ");
+    if (token != null) {
+      login(LoginByGoogleModel(idToken: token));
+    }
+  }
+
   //login to system
   //
   static Future<bool> login(LoginByGoogleModel model) async {
     Map<String, String> requestHeaders = {'Content-Type': 'application/json'};
-    var url = Uri.parse("http://13.212.54.225:44360/api/account/loginByMail");
+    var url = Uri.parse("https://dev.codeui-api.io.vn/api/account/loginByMail");
     var response = await client.post(
       url,
       headers: requestHeaders,
@@ -99,12 +127,15 @@ class AuthHelper {
     // Get the access token from the response.
     final accessToken = response.data?.accessToken;
     final accountId = response.data!.account?.id;
+    final currentLoggedInUsername = response.data?.account?.username;
     // Save the access token to SharedPreferences.
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("accessToken", accessToken!);
     await prefs.setString("accountId", accountId!);
+    await prefs.setString("currentLoggedInUsername", currentLoggedInUsername!);
     print(accessToken);
     print(accountId);
+    print(currentLoggedInUsername);
     // Navigate to the next screen.
     Get.off(() => const CodeUIHomeScreenForLoggedInUser());
   }

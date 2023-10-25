@@ -6,9 +6,9 @@ import 'package:mobile/view/widget/save_favourite.dart';
 import 'package:mobile/view/widget/search_page.dart';
 import '../../components/app_bar_logged_in_user.dart';
 import '../../components/reusable_text.dart';
-import '../../constants/app_constants.dart';
-import '../../constants/app_style.dart';
-import '../../constants/custom_textfield.dart';
+import '../../common/constants/app_constants.dart';
+import '../../common/constants/app_style.dart';
+import '../../common/constants/custom_textfield.dart';
 import 'elements_detail.dart';
 import 'home_page_user_logged_in.dart';
 

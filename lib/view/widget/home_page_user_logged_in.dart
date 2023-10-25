@@ -1,22 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:mobile/components/app_bar_guest.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:mobile/view/widget/chat_front_page.dart';
 import 'package:mobile/view/widget/login_page.dart';
+import 'package:mobile/view/widget/profile_page.dart';
 import 'package:mobile/view/widget/search_page.dart';
 import 'package:mobile/view/widget/view_specific_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/app_bar_logged_in_user.dart';
 import '../../components/reusable_text.dart';
 import '../../components/reusable_text_long.dart';
-import '../../constants/app_constants.dart';
-import '../../constants/app_style.dart';
-import '../../models/response/functionals/profile_res_model.dart';
-import '../../models/response/functionals/temp_creator_model.dart';
+import '../../common/constants/app_constants.dart';
+import '../../common/constants/app_style.dart';
+import '../../common/models/response/functionals/temp_creator_model.dart';
 import '../../services/helpers/creator_helper.dart';
-import '../../services/helpers/profile_helper.dart';
 
 class CodeUIHomeScreenForLoggedInUser extends StatefulWidget {
   const CodeUIHomeScreenForLoggedInUser({super.key});
@@ -30,6 +28,7 @@ class _CodeUIHomeScreenForLoggedInUserState
     extends State<CodeUIHomeScreenForLoggedInUser> {
   late Future<AllCreatorsTempModel> _creatorFuture;
   late Future<List<AllCreatorsTempModel>> items;
+  late String _currentLoggedInUsername = "";
   Future<AllCreatorsTempModel> getData() async {
     // try {
     //   final AllCreatorsTempModel response =
@@ -50,14 +49,17 @@ class _CodeUIHomeScreenForLoggedInUserState
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var token = prefs.getString("accessToken");
+      _currentLoggedInUsername = prefs.getString("currentLoggedInUsername")!;
     });
     _creatorFuture = getData();
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     int index = 0;
+    print(_currentLoggedInUsername);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
@@ -94,9 +96,14 @@ class _CodeUIHomeScreenForLoggedInUserState
                 ),
                 label: ""),
             NavigationDestination(
-                icon: Icon(
-                  MdiIcons.messageProcessing,
-                  color: Color(0xffEC4899).withOpacity(0.4),
+                icon: IconButton(
+                  icon: Icon(
+                    MdiIcons.messageProcessing,
+                    color: Color(0xffEC4899).withOpacity(0.4),
+                  ),
+                  onPressed: () {
+                    Get.to(ChatFrontPage());
+                  },
                 ),
                 label: ""),
             NavigationDestination(
@@ -128,15 +135,37 @@ class _CodeUIHomeScreenForLoggedInUserState
           child: Column(
             children: [
               //categories
-              Padding(
-                padding: const EdgeInsets.fromLTRB(14, 12, 0, 0),
-                child: Align(
-                  alignment: Alignment.topLeft,
-                  child: ReusableText(
-                    text: "TOP CREATORS",
-                    style: appstyle(16, Color(0xFFF6F0F0), FontWeight.w600),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                    child: ReusableText(
+                      text: "Top creators",
+                      style: appstyle(16, Color(0xFFF6F0F0), FontWeight.w600),
+                    ),
                   ),
-                ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    // crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => const LoginWidget());
+                        },
+                        child: ReusableText(
+                          text: "See more",
+                          style:
+                              appstyle(12, Color(0xFFAB55F7), FontWeight.w600),
+                        ),
+                      ),
+                      Icon(
+                        Icons.chevron_right_outlined,
+                        color: Color(0xFFAB55F7),
+                      ),
+                    ],
+                  ),
+                ],
               ),
               // starting categories
               // starting categories
@@ -319,8 +348,14 @@ class _CodeUIHomeScreenForLoggedInUserState
                                                                   IconButton(
                                                                     onPressed:
                                                                         () {
-                                                                      Get.to(() =>
-                                                                          const ViewSpecificProfileWidget());
+                                                                      if (accountIdToBeViewed ==
+                                                                          _currentLoggedInUsername) {
+                                                                        Get.to(() =>
+                                                                            const ProfileWidget());
+                                                                      } else {
+                                                                        Get.to(() =>
+                                                                            const ViewSpecificProfileWidget());
+                                                                      }
                                                                     },
                                                                     icon: Icon(Icons
                                                                         .account_circle_outlined),
@@ -405,23 +440,7 @@ class _CodeUIHomeScreenForLoggedInUserState
                   )),
               // end of scroll row
               //see more lol
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 2, 16, 0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  // crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    ReusableText(
-                      text: "See more",
-                      style: appstyle(14, Color(0xFFAB55F7), FontWeight.w600),
-                    ),
-                    Icon(
-                      Icons.chevron_right_outlined,
-                      color: Color(0xFFAB55F7),
-                    ),
-                  ],
-                ),
-              ),
+
               //categories
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 12, 0, 0),
@@ -429,7 +448,7 @@ class _CodeUIHomeScreenForLoggedInUserState
                   alignment: Alignment.topLeft,
                   child: ReusableText(
                     text: "RECENTLY SEEN",
-                    style: appstyle(18, Color(0xFFF6F0F0), FontWeight.w600),
+                    style: appstyle(16, Color(0xFFF6F0F0), FontWeight.w600),
                   ),
                 ),
               ),

@@ -6,9 +6,9 @@ import 'package:mobile/view/widget/login_page.dart';
 import '../../components/reusable_text.dart';
 import '../../components/reusable_text_for_long_text.dart';
 import '../../components/reusable_text_long.dart';
-import '../../constants/app_constants.dart';
-import '../../constants/app_style.dart';
-import '../../models/response/functionals/temp_creator_model.dart';
+import '../../common/constants/app_constants.dart';
+import '../../common/constants/app_style.dart';
+import '../../common/models/response/functionals/temp_creator_model.dart';
 import '../../services/helpers/creator_helper.dart';
 
 class CodeUIHomeScreenForGuest extends StatefulWidget {

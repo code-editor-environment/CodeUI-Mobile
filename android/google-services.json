@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "933189481718",
+    "firebase_url": "https://codeui-node-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "codeui-node",
     "storage_bucket": "codeui-node.appspot.com"
   },

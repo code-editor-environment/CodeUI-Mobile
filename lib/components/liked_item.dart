@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/components/reusable_text.dart';
-import 'package:mobile/constants/app_style.dart';
+import 'package:mobile/common/constants/app_style.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class LikedItemWidget extends StatefulWidget {

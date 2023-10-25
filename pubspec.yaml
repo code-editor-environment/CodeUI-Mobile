@@ -43,9 +43,11 @@ dependencies:
   provider: ^6.0.5
   material_design_icons_flutter: ^7.0.7296
   flutter_screenutil: ^5.9.0
-  firebase_core: ^2.16.0
-  firebase_auth: ^4.7.1
+  firebase_core: ^2.19.0
+  firebase_auth: ^4.11.1
   shared_preferences: ^2.2.1
+  cloud_firestore: ^4.8.5
+  webview_flutter: ^4.4.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -72,6 +74,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/  
+    - assets/flags/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

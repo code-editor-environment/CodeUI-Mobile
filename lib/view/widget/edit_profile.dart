@@ -2,21 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/components/app_bar_guest.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:mobile/components/intl_phone_picker_refactored/intl_phone_field.dart';
 import 'package:mobile/components/reusable_disable_button_text.dart';
-import 'package:mobile/constants/custom_textfield_bio.dart';
-import 'package:mobile/models/request/functional/update_profile_model.dart';
+import 'package:mobile/common/constants/custom_textfield_bio.dart';
+import 'package:mobile/common/models/request/functional/update_profile_model.dart';
 import 'package:mobile/services/helpers/profile_helper.dart';
 import 'package:mobile/view/widget/profile_page.dart';
 import 'package:mobile/view/widget/search_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/app_bar_logged_in_user.dart';
 import '../../components/reusable_text.dart';
-import '../../constants/app_constants.dart';
-import '../../constants/app_style.dart';
-import '../../constants/custom_textfield.dart';
-import '../../constants/custom_textfield_bio_change.dart';
-import '../../constants/custom_textfield_lock.dart';
-import '../../models/response/functionals/profile_res_model.dart';
+import '../../common/constants/app_constants.dart';
+import '../../common/constants/app_style.dart';
+import '../../common/constants/custom_textfield.dart';
+import '../../common/constants/custom_textfield_bio_change.dart';
+import '../../common/constants/custom_textfield_lock.dart';
+import '../../common/models/response/functionals/profile_res_model.dart';
 import 'home_page_user_logged_in.dart';
 
 class EditProfileWidget extends StatefulWidget {
@@ -28,6 +29,8 @@ class EditProfileWidget extends StatefulWidget {
 
 class _EditProfileWidgetState extends State<EditProfileWidget> {
   late Future<ViewProfileResponse> _profileFuture;
+
+  List<String> genderItems = ['null', 'Male', 'Female'];
   Future<ViewProfileResponse> _getData() async {
     try {
       final items = await GetProfileService().getAll();
@@ -47,8 +50,8 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
           // Initialize controllers with data from the ProfileResponse object
           bioController = TextEditingController(
               text: profileResponse.data!.profileResponse!.description);
-          usernameController = TextEditingController(
-              text: profileResponse.data?.profileResponse?.username);
+          usernameController =
+              TextEditingController(text: profileResponse.data?.username);
           firstNameController = TextEditingController(
               text: profileResponse.data?.profileResponse?.firstName);
           lastNameController = TextEditingController(
@@ -65,41 +68,11 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
               text: profileResponse.data?.profileResponse?.imageUrl);
           walletController = TextEditingController(
               text: profileResponse.data?.profileResponse!.wallet.toString());
-
-          //  keyword1Controller = TextEditingController(text: profileResponse.data!.wallet);
         });
       }
     });
-    // // Add listeners to the controllers to check for changes
-    // bioController.addListener(checkChanges);
-    // firstNameController.addListener(checkChanges);
-    // lastNameController.addListener(checkChanges);
-    // phoneController.addListener(checkChanges);
-    // locationController.addListener(checkChanges);
-    // genderController.addListener(checkChanges);
-    // dobController.addListener(checkChanges);
   }
 
-  // void checkChanges() {
-  //   // Check if any of the controllers have non-empty text
-  //   if (bioController.text.isNotEmpty ||
-  //       firstNameController.text.isNotEmpty ||
-  //       lastNameController.text.isNotEmpty ||
-  //       phoneController.text.isNotEmpty ||
-  //       locationController.text.isNotEmpty ||
-  //       genderController.text.isNotEmpty ||
-  //       dobController.text.isNotEmpty) {
-  //     // Make the text color blue
-  //     setState(() {
-  //       hasChanges = true;
-  //     });
-  //   } else {
-  //     // Make the text color the original color
-  //     setState(() {
-  //       hasChanges = false;
-  //     });
-  //   }
-  // }
   late TextEditingController walletController;
   late TextEditingController usernameController;
   late TextEditingController bioController;
@@ -119,7 +92,8 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
   late var g = dobController.text;
   late var h = keyword1Controller.text;
   late var l = walletController.text;
-  bool hasChanges = false;
+  late var userNameToPass = usernameController.text;
+  late var selectedValue = genderController.text;
 //   void checkStatus(){
 //     // Get the state of the bio controller
 // final bioControllerState = bioController.;
@@ -198,9 +172,10 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
           future: _profileFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child:
-                      CircularProgressIndicator()); // Show a loading indicator while waiting for data.
+              return Container(
+                color: Colors.black,
+                child: Center(child: CircularProgressIndicator()),
+              ); // Show a loading indicator while waiting for data.
             } else if (snapshot.hasError) {
               return Center(
                 child: Text('Error: ${snapshot.error}'),
@@ -276,6 +251,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                                           lastName: lastNameController.text,
                                           location: locationController.text,
                                           phone: phoneController.text,
+                                          username: usernameController.text,
                                           // wallet: l,
                                           wallet: 120,
                                         );
@@ -442,18 +418,45 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                             //   style: appstyle(
                             //       16, Color(0xffF6F0F0), FontWeight.w500),
                             // ),
-                            child: CustomTextField(
-                              controller: phoneController,
-                              keyboardType: TextInputType.number,
-                              //  hintText: "Email or mobile number",
-                              validator: (bio) {
-                                if (bio!.isEmpty) {
-                                  return "Enter a valid email";
-                                } else {
-                                  return null;
-                                }
-                              },
-                              heightBox: 40,
+                            // child: CustomTextField(
+                            //   controller: phoneController,
+                            //   keyboardType: TextInputType.number,
+                            //   //  hintText: "Email or mobile number",
+                            //   validator: (bio) {
+                            //     if (bio!.isEmpty) {
+                            //       return "Enter a valid email";
+                            //     } else {
+                            //       return null;
+                            //     }
+                            //   },
+                            //   heightBox: 40,
+                            // ),
+                            child: Container(
+                              width: width * 0.9,
+                              child: IntlPhoneField(
+                                dropdownTextStyle: appstyle(
+                                    14, Color(0xffF6F0F0), FontWeight.w400),
+                                style: appstyle(
+                                    14, Color(0xffF6F0F0), FontWeight.w400),
+                                decoration: InputDecoration(
+                                  labelText: 'Phone Number',
+                                  filled: true,
+                                  fillColor: Color(0xff292929),
+                                  border: OutlineInputBorder(
+                                    borderSide: BorderSide(),
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                ),
+                                languageCode: "en",
+                                onChanged: (phone) {
+                                  print(phone.completeNumber);
+                                  phoneController.text = phone.completeNumber;
+                                  print(phoneController.text);
+                                },
+                                onCountryChanged: (country) {
+                                  print('Country changed to: ' + country.name);
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -469,18 +472,47 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 8, 0, 0),
                           child: Container(
-                            child: CustomTextField(
-                              controller: genderController,
-                              keyboardType: TextInputType.emailAddress,
-                              //  hintText: "Email or mobile number",
-                              validator: (bio) {
-                                if (bio!.isEmpty) {
-                                  return "Enter a valid email";
-                                } else {
-                                  return null;
-                                }
+                            width: width * 0.9,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey, width: 1),
+                              borderRadius: BorderRadius.circular(14),
+                              color: Color(0xff292929),
+                            ),
+                            // child: CustomTextField(
+                            //   controller: genderController,
+                            //   keyboardType: TextInputType.emailAddress,
+                            //   //  hintText: "Email or mobile number",
+                            //   validator: (bio) {
+                            //     if (bio!.isEmpty) {
+                            //       return "Enter a valid email";
+                            //     } else {
+                            //       return null;
+                            //     }
+                            //   },
+                            //   heightBox: 40,
+                            // ),
+                            child: DropdownButton(
+                              hint: ReusableText(
+                                text: "Select your gender",
+                                style: appstyle(
+                                    14, Color(0xffA855F7), FontWeight.w400),
+                              ),
+                              style: appstyle(
+                                  14, Color(0xffA855F7), FontWeight.w400),
+                              value: selectedValue,
+                              isExpanded: true,
+                              items: genderItems.map((String value) {
+                                return DropdownMenuItem<String>(
+                                    value: value, child: Text(value));
+                              }).toList(),
+                              onChanged: (newValue) {
+                                setState(() {
+                                  selectedValue = newValue!;
+                                  f = selectedValue!;
+                                  print(selectedValue);
+                                  print(f);
+                                });
                               },
-                              heightBox: 40,
                             ),
                           ),
                         ), // email,company,location
@@ -559,6 +591,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                                       lastName: lastNameController.text,
                                       location: locationController.text,
                                       phone: phoneController.text,
+                                      username: usernameController.text,
                                       // wallet: l,
                                       wallet: 120,
                                     );

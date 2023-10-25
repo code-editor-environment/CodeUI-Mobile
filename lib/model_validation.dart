@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/services/helpers/auth_helper.dart';
-import 'constants/app_constants.dart';
-import 'models/request/auth/login_model.dart';
+import 'common/constants/app_constants.dart';
+import 'common/models/request/auth/login_model.dart';
 import 'view/widget/home_page_user_logged_in.dart';
 
 class ValidateNotifier extends ChangeNotifier {

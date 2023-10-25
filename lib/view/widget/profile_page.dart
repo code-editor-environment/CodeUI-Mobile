@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/components/app_bar_guest.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:mobile/constants/custom_textfield_bio.dart';
+import 'package:mobile/common/constants/custom_textfield_bio.dart';
+import 'package:mobile/components/reusable_text_for_long_text.dart';
 import 'package:mobile/services/helpers/profile_helper.dart';
 import 'package:mobile/view/widget/edit_profile.dart';
 import 'package:mobile/view/widget/search_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/app_bar_logged_in_user.dart';
 import '../../components/reusable_text.dart';
-import '../../constants/app_constants.dart';
-import '../../constants/app_style.dart';
-import '../../constants/custom_textfield.dart';
-import '../../constants/custom_textfield_lock.dart';
-import '../../models/response/functionals/profile_res_model.dart';
+import '../../common/constants/app_constants.dart';
+import '../../common/constants/app_style.dart';
+import '../../common/constants/custom_textfield.dart';
+import '../../common/constants/custom_textfield_lock.dart';
+import '../../common/models/response/functionals/profile_res_model.dart';
 import 'home_page_user_logged_in.dart';
 
 class ProfileWidget extends StatefulWidget {
@@ -74,7 +75,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   late TextEditingController locationController;
   late TextEditingController genderController;
   late TextEditingController dobController;
-
+  int index = 0;
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
@@ -139,9 +140,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           future: _profileFuture,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
-                  child:
-                      CircularProgressIndicator()); // Show a loading indicator while waiting for data.
+              return Container(
+                color: Colors.black,
+                child: Center(child: CircularProgressIndicator()),
+              ); // Show a loading indicator while waiting for data.
             } else if (snapshot.hasError) {
               return Center(
                 child: Text('Error: ${snapshot.error}'),
@@ -221,6 +223,15 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                           FontWeight.w800),
                                     ),
                                   ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(16, 4, 0, 0),
+                                    child: ReusableText(
+                                      text: "${phoneController.text} ",
+                                      style: appstyle(14, Color(0xffF6F0F0),
+                                          FontWeight.w800),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
@@ -256,7 +267,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 children: [
                                   Icon(
                                     Icons.location_city,
-                                    color: Colors.amber,
+                                    color: Color(0xffA855F7),
                                   ),
                                   ReusableText(
                                     text: "${locationController.text}",
@@ -269,7 +280,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 children: [
                                   Icon(
                                     MdiIcons.genderTransgender,
-                                    color: Colors.amber,
+                                    color: Color(0xffA855F7),
                                   ),
                                   ReusableText(
                                     text: "${genderController.text}",
@@ -295,27 +306,222 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                           ),
                         ),
                         //end of basic profiles
+                        //start of counting stuffs
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                          child: Row(
+                            children: [
+                              Container(
+                                height: 120,
+                                width: 120,
+                                child: Card(
+                                  color: Color(0xff292929),
+                                  clipBehavior: Clip.antiAlias,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topCenter,
+                                        child: ReusableText(
+                                          text:
+                                              "${snapshot.data!.data!.profileResponse?.totalApprovedElement}",
+                                          style: appstyle(24, Color(0xffF6F0F0),
+                                              FontWeight.w800),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: ReusableText(
+                                          text: "Approved elements",
+                                          style: appstyle(16, Color(0xffF6F0F0),
+                                              FontWeight.w800),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                height: 120,
+                                width: 120,
+                                child: Card(
+                                  color: Color(0xff292929),
+                                  clipBehavior: Clip.antiAlias,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topCenter,
+                                        child: ReusableText(
+                                          text:
+                                              "${snapshot.data!.data!.profileResponse?.totalFollower}",
+                                          style: appstyle(24, Color(0xffF6F0F0),
+                                              FontWeight.w800),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: ReusableText(
+                                          text: "Followers ",
+                                          style: appstyle(16, Color(0xffF6F0F0),
+                                              FontWeight.w800),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                height: 120,
+                                width: 120,
+                                child: Card(
+                                  color: Color(0xff292929),
+                                  clipBehavior: Clip.antiAlias,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topCenter,
+                                        child: ReusableText(
+                                          text:
+                                              "${snapshot.data!.data!.profileResponse?.totalFollowing}",
+                                          style: appstyle(24, Color(0xffF6F0F0),
+                                              FontWeight.w800),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: ReusableText(
+                                          text: "Followings",
+                                          style: appstyle(16, Color(0xffF6F0F0),
+                                              FontWeight.w800),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                         // start elements owned
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 20, 0, 0),
                           child: ReusableText(
-                            text: "Approved elements",
+                            text: "${usernameController.text} 's elements",
                             style: appstyle(
                                 16, Color(0xffF6F0F0), FontWeight.w800),
                           ),
                         ),
+
                         SizedBox(
                           height: 20,
                         ),
 
-                        Align(
-                          alignment: Alignment.center,
-                          child: ReusableText(
-                            text:
-                                "No approved elements. \nPlease try again later :( ",
-                            style: appstyle(
-                                14, Color(0xffF6F0F0), FontWeight.w500),
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  index = 0;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors
+                                    .transparent, // Set the button background color to transparent
+                                shadowColor: Color(
+                                    0xff292929), // Set the shadow color to grey
+                                elevation:
+                                    2, // Set the elevation to create a shadow effect
+                                padding: EdgeInsets.all(4),
+                              ),
+                              child: Icon(MdiIcons.check),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  index = 1;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors
+                                    .transparent, // Set the button background color to transparent
+                                shadowColor: Color(
+                                    0xff292929), // Set the shadow color to grey
+                                elevation:
+                                    2, // Set the elevation to create a shadow effect
+                                padding: EdgeInsets.all(4),
+                              ),
+                              child: Icon(
+                                MdiIcons.clockTimeThreeOutline,
+                                color: Colors.amber,
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  index = 2;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors
+                                    .transparent, // Set the button background color to transparent
+                                shadowColor: Color(
+                                    0xff292929), // Set the shadow color to grey
+                                elevation:
+                                    2, // Set the elevation to create a shadow effect
+                                padding: EdgeInsets.all(4),
+                              ),
+                              child: Icon(
+                                Icons.close,
+                                color: Colors.red,
+                              ),
+                            ),
+                            ElevatedButton(
+                              onPressed: () {
+                                setState(() {
+                                  index = 3;
+                                });
+                              },
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors
+                                    .transparent, // Set the button background color to transparent
+                                shadowColor: Color(
+                                    0xff292929), // Set the shadow color to grey
+                                elevation:
+                                    2, // Set the elevation to create a shadow effect
+                                padding: EdgeInsets.all(4),
+                              ),
+                              child: Icon(
+                                MdiIcons.folder,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ],
+                        ), //indexedstack in here
+                        IndexedStack(
+                          children: [
+                            Center(
+                              child: Image.asset("assets/flags/ch.png"),
+                            ),
+                            Center(
+                              child: Image.asset("assets/flags/ki.png"),
+                            ),
+                            Center(
+                              child: Image.asset("assets/flags/vn.png"),
+                            ),
+                            Center(
+                              child: Image.asset("assets/flags/zw.png"),
+                            ),
+                          ],
+                          index: index,
                         ),
                       ]),
                 ),

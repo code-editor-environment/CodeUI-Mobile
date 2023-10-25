@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/model_validation.dart';
 import 'package:mobile/view/widget/admin_home_widget.dart';
+import 'package:mobile/view/widget/chat_front_page.dart';
+import 'package:mobile/view/widget/responsive_chat_page.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
-import 'splash_screen/splash_demo.dart';
+import 'components/splash_screen/splash_demo.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

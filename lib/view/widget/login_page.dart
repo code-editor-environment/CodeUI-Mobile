@@ -6,10 +6,10 @@ import 'package:mobile/components/reusable_text.dart';
 import 'package:mobile/services/helpers/auth_helper.dart';
 import 'package:mobile/view/widget/home_page_user_logged_in.dart';
 import 'package:provider/provider.dart';
-import 'package:mobile/constants/app_constants.dart';
-import 'package:mobile/constants/app_style.dart';
-import 'package:mobile/constants/custom_textfield.dart';
-import 'package:mobile/models/request/auth/login_model.dart';
+import 'package:mobile/common/constants/app_constants.dart';
+import 'package:mobile/common/constants/app_style.dart';
+import 'package:mobile/common/constants/custom_textfield.dart';
+import 'package:mobile/common/models/request/auth/login_model.dart';
 import 'package:mobile/model_validation.dart';
 
 class LoginWidget extends StatefulWidget {
@@ -132,7 +132,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                         width: width * 0.89,
                         child: ElevatedButton(
                           onPressed: () {
-                            //  Get.to(RegisterWidget());
+                            authHelper.signInWithGithub();
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.fromLTRB(
