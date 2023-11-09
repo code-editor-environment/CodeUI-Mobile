@@ -45,59 +45,64 @@ class Data {
 
 class Account {
   String? id;
-  int? roleId;
+  String? role;
   String? username;
   String? email;
   bool? isActive;
   int? profileId;
-  List<dynamic>? followFollowers;
-  String? followFollowings;
-  Profile? profile;
+  List<dynamic>? followers;
+  List<dynamic>? followings;
+  ProfileResponse? profileResponse;
 
   Account(
       {this.id,
-      this.roleId,
+      this.role,
       this.username,
       this.email,
       this.isActive,
       this.profileId,
-      this.followFollowers,
-      this.followFollowings,
-      this.profile});
+      this.followers,
+      this.followings,
+      this.profileResponse});
 
   Account.fromJson(Map<String, dynamic> json) {
     id = json["id"];
-    roleId = json["roleId"];
+    role = json["role"];
     username = json["username"];
     email = json["email"];
     isActive = json["isActive"];
     profileId = json["profileId"];
-    followFollowers = json["followFollowers"] ?? [];
-    followFollowings = json["followFollowings"];
-    profile =
-        json["profile"] == null ? null : Profile.fromJson(json["profile"]);
+    followers = json["followers"] ?? [];
+    followings = json["followings"] ?? [];
+    profileResponse = json["profileResponse"] == null
+        ? null
+        : ProfileResponse.fromJson(json["profileResponse"]);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["id"] = id;
-    _data["roleId"] = roleId;
+    _data["role"] = role;
     _data["username"] = username;
     _data["email"] = email;
     _data["isActive"] = isActive;
     _data["profileId"] = profileId;
-    if (followFollowers != null) {
-      _data["followFollowers"] = followFollowers;
+    if (followers != null) {
+      _data["followers"] = followers;
     }
-    _data["followFollowings"] = followFollowings;
-    if (profile != null) {
-      _data["profile"] = profile?.toJson();
+    if (followings != null) {
+      _data["followings"] = followings;
+    }
+    if (profileResponse != null) {
+      _data["profileResponse"] = profileResponse?.toJson();
     }
     return _data;
   }
 }
 
-class Profile {
+class ProfileResponse {
+  String? accountId;
+  String? username;
   String? firstName;
   String? lastName;
   String? dateOfBirth;
@@ -107,9 +112,15 @@ class Profile {
   String? description;
   double? wallet;
   String? imageUrl;
+  bool? isFollow;
+  int? totalFollower;
+  int? totalFollowing;
+  int? totalApprovedElement;
 
-  Profile(
-      {this.firstName,
+  ProfileResponse(
+      {this.accountId,
+      this.username,
+      this.firstName,
       this.lastName,
       this.dateOfBirth,
       this.phone,
@@ -117,9 +128,15 @@ class Profile {
       this.location,
       this.description,
       this.wallet,
-      this.imageUrl});
+      this.imageUrl,
+      this.isFollow,
+      this.totalFollower,
+      this.totalFollowing,
+      this.totalApprovedElement});
 
-  Profile.fromJson(Map<String, dynamic> json) {
+  ProfileResponse.fromJson(Map<String, dynamic> json) {
+    accountId = json["accountID"];
+    username = json["username"];
     firstName = json["firstName"];
     lastName = json["lastName"];
     dateOfBirth = json["dateOfBirth"];
@@ -129,10 +146,16 @@ class Profile {
     description = json["description"];
     wallet = json["wallet"];
     imageUrl = json["imageUrl"];
+    isFollow = json["isFollow"];
+    totalFollower = json["totalFollower"];
+    totalFollowing = json["totalFollowing"];
+    totalApprovedElement = json["totalApprovedElement"];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["accountID"] = accountId;
+    _data["username"] = username;
     _data["firstName"] = firstName;
     _data["lastName"] = lastName;
     _data["dateOfBirth"] = dateOfBirth;
@@ -142,6 +165,10 @@ class Profile {
     _data["description"] = description;
     _data["wallet"] = wallet;
     _data["imageUrl"] = imageUrl;
+    _data["isFollow"] = isFollow;
+    _data["totalFollower"] = totalFollower;
+    _data["totalFollowing"] = totalFollowing;
+    _data["totalApprovedElement"] = totalApprovedElement;
     return _data;
   }
 }

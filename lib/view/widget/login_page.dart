@@ -50,6 +50,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             // ),
             backgroundColor: Color(0xff1C1C1C),
             body: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
               child: Container(
                 color: Color(0xff1C1C1C),
                 // Set your container properties here, e.g., color, width, height, etc.
@@ -184,7 +185,7 @@ class _LoginWidgetState extends State<LoginWidget> {
                           },
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.fromLTRB(
-                                16, 8, 16, 8), // Adjust the padding here
+                                16, 0, 0, 0), // Adjust the padding here
                             // Set minimum width to 0 to allow the button to size based on content
                             backgroundColor: Color(0xff292929),
                             shape: RoundedRectangleBorder(
@@ -192,12 +193,12 @@ class _LoginWidgetState extends State<LoginWidget> {
                             ),
                           ),
                           child: Row(
-                            //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Icon(MdiIcons.phone),
                               Padding(
-                                padding: const EdgeInsets.fromLTRB(42, 0, 0, 0),
+                                padding: const EdgeInsets.fromLTRB(12, 0, 0, 0),
                                 child: Text(
                                   'Sign in with phone number',
                                   style: GoogleFonts.montserrat(

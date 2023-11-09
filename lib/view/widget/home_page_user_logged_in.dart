@@ -116,10 +116,7 @@ class _CodeUIHomeScreenForLoggedInUserState
                 icon: IconButton(
                   icon: Icon(Icons.shopping_cart_outlined),
                   color: Color(0xffEC4899).withOpacity(0.4),
-                  onPressed: () {
-                    FirebaseAuth.instance.signOut();
-                    Get.off(() => const LoginWidget());
-                  },
+                  onPressed: () {},
                 ),
                 label: ""),
           ],
@@ -151,7 +148,7 @@ class _CodeUIHomeScreenForLoggedInUserState
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => const LoginWidget());
+                          // Get.to(() => const LoginWidget());
                         },
                         child: ReusableText(
                           text: "See more",
@@ -251,7 +248,7 @@ class _CodeUIHomeScreenForLoggedInUserState
                                                           Color(0xff252525),
                                                       builder: (context) =>
                                                           Container(
-                                                        height: 150,
+                                                        height: height * 0.3,
                                                         child: Row(
                                                           mainAxisAlignment:
                                                               MainAxisAlignment
@@ -316,8 +313,8 @@ class _CodeUIHomeScreenForLoggedInUserState
                                                                             Color(0xffF6F0F0),
                                                                             FontWeight.w600)),
                                                                     Container(
-                                                                      width:
-                                                                          200,
+                                                                      width: width *
+                                                                          0.33,
                                                                       child: ReusableText(
                                                                           text:
                                                                               "@${items.data?[index].username} ",
@@ -328,7 +325,7 @@ class _CodeUIHomeScreenForLoggedInUserState
                                                                     ),
                                                                     ReusableText(
                                                                         text:
-                                                                            "Followings:${items.data?[index].followFollowings} ",
+                                                                            "Followings:${items.data![index].profileResponse!.totalFollowing} ",
                                                                         style: appstyle(
                                                                             12,
                                                                             Color(0xffF6F0F0),

@@ -1,23 +1,29 @@
 
-class GetOneElement {
-    Status? status;
-    Data? data;
+class ModeratorGetPending {
+    Metadata? metadata;
+    List<Data>? data;
+    bool? isError;
+    String? message;
 
-    GetOneElement({this.status, this.data});
+    ModeratorGetPending({this.metadata, this.data, this.isError, this.message});
 
-    GetOneElement.fromJson(Map<String, dynamic> json) {
-        status = json["status"] == null ? null : Status.fromJson(json["status"]);
-        data = json["data"] == null ? null : Data.fromJson(json["data"]);
+    ModeratorGetPending.fromJson(Map<String, dynamic> json) {
+        metadata = json["metadata"] == null ? null : Metadata.fromJson(json["metadata"]);
+        data = json["data"] == null ? null : (json["data"] as List).map((e) => Data.fromJson(e)).toList();
+        isError = json["isError"];
+        message = json["message"];
     }
 
     Map<String, dynamic> toJson() {
         final Map<String, dynamic> _data = <String, dynamic>{};
-        if(status != null) {
-            _data["status"] = status?.toJson();
+        if(metadata != null) {
+            _data["metadata"] = metadata?.toJson();
         }
         if(data != null) {
-            _data["data"] = data?.toJson();
+            _data["data"] = data?.map((e) => e.toJson()).toList();
         }
+        _data["isError"] = isError;
+        _data["message"] = message;
         return _data;
     }
 }
@@ -36,9 +42,9 @@ class Data {
     int? commentCount;
     int? likeCount;
     int? favorites;
-    bool? isLiked;
-    bool? isFavorite;
-    String? comments;
+    String? isLiked;
+    String? isFavorite;
+    List<dynamic>? comments;
     ProfileResponse? profileResponse;
 
     Data({this.id, this.title, this.description, this.createDate, this.updateDate, this.isActive, this.status, this.categoryName, this.ownerUsername, this.collaborations, this.commentCount, this.likeCount, this.favorites, this.isLiked, this.isFavorite, this.comments, this.profileResponse});
@@ -59,7 +65,7 @@ class Data {
         favorites = json["favorites"];
         isLiked = json["isLiked"];
         isFavorite = json["isFavorite"];
-        comments = json["comments"];
+        comments = json["comments"] ?? [];
         profileResponse = json["profileResponse"] == null ? null : ProfileResponse.fromJson(json["profileResponse"]);
     }
 
@@ -82,7 +88,9 @@ class Data {
         _data["favorites"] = favorites;
         _data["isLiked"] = isLiked;
         _data["isFavorite"] = isFavorite;
-        _data["comments"] = comments;
+        if(comments != null) {
+            _data["comments"] = comments;
+        }
         if(profileResponse != null) {
             _data["profileResponse"] = profileResponse?.toJson();
         }
@@ -148,24 +156,24 @@ class ProfileResponse {
     }
 }
 
-class Status {
-    bool? success;
-    String? message;
-    int? errorCode;
+class Metadata {
+    int? page;
+    int? size;
+    int? total;
 
-    Status({this.success, this.message, this.errorCode});
+    Metadata({this.page, this.size, this.total});
 
-    Status.fromJson(Map<String, dynamic> json) {
-        success = json["success"];
-        message = json["message"];
-        errorCode = json["errorCode"];
+    Metadata.fromJson(Map<String, dynamic> json) {
+        page = json["page"];
+        size = json["size"];
+        total = json["total"];
     }
 
     Map<String, dynamic> toJson() {
         final Map<String, dynamic> _data = <String, dynamic>{};
-        _data["success"] = success;
-        _data["message"] = message;
-        _data["errorCode"] = errorCode;
+        _data["page"] = page;
+        _data["size"] = size;
+        _data["total"] = total;
         return _data;
     }
 }

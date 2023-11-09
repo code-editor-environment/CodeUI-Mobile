@@ -313,7 +313,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                             children: [
                               Container(
                                 height: 120,
-                                width: 120,
+                                width: 110,
                                 child: Card(
                                   color: Color(0xff292929),
                                   clipBehavior: Clip.antiAlias,
@@ -345,7 +345,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               ),
                               Container(
                                 height: 120,
-                                width: 120,
+                                width: 110,
                                 child: Card(
                                   color: Color(0xff292929),
                                   clipBehavior: Clip.antiAlias,
@@ -377,7 +377,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                               ),
                               Container(
                                 height: 120,
-                                width: 120,
+                                width: 110,
                                 child: Card(
                                   color: Color(0xff292929),
                                   clipBehavior: Clip.antiAlias,
@@ -509,8 +509,10 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         IndexedStack(
                           children: [
                             Center(
-                              child: Image.asset("assets/flags/ch.png"),
-                            ),
+                                child: ReusableText(
+                                    text: "No element here yet!",
+                                    style: appstyle(14, Color(0xfff5f0f0),
+                                        FontWeight.w500))),
                             Center(
                               child: Image.asset("assets/flags/ki.png"),
                             ),

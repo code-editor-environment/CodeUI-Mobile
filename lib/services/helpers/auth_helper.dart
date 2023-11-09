@@ -6,11 +6,13 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as https;
 import 'package:mobile/common/constants/app_constants.dart';
+import 'package:mobile/view/widget/chat_front_page.dart';
 import 'package:mobile/view/widget/home_page_user_logged_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../common/models/request/auth/login_model.dart';
 import '../../common/models/response/auth/login_res_model.dart';
+import '../../view/widget/moderator_home_widget.dart';
 
 class AuthHelper {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -56,7 +58,7 @@ class AuthHelper {
         if (token != null) {
           login(LoginByGoogleModel(idToken: token));
         }
-      }
+      } else {}
     } catch (e) {
       print("Error signing in with google $e");
     }
@@ -106,6 +108,7 @@ class AuthHelper {
     );
     if (response.statusCode == 200) {
       jsonDecode(response.body);
+
       //   Get.off(() => const CodeUIHomeScreenForLoggedInUser());
       handleLoginResponse(
           LoginResponseModel.fromJson(jsonDecode(response.body)));
@@ -128,6 +131,7 @@ class AuthHelper {
     final accessToken = response.data?.accessToken;
     final accountId = response.data!.account?.id;
     final currentLoggedInUsername = response.data?.account?.username;
+
     // Save the access token to SharedPreferences.
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString("accessToken", accessToken!);
@@ -137,7 +141,15 @@ class AuthHelper {
     print(accountId);
     print(currentLoggedInUsername);
     // Navigate to the next screen.
-    Get.off(() => const CodeUIHomeScreenForLoggedInUser());
+    if (response.data!.account!.role == "FreeCreator" &&
+        response.data!.account!.isActive == true) {
+      Get.to(() => const CodeUIHomeScreenForLoggedInUser());
+    } else if (response.data!.account!.role == "Moderator" &&
+        response.data!.account!.isActive == true) {
+      Get.to(() => const ModeratorHomeWidget());
+    }
+    {}
+    ;
   }
   // static Future<bool> register(SignupModel model) async {
   //   Map<String, String> requestHeaders = {'Content-Type': 'application/json'};

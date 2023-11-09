@@ -25,7 +25,7 @@ class GetCommentService {
     var Client = https.Client();
 
     var uri = Uri.parse(
-        "https://dev.codeui-api.io.vn/api/react-element/getCommentsByElementId?ElementId=$idForElements");
+        "https://dev.codeui-api.io.vn/api/react-element/getCommentsByElementId?ElementId=$idForElements&PageSize=12");
     var response = await Client.get(uri, headers: requestHeaders);
     if (response.statusCode == 200) {
       var json = response.body;

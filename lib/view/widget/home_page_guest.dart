@@ -95,7 +95,7 @@ class _CodeUIHomeScreenForGuestState extends State<CodeUIHomeScreenForGuest> {
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
-          height: height * 0.8,
+          height: height,
           decoration: BoxDecoration(
             color: Colors.black,
           ),

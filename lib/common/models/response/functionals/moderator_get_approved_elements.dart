@@ -1,12 +1,13 @@
-class AllCreatorsTempModel {
+class ModeratorGetApprovedElements {
   Metadata? metadata;
   List<Data>? data;
   bool? isError;
   String? message;
 
-  AllCreatorsTempModel({this.metadata, this.data, this.isError, this.message});
+  ModeratorGetApprovedElements(
+      {this.metadata, this.data, this.isError, this.message});
 
-  AllCreatorsTempModel.fromJson(Map<String, dynamic> json) {
+  ModeratorGetApprovedElements.fromJson(Map<String, dynamic> json) {
     metadata =
         json["metadata"] == null ? null : Metadata.fromJson(json["metadata"]);
     data = json["data"] == null
@@ -31,30 +32,57 @@ class AllCreatorsTempModel {
 }
 
 class Data {
-  String? id;
-  String? role;
-  String? username;
-  String? email;
+  int? id;
+  String? title;
+  String? description;
+  String? createDate;
+  String? updateDate;
   bool? isActive;
-  int? profileId;
+  String? status;
+  String? categoryName;
+  String? ownerUsername;
+  List<dynamic>? collaborations;
+  int? commentCount;
+  int? likeCount;
+  int? favorites;
+  bool? isLiked;
+  bool? isFavorite;
   ProfileResponse? profileResponse;
 
   Data(
       {this.id,
-      this.role,
-      this.username,
-      this.email,
+      this.title,
+      this.description,
+      this.createDate,
+      this.updateDate,
       this.isActive,
-      this.profileId,
+      this.status,
+      this.categoryName,
+      this.ownerUsername,
+      this.collaborations,
+      this.commentCount,
+      this.likeCount,
+      this.favorites,
+      this.isLiked,
+      this.isFavorite,
       this.profileResponse});
 
   Data.fromJson(Map<String, dynamic> json) {
     id = json["id"];
-    role = json["role"];
-    username = json["username"];
-    email = json["email"];
+    title = json["title"];
+    description = json["description"];
+    createDate = json["createDate"];
+    updateDate = json["updateDate"];
     isActive = json["isActive"];
-    profileId = json["profileId"];
+    status = json["status"];
+    categoryName = json["categoryName"];
+    ownerUsername = json["ownerUsername"];
+    collaborations = json["collaborations"] ?? [];
+    commentCount = json["commentCount"];
+    likeCount = json["likeCount"];
+    favorites = json["favorites"];
+    isLiked = json["isLiked"];
+    isFavorite = json["isFavorite"];
     profileResponse = json["profileResponse"] == null
         ? null
         : ProfileResponse.fromJson(json["profileResponse"]);
@@ -63,11 +91,22 @@ class Data {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
     _data["id"] = id;
-    _data["role"] = role;
-    _data["username"] = username;
-    _data["email"] = email;
+    _data["title"] = title;
+    _data["description"] = description;
+    _data["createDate"] = createDate;
+    _data["updateDate"] = updateDate;
     _data["isActive"] = isActive;
-    _data["profileId"] = profileId;
+    _data["status"] = status;
+    _data["categoryName"] = categoryName;
+    _data["ownerUsername"] = ownerUsername;
+    if (collaborations != null) {
+      _data["collaborations"] = collaborations;
+    }
+    _data["commentCount"] = commentCount;
+    _data["likeCount"] = likeCount;
+    _data["favorites"] = favorites;
+    _data["isLiked"] = isLiked;
+    _data["isFavorite"] = isFavorite;
     if (profileResponse != null) {
       _data["profileResponse"] = profileResponse?.toJson();
     }

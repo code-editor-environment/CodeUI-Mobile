@@ -71,6 +71,8 @@ class _ViewSpecificProfileWidgetState extends State<ViewSpecificProfileWidget> {
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
+    print(height);
+    print(width);
     return SafeArea(
         child: Scaffold(
       //  extendBodyBehindAppBar: true,
@@ -168,6 +170,14 @@ class _ViewSpecificProfileWidgetState extends State<ViewSpecificProfileWidget> {
                                   },
                                   icon: Icon(Icons.arrow_back),
                                   color: Color(0xffEC4899),
+                                ),
+                                IconButton(
+                                  onPressed: () {},
+                                  icon: Icon(
+                                    Icons.report_problem_rounded,
+                                    color: Color(0xffAB55F7),
+                                    size: 22,
+                                  ),
                                 ),
                               ],
                             ),
@@ -352,7 +362,7 @@ class _ViewSpecificProfileWidgetState extends State<ViewSpecificProfileWidget> {
                                 children: [
                                   Container(
                                     height: 120,
-                                    width: 120,
+                                    width: width * 0.3,
                                     child: Card(
                                       color: Color(0xff292929),
                                       clipBehavior: Clip.antiAlias,
@@ -388,7 +398,7 @@ class _ViewSpecificProfileWidgetState extends State<ViewSpecificProfileWidget> {
                                   ),
                                   Container(
                                     height: 120,
-                                    width: 120,
+                                    width: width * 0.3,
                                     child: Card(
                                       color: Color(0xff292929),
                                       clipBehavior: Clip.antiAlias,
@@ -424,7 +434,7 @@ class _ViewSpecificProfileWidgetState extends State<ViewSpecificProfileWidget> {
                                   ),
                                   Container(
                                     height: 120,
-                                    width: 120,
+                                    width: width * 0.3,
                                     child: Card(
                                       color: Color(0xff292929),
                                       clipBehavior: Clip.antiAlias,
@@ -618,8 +628,7 @@ class _ViewSpecificProfileWidgetState extends State<ViewSpecificProfileWidget> {
                                                           "idForElements",
                                                           idForElements!);
                                                       Get.to(
-                                                        () =>
-                                                            const DetailedWidget(),
+                                                        () => DetailedWidget(),
                                                       );
                                                     },
                                                     style: ElevatedButton

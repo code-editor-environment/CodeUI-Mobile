@@ -7,6 +7,7 @@ import 'package:http/http.dart' as https;
 
 import '../../common/constants/app_constants.dart';
 import '../../common/models/request/functional/update_profile_model.dart';
+import '../../common/models/response/functionals/moderator_get_accounts_report.dart';
 import '../../common/models/response/functionals/temp_creator_model.dart';
 
 var client = https.Client();
@@ -22,7 +23,7 @@ class GetAllCreatorService {
     var Client = https.Client();
 
     var uri = Uri.parse(
-        "https://dev.codeui-api.io.vn/api/account/getAll?Role=FreeCreator");
+        "https://dev.codeui-api.io.vn/api/account/getAll?Role=FreeCreator&PageSize=30");
     var response = await Client.get(uri, headers: requestHeaders);
     if (response.statusCode == 200) {
       var json = response.body;
@@ -32,7 +33,28 @@ class GetAllCreatorService {
       throw Exception('Failed to load ');
     }
   }
+ Future<ModeratorGetAccountsReport> moderatorGetAccountsReport() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("accessToken");
+   
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var Client = https.Client();
 
+    var uri = Uri.parse(
+        "https://dev.codeui-api.io.vn/api/report/getAccountReport?PageSize=50");
+    var response = await Client.get(uri, headers: requestHeaders);
+    if (response.statusCode == 200) {
+      var json = response.body;
+     
+      print(json);
+      return ModeratorGetAccountsReport.fromJson(jsonDecode(json));
+    } else {
+      throw Exception('Failed to load ');
+    }
+  }
   Future followCreator() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("accessToken");

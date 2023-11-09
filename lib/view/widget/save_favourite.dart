@@ -113,15 +113,11 @@ class _BookmarkedOwnedWidgetState extends State<BookmarkedOwnedWidget> {
             ],
           ),
         ),
-        body: Container(
-          color: Color(0xff1C1C1C),
-          width: double.infinity,
-          height: double.infinity,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minWidth: 1200,
-              minHeight: 1200,
-            ),
+        body: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Container(
+            color: Colors.black,
+            height: height,
             child: Column(children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
@@ -141,129 +137,140 @@ class _BookmarkedOwnedWidgetState extends State<BookmarkedOwnedWidget> {
                 ),
               ),
               // wrap this
-              FutureBuilder(
-                future: _profileFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(
-                        child:
-                            CircularProgressIndicator()); // Show a loading indicator while waiting for data.
-                  } else if (snapshot.hasError) {
-                    return Center(
-                      child: Text('Error: ${snapshot.error}'),
-                    ); // Handle the error.
-                  } else if (!snapshot.hasData) {
-                    return Center(
-                      child: Text('No data available'), // Handle no data case.
-                    );
-                  } else {
-                    return ListView.builder(
-                      itemCount: snapshot.data!.metadata!.total,
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Column(children: [
-                            //item1
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Image.asset(
-                                    "assets/images/Mask_group.png",
-                                    width: 120,
-                                    height: 100,
-                                  ),
-                                ),
-                                // trên là cái hình elements
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ElevatedButton(
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors
-                                            .transparent, // Set the button background color to transparent
-                                        elevation:
-                                            0, // Remove the button shadow
-                                        padding: EdgeInsets
-                                            .zero, // Remove default button padding
-                                        // Reduce the button's tap target size
-                                      ),
-                                      onPressed: () {
-                                        Get.to(DetailedWidget());
-                                      },
-                                      child: ReusableText(
-                                          text:
-                                              "${snapshot.data!.data![index].title} ",
-                                          style: appstyle(15, Color(0xffF6F0F0),
-                                              FontWeight.w600)),
-                                    ),
-
-                                    //bookmarked times
-                                    Row(children: [
-                                      Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceEvenly,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Icon(
-                                              MdiIcons.heartOutline,
-                                              color: Color(0xffAB55F7),
-                                              size: 20,
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      2, 0, 0, 0),
-                                              child: ReusableText(
-                                                  text:
-                                                      "${snapshot.data!.data![index].likeCount} ",
-                                                  style: appstyle(
-                                                      13,
-                                                      Color(0xffAB55F7),
-                                                      FontWeight.w400)),
-                                            ),
-                                          ]),
-                                      SizedBox(
-                                        width: 12,
-                                      ),
-                                      //save times idk
-                                      Row(children: [
-                                        Row(children: [
-                                          Icon(
-                                            MdiIcons.bookmarkOutline,
-                                            color: Color(0xffAB55F7),
-                                            size: 20,
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                2, 0, 0, 0),
-                                            child: ReusableText(
-                                                text:
-                                                    " ${snapshot.data!.data![index].favorites} ",
-                                                style: appstyle(
-                                                    13,
-                                                    Color(0xffAB55F7),
-                                                    FontWeight.w400)),
-                                          ),
-                                        ]),
-                                      ]),
-                                    ]),
-                                  ],
-                                )
-                              ],
-                            ),
-                            //item1 ending
-
-                            //item1 ending
-                          ]),
+              SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Container(
+                  height: height / 1.65,
+                  child: FutureBuilder(
+                    future: _profileFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                            child:
+                                CircularProgressIndicator()); // Show a loading indicator while waiting for data.
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        ); // Handle the error.
+                      } else if (!snapshot.hasData) {
+                        return Center(
+                          child:
+                              Text('No data available'), // Handle no data case.
                         );
-                      },
-                    );
-                  }
-                },
+                      } else {
+                        return ListView.builder(
+                          itemCount: snapshot.data!.metadata!.total,
+                          shrinkWrap: true,
+                          itemBuilder: (context, index) {
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.vertical,
+                              child: Column(children: [
+                                //item1
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(12.0),
+                                      child: Image.asset(
+                                        "assets/images/Mask_group.png",
+                                        width: 120,
+                                        height: 100,
+                                      ),
+                                    ),
+                                    // trên là cái hình elements
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors
+                                                .transparent, // Set the button background color to transparent
+                                            elevation:
+                                                0, // Remove the button shadow
+                                            padding: EdgeInsets
+                                                .zero, // Remove default button padding
+                                            // Reduce the button's tap target size
+                                          ),
+                                          onPressed: () {
+                                            Get.to(DetailedWidget());
+                                          },
+                                          child: ReusableText(
+                                              text:
+                                                  "${snapshot.data!.data![index].title} ",
+                                              style: appstyle(
+                                                  15,
+                                                  Color(0xffF6F0F0),
+                                                  FontWeight.w600)),
+                                        ),
+
+                                        //bookmarked times
+                                        Row(children: [
+                                          Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Icon(
+                                                  MdiIcons.heartOutline,
+                                                  color: Color(0xffAB55F7),
+                                                  size: 20,
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          2, 0, 0, 0),
+                                                  child: ReusableText(
+                                                      text:
+                                                          "${snapshot.data!.data![index].likeCount} ",
+                                                      style: appstyle(
+                                                          13,
+                                                          Color(0xffAB55F7),
+                                                          FontWeight.w400)),
+                                                ),
+                                              ]),
+                                          SizedBox(
+                                            width: 12,
+                                          ),
+                                          //save times idk
+                                          Row(children: [
+                                            Row(children: [
+                                              Icon(
+                                                MdiIcons.bookmarkOutline,
+                                                color: Color(0xffAB55F7),
+                                                size: 20,
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        2, 0, 0, 0),
+                                                child: ReusableText(
+                                                    text:
+                                                        " ${snapshot.data!.data![index].favorites} ",
+                                                    style: appstyle(
+                                                        13,
+                                                        Color(0xffAB55F7),
+                                                        FontWeight.w400)),
+                                              ),
+                                            ]),
+                                          ]),
+                                        ]),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                                //item1 ending
+
+                                //item1 ending
+                              ]),
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
+                ),
               )
             ]),
           ),

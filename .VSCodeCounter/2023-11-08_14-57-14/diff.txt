@@ -1,0 +1,42 @@
+Date : 2023-11-08 14:57:14
+Directory : d:\Fuky9capstone\Environment\Mobile_Capstone\codeui-mobile\lib
+Total : 10 files,  1238 codes, 69 comments, 75 blanks, all 1382 lines
+
+Languages
++----------+------------+------------+------------+------------+------------+
+| language | files      | code       | comment    | blank      | total      |
++----------+------------+------------+------------+------------+------------+
+| Dart     |         10 |      1,238 |         69 |         75 |      1,382 |
++----------+------------+------------+------------+------------+------------+
+
+Directories
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                                                | files      | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                                   |         10 |      1,238 |         69 |         75 |      1,382 |
+| common                                                                                                                              |          2 |         88 |          0 |         16 |        104 |
+| common\models                                                                                                                       |          2 |         88 |          0 |         16 |        104 |
+| common\models\response                                                                                                              |          2 |         88 |          0 |         16 |        104 |
+| common\models\response\functionals                                                                                                  |          2 |         88 |          0 |         16 |        104 |
+| services                                                                                                                            |          1 |         42 |          0 |         10 |         52 |
+| services\helpers                                                                                                                    |          1 |         42 |          0 |         10 |         52 |
+| view                                                                                                                                |          7 |      1,108 |         69 |         49 |      1,226 |
+| view\widget                                                                                                                         |          7 |      1,108 |         69 |         49 |      1,226 |
++-------------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-------------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| filename                                                                                                                            | language | code       | comment    | blank      | total      |
++-------------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+
+| d:\Fuky9capstone\Environment\Mobile_Capstone\codeui-mobile\lib\common\models\response\functionals\moderator_get_all_categories.dart | Dart     |         64 |          0 |         12 |         76 |
+| d:\Fuky9capstone\Environment\Mobile_Capstone\codeui-mobile\lib\common\models\response\functionals\moderator_get_one_category.dart   | Dart     |         24 |          0 |          4 |         28 |
+| d:\Fuky9capstone\Environment\Mobile_Capstone\codeui-mobile\lib\services\helpers\element_helper.dart                                 | Dart     |         42 |          0 |         10 |         52 |
+| d:\Fuky9capstone\Environment\Mobile_Capstone\codeui-mobile\lib\view\widget\Moderator_categories_detail_and_delete.dart              | Dart     |        221 |         14 |         19 |        254 |
+| d:\Fuky9capstone\Environment\Mobile_Capstone\codeui-mobile\lib\view\widget\moderator_categories_management.dart                     | Dart     |        258 |          8 |          4 |        270 |
+| d:\Fuky9capstone\Environment\Mobile_Capstone\codeui-mobile\lib\view\widget\moderator_get_accounts_report.dart                       | Dart     |        222 |         22 |         11 |        255 |
+| d:\Fuky9capstone\Environment\Mobile_Capstone\codeui-mobile\lib\view\widget\moderator_get_all_categories.dart                        | Dart     |        219 |         20 |         11 |        250 |
+| d:\Fuky9capstone\Environment\Mobile_Capstone\codeui-mobile\lib\view\widget\moderator_home_widget.dart                               | Dart     |        -14 |         -1 |          0 |        -15 |
+| d:\Fuky9capstone\Environment\Mobile_Capstone\codeui-mobile\lib\view\widget\moderator_packages_management.dart                       | Dart     |        200 |          7 |          4 |        211 |
+| d:\Fuky9capstone\Environment\Mobile_Capstone\codeui-mobile\lib\view\widget\moderator_reports_management .dart                       | Dart     |          2 |         -1 |          0 |          1 |
+| Total                                                                                                                               |          |      1,238 |         69 |         75 |      1,382 |
++-------------------------------------------------------------------------------------------------------------------------------------+----------+------------+------------+------------+------------+

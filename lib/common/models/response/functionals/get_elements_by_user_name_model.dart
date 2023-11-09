@@ -148,7 +148,7 @@ class ProfileResponse {
       this.location,
       this.description,
       this.wallet,
-      this.imageUrl,
+      this.imageUrl,  
       this.isFollow,
       this.totalFollower,
       this.totalFollowing,
