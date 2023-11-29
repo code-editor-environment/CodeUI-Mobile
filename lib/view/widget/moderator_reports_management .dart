@@ -25,7 +25,8 @@ import '../../services/helpers/creator_helper.dart';
 import '../../services/helpers/profile_helper.dart';
 import 'moderator_get_accounts_report.dart';
 import 'moderator_get_approved_elements.dart';
-import 'moderator_get_elements_report.dart';
+import 'moderator_get_pending_elements_report.dart';
+import 'moderator_home_widget.dart';
 
 class ModeratorReportsManagement extends StatefulWidget {
   const ModeratorReportsManagement({super.key});
@@ -44,39 +45,7 @@ class _ModeratorReportsManagementState
     return Scaffold(
       //  extendBodyBehindAppBar: true,
       appBar: ModeratorAppBarWidget(),
-      bottomNavigationBar: NavigationBarTheme(
-        data: NavigationBarThemeData(indicatorColor: Colors.black),
-        child: NavigationBar(
-          height: 50,
-          backgroundColor: Color(0xff181818),
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-          indicatorColor: Color(0xff292929),
-          selectedIndex: 0,
-          indicatorShape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          // onDestinationSelected: (index) => setState(() => this.index = index),
-          destinations: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: NavigationDestination(
-                  icon: Icon(
-                    Icons.home_outlined,
-                    color: Color(0xffEC4899).withOpacity(0.4),
-                  ),
-                  label: ""),
-            ),
-            NavigationDestination(
-                icon: IconButton(
-                  icon: Icon(Icons.person_pin),
-                  color: Color(0xffEC4899).withOpacity(0.4),
-                  onPressed: () {
-                    // Get.to(ProfileWidget());
-                  },
-                ),
-                label: ""),
-          ],
-        ),
-      ),
+
       body: Container(
         height: height,
         decoration: BoxDecoration(
@@ -84,6 +53,21 @@ class _ModeratorReportsManagementState
         ),
         child: Column(
           children: [
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Get.to(() => const ModeratorHomeWidget());
+                  },
+                  icon: Icon(
+                    MdiIcons.arrowLeft,
+                    color: Color(0xffEC4899),
+                  ),
+                )
+              ],
+            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(

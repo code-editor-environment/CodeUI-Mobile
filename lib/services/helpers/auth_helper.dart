@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as https;
 import 'package:mobile/common/constants/app_constants.dart';
-import 'package:mobile/view/widget/chat_front_page.dart';
+
 import 'package:mobile/view/widget/home_page_user_logged_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -143,10 +143,27 @@ class AuthHelper {
     // Navigate to the next screen.
     if (response.data!.account!.role == "FreeCreator" &&
         response.data!.account!.isActive == true) {
-      Get.to(() => const CodeUIHomeScreenForLoggedInUser());
+      Get.off(() => const CodeUIHomeScreenForLoggedInUser());
+    } else if (response.data!.account!.role == "PaidCreator" &&
+        response.data!.account!.isActive == true) {
+      Get.off(() => const CodeUIHomeScreenForLoggedInUser());
     } else if (response.data!.account!.role == "Moderator" &&
         response.data!.account!.isActive == true) {
-      Get.to(() => const ModeratorHomeWidget());
+      // prefs.setString("ModeratorUsername", response.data!.account!.username!);
+      // print(response.data!.account!.username!);
+      // Get.off(() => const ModeratorHomeWidget());
+      // đoạn trên đợi tới khi qua bên app mod admin mới xài
+      Get.snackbar(
+          "Log in failed", "Your credentials is not allowed to log in here",
+          colorText: Color(kLight.value),
+          backgroundColor: Colors.red,
+          icon: Icon(Icons.add_alert));
+    } else {
+      Get.snackbar("Sign failed", "Please check your credentials",
+          colorText: Color(kLight.value),
+          backgroundColor: Colors.red,
+          icon: Icon(Icons.add_alert));
+        
     }
     {}
     ;

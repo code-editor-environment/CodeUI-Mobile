@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mobile/components/app_bar_guest.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mobile/components/intl_phone_picker_refactored/intl_phone_field.dart';
@@ -7,7 +12,10 @@ import 'package:mobile/components/reusable_disable_button_text.dart';
 import 'package:mobile/common/constants/custom_textfield_bio.dart';
 import 'package:mobile/common/models/request/functional/update_profile_model.dart';
 import 'package:mobile/services/helpers/profile_helper.dart';
+import 'package:mobile/view/widget/add_image_data.dart';
+import 'package:mobile/view/widget/image_utils.dart';
 import 'package:mobile/view/widget/profile_page.dart';
+import 'package:mobile/view/widget/save_favourite.dart';
 import 'package:mobile/view/widget/search_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/app_bar_logged_in_user.dart';
@@ -19,6 +27,7 @@ import '../../common/constants/custom_textfield_bio_change.dart';
 import '../../common/constants/custom_textfield_lock.dart';
 import '../../common/models/response/functionals/profile_res_model.dart';
 import 'home_page_user_logged_in.dart';
+import 'package:uuid/uuid.dart';
 
 class EditProfileWidget extends StatefulWidget {
   const EditProfileWidget({super.key});
@@ -28,9 +37,19 @@ class EditProfileWidget extends StatefulWidget {
 }
 
 class _EditProfileWidgetState extends State<EditProfileWidget> {
+  Uint8List? _image;
+  void selectImage() async {
+    Uint8List img = await pickImage(ImageSource.gallery);
+    if (img != null) {
+      setState(() {
+        _image = img;
+      });
+    }
+  }
+
   late Future<ViewProfileResponse> _profileFuture;
 
-  List<String> genderItems = ['null', 'Male', 'Female'];
+  List<String> genderItems = ['other','Non-binary', 'Male', 'Female'];
   Future<ViewProfileResponse> _getData() async {
     try {
       final items = await GetProfileService().getAll();
@@ -62,8 +81,16 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
               text: profileResponse.data?.profileResponse?.location);
           genderController = TextEditingController(
               text: profileResponse.data?.profileResponse?.gender);
-          dobController = TextEditingController(
-              text: profileResponse.data?.profileResponse?.dateOfBirth);
+          if (profileResponse.data!.profileResponse!.dateOfBirth! != null) {
+            DateTime dateTime = DateTime.parse(
+                profileResponse.data!.profileResponse!.dateOfBirth!);
+
+            dobController = TextEditingController(
+                text: DateFormat('yyyy/MM/dd').format(dateTime));
+          } else {
+            dobController = TextEditingController(
+                text: profileResponse.data?.profileResponse!.dateOfBirth!);
+          }
           keyword1Controller = TextEditingController(
               text: profileResponse.data?.profileResponse?.imageUrl);
           walletController = TextEditingController(
@@ -82,6 +109,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
   late TextEditingController locationController;
   late TextEditingController genderController;
   late TextEditingController dobController;
+
   late TextEditingController keyword1Controller;
   late var a = bioController.text;
   late var b = firstNameController.text;
@@ -90,6 +118,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
   late var e = locationController.text;
   late var f = genderController.text;
   late var g = dobController.text;
+
   late var h = keyword1Controller.text;
   late var l = walletController.text;
   late var userNameToPass = usernameController.text;
@@ -133,7 +162,7 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                     icon: Icon(Icons.home_outlined),
                     color: Color(0xffEC4899).withOpacity(0.4),
                     onPressed: () {
-                      // Get.to(CodeUIHomeScreenForLoggedInUser());
+                      Get.to(CodeUIHomeScreenForLoggedInUser());
                     },
                   ),
                   label: ""),
@@ -143,26 +172,17 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                   icon: Icon(Icons.search),
                   color: Color(0xffEC4899).withOpacity(0.4),
                   onPressed: () {
-                    // Get.to(EditProfileWidget());
+                    Get.to(SearchWidget());
                   },
                 ),
                 label: ""),
             NavigationDestination(
-                icon: Icon(
-                  MdiIcons.messageProcessing,
+                icon: IconButton(
+                  icon: Icon(Icons.bookmarks_outlined),
                   color: Color(0xffEC4899).withOpacity(0.4),
-                ),
-                label: ""),
-            NavigationDestination(
-                icon: Icon(
-                  Icons.bookmarks_outlined,
-                  color: Color(0xffEC4899).withOpacity(0.4),
-                ),
-                label: ""),
-            NavigationDestination(
-                icon: Icon(
-                  Icons.shopping_cart_outlined,
-                  color: Color(0xffEC4899).withOpacity(0.4),
+                  onPressed: () {
+                    Get.to(BookmarkedOwnedWidget());
+                  },
                 ),
                 label: ""),
           ],
@@ -207,17 +227,57 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                               icon: Icon(Icons.arrow_back),
                               color: Color(0xffEC4899),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: CircleAvatar(
-                                  radius: 48,
-                                  backgroundColor: Color(0xffA855F7),
-                                  child: CircleAvatar(
-                                    radius: 48,
-                                    backgroundImage:
-                                        AssetImage('assets/images/avatar.jpg'),
+                            ElevatedButton(
+                              onPressed: selectImage,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors
+                                    .transparent, // Set the button background color to transparent
+                                elevation: 0, // Remove the button shadow
+                                padding: EdgeInsets
+                                    .zero, // Remove default button padding
+                                // Reduce the button's tap target size
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(32, 0, 0, 0),
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: FutureBuilder(
+                                    future: _profileFuture,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Center(
+                                            child:
+                                                CircularProgressIndicator()); // Show a loading indicator while waiting for data.
+                                      } else if (snapshot.hasError) {
+                                        return Center(
+                                          child:
+                                              Text('Error: ${snapshot.error}'),
+                                        ); // Handle the error.
+                                      } else if (!snapshot.hasData) {
+                                        return Center(
+                                          child: Text(
+                                              'No data available'), // Handle no data case.
+                                        );
+                                      } else {
+                                        return _image != null
+                                            ? CircleAvatar(
+                                                radius: 48,
+                                                backgroundImage:
+                                                    MemoryImage(_image!),
+                                              )
+                                            : CircleAvatar(
+                                                radius: 48,
+                                                backgroundColor:
+                                                    Color(0xffA855F7),
+                                                child: CircleAvatar(
+                                                  radius: 48,
+                                                  backgroundImage: NetworkImage(
+                                                      "${snapshot.data!.data!.profileResponse!.imageUrl}"),
+                                                ),
+                                              );
+                                      }
+                                    },
                                   ),
                                 ),
                               ),
@@ -240,37 +300,58 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                                         dobController.text == "$g" &&
                                         keyword1Controller.text == "$h")
                                     ? null
-                                    : () {
-                                        UpdateProfileModel model =
-                                            UpdateProfileModel(
-                                          gender: genderController.text,
-                                          dateOfBirth: g,
-                                          description: bioController.text,
-                                          firstName: firstNameController.text,
-                                          imageUrl: h,
-                                          lastName: lastNameController.text,
-                                          location: locationController.text,
-                                          phone: phoneController.text,
-                                          username: usernameController.text,
-                                          // wallet: l,
-                                          wallet: 120,
-                                        );
-                                        print(model);
-                                        updateProfileService
-                                            .updateProfile(model);
-                                        ;
+                                    : () async {
+                                        if (_image != null) {
+                                          var uuid = Uuid();
+                                          String imageToUpload =
+                                              await StoreData()
+                                                  .uploadImageToStorage(
+                                                      "${uuid.v4()}.png",
+                                                      _image!);
+                                          UpdateProfileModel model =
+                                              UpdateProfileModel(
+                                            gender: genderController.text,
+                                            dateOfBirth: dobController.text,
+                                            description: bioController.text,
+                                            firstName: firstNameController.text,
+                                            imageUrl: imageToUpload,
+                                            lastName: lastNameController.text,
+                                            location: locationController.text,
+                                            phone: phoneController.text,
+                                            // username: usernameController.text,
+                                            // wallet: l,
+                                            wallet: 120,
+                                          );
+                                          print(model.toJson());
+                                          updateProfileService
+                                              .updateProfile(model);
+                                        } else if (_image == null) {
+                                          var uuid = Uuid();
+                                          // String imageToUpload = await StoreData()
+                                          //     .uploadImageToStorage(
+                                          //         "${uuid.v4()}.png", _image!);
+                                          UpdateProfileModel model =
+                                              UpdateProfileModel(
+                                            gender: genderController.text,
+                                            dateOfBirth: dobController.text,
+                                            description: bioController.text,
+                                            firstName: firstNameController.text,
+                                            imageUrl: keyword1Controller.text,
+                                            lastName: lastNameController.text,
+                                            location: locationController.text,
+                                            phone: phoneController.text,
+                                            // username: usernameController.text,
+                                            // wallet: l,
+                                            wallet: 120,
+                                          );
+                                          print(model.toJson());
+                                          updateProfileService
+                                              .updateProfile(model);
+                                        }
                                       },
                               ),
                             ),
                           ],
-                        ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: ReusableText(
-                            text: "Change image ",
-                            style: appstyle(
-                                16, Color(0xffEC4899), FontWeight.w400),
-                          ),
                         ),
 
                         Padding(
@@ -580,24 +661,50 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                                     dobController.text == "$g" &&
                                     keyword1Controller.text == "$h")
                                 ? null
-                                : () {
-                                    UpdateProfileModel model =
-                                        UpdateProfileModel(
-                                      gender: genderController.text,
-                                      dateOfBirth: g,
-                                      description: bioController.text,
-                                      firstName: firstNameController.text,
-                                      imageUrl: h,
-                                      lastName: lastNameController.text,
-                                      location: locationController.text,
-                                      phone: phoneController.text,
-                                      username: usernameController.text,
-                                      // wallet: l,
-                                      wallet: 120,
-                                    );
-                                    print(model);
-                                    updateProfileService.updateProfile(model);
-                                    ;
+                                : () async {
+                                    if (_image != null) {
+                                      var uuid = Uuid();
+                                      String imageToUpload = await StoreData()
+                                          .uploadImageToStorage(
+                                              "${uuid.v4()}.png", _image!);
+                                      UpdateProfileModel model =
+                                          UpdateProfileModel(
+                                        gender: genderController.text,
+                                        dateOfBirth: dobController.text,
+                                        description: bioController.text,
+                                        firstName: firstNameController.text,
+                                        imageUrl: imageToUpload,
+                                        lastName: lastNameController.text,
+                                        location: locationController.text,
+                                        phone: phoneController.text,
+                                        // username: usernameController.text,
+                                        // wallet: l,
+                                        wallet: 120,
+                                      );
+                                      print(model.toJson());
+                                      updateProfileService.updateProfile(model);
+                                    } else if (_image == null) {
+                                      var uuid = Uuid();
+                                      // String imageToUpload = await StoreData()
+                                      //     .uploadImageToStorage(
+                                      //         "${uuid.v4()}.png", _image!);
+                                      UpdateProfileModel model =
+                                          UpdateProfileModel(
+                                        gender: genderController.text,
+                                        dateOfBirth: dobController.text,
+                                        description: bioController.text,
+                                        firstName: firstNameController.text,
+                                        imageUrl: keyword1Controller.text,
+                                        lastName: lastNameController.text,
+                                        location: locationController.text,
+                                        phone: phoneController.text,
+                                        // username: usernameController.text,
+                                        // wallet: l,
+                                        wallet: 120,
+                                      );
+                                      print(model.toJson());
+                                      updateProfileService.updateProfile(model);
+                                    }
                                   },
                           ),
                         ),

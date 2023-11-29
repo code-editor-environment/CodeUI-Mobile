@@ -6,7 +6,12 @@ import 'package:mobile/common/constants/custom_textfield_bio.dart';
 import 'package:mobile/components/reusable_text_for_long_text.dart';
 import 'package:mobile/services/helpers/profile_helper.dart';
 import 'package:mobile/view/widget/edit_profile.dart';
+import 'package:mobile/view/widget/save_favourite.dart';
 import 'package:mobile/view/widget/search_page.dart';
+import 'package:mobile/view/widget/view_others_approved_elements.dart';
+import 'package:mobile/view/widget/view_others_draft_elements.dart';
+import 'package:mobile/view/widget/view_others_rejected_elements.dart';
+import 'package:mobile/view/widget/view_pending_approved_elements.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/app_bar_logged_in_user.dart';
 import '../../components/reusable_text.dart';
@@ -15,6 +20,7 @@ import '../../common/constants/app_style.dart';
 import '../../common/constants/custom_textfield.dart';
 import '../../common/constants/custom_textfield_lock.dart';
 import '../../common/models/response/functionals/profile_res_model.dart';
+
 import 'home_page_user_logged_in.dart';
 
 class ProfileWidget extends StatefulWidget {
@@ -101,7 +107,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     icon: Icon(Icons.home_outlined),
                     color: Color(0xffEC4899).withOpacity(0.4),
                     onPressed: () {
-                      Get.to(CodeUIHomeScreenForLoggedInUser());
+                      Get.to(() => const CodeUIHomeScreenForLoggedInUser());
                     },
                   ),
                   label: ""),
@@ -115,22 +121,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   },
                 ),
                 label: ""),
+           
             NavigationDestination(
-                icon: Icon(
-                  MdiIcons.messageProcessing,
+                icon: IconButton(
+                  icon: Icon(Icons.bookmarks_outlined),
                   color: Color(0xffEC4899).withOpacity(0.4),
-                ),
-                label: ""),
-            NavigationDestination(
-                icon: Icon(
-                  Icons.bookmarks_outlined,
-                  color: Color(0xffEC4899).withOpacity(0.4),
-                ),
-                label: ""),
-            NavigationDestination(
-                icon: Icon(
-                  Icons.shopping_cart_outlined,
-                  color: Color(0xffEC4899).withOpacity(0.4),
+                  onPressed: () {
+                    Get.to(BookmarkedOwnedWidget());
+                  },
                 ),
                 label: ""),
           ],
@@ -253,7 +251,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
                           child: ReusableText(
-                            text: "${bioController.text}",
+                            text: "Bio:${bioController.text}",
                             style: appstyle(
                                 14, Color(0xffF6F0F0), FontWeight.w600),
                           ),
@@ -263,44 +261,37 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              Row(
-                                children: [
-                                  Icon(
-                                    Icons.location_city,
-                                    color: Color(0xffA855F7),
-                                  ),
-                                  ReusableText(
-                                    text: "${locationController.text}",
-                                    style: appstyle(
-                                        14, Color(0xffF6F0F0), FontWeight.w400),
-                                  ),
-                                ],
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(24, 0, 0, 0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.location_city,
+                                      color: Color(0xffA855F7),
+                                    ),
+                                    ReusableText(
+                                      text: "${locationController.text}",
+                                      style: appstyle(14, Color(0xffF6F0F0),
+                                          FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    MdiIcons.genderTransgender,
-                                    color: Color(0xffA855F7),
-                                  ),
-                                  ReusableText(
-                                    text: "${genderController.text}",
-                                    style: appstyle(
-                                        14, Color(0xffF6F0F0), FontWeight.w400),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    MdiIcons.github,
-                                    color: Colors.grey,
-                                  ),
-                                  ReusableText(
-                                    text: "${lastNameController.text}",
-                                    style: appstyle(
-                                        14, Color(0xffF6F0F0), FontWeight.w400),
-                                  ),
-                                ],
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(24, 0, 0, 0),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      MdiIcons.genderTransgender,
+                                      color: Color(0xffA855F7),
+                                    ),
+                                    ReusableText(
+                                      text: "${genderController.text}",
+                                      style: appstyle(14, Color(0xffF6F0F0),
+                                          FontWeight.w400),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -308,11 +299,12 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                         //end of basic profiles
                         //start of counting stuffs
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                          padding: const EdgeInsets.fromLTRB(6, 0, 0, 0),
                           child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Container(
-                                height: 120,
+                                height: 110,
                                 width: 110,
                                 child: Card(
                                   color: Color(0xff292929),
@@ -335,7 +327,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                         alignment: Alignment.bottomCenter,
                                         child: ReusableText(
                                           text: "Approved elements",
-                                          style: appstyle(16, Color(0xffF6F0F0),
+                                          style: appstyle(15, Color(0xffF6F0F0),
                                               FontWeight.w800),
                                         ),
                                       ),
@@ -344,7 +336,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                 ),
                               ),
                               Container(
-                                height: 120,
+                                height: 110,
                                 width: 110,
                                 child: Card(
                                   color: Color(0xff292929),
@@ -367,7 +359,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                         alignment: Alignment.bottomCenter,
                                         child: ReusableText(
                                           text: "Followers ",
-                                          style: appstyle(16, Color(0xffF6F0F0),
+                                          style: appstyle(15, Color(0xffF6F0F0),
                                               FontWeight.w800),
                                         ),
                                       ),
@@ -375,35 +367,42 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                   ),
                                 ),
                               ),
-                              Container(
-                                height: 120,
-                                width: 110,
-                                child: Card(
-                                  color: Color(0xff292929),
-                                  clipBehavior: Clip.antiAlias,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Align(
-                                        alignment: Alignment.topCenter,
-                                        child: ReusableText(
-                                          text:
-                                              "${snapshot.data!.data!.profileResponse?.totalFollowing}",
-                                          style: appstyle(24, Color(0xffF6F0F0),
-                                              FontWeight.w800),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                child: Container(
+                                  height: 110,
+                                  width: 110,
+                                  child: Card(
+                                    color: Color(0xff292929),
+                                    clipBehavior: Clip.antiAlias,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Stack(
+                                      children: [
+                                        Align(
+                                          alignment: Alignment.topCenter,
+                                          child: ReusableText(
+                                            text:
+                                                "${snapshot.data!.data!.profileResponse?.totalFollowing}",
+                                            style: appstyle(
+                                                24,
+                                                Color(0xffF6F0F0),
+                                                FontWeight.w800),
+                                          ),
                                         ),
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomCenter,
-                                        child: ReusableText(
-                                          text: "Followings",
-                                          style: appstyle(16, Color(0xffF6F0F0),
-                                              FontWeight.w800),
+                                        Align(
+                                          alignment: Alignment.bottomCenter,
+                                          child: ReusableText(
+                                            text: "Followings",
+                                            style: appstyle(
+                                                15,
+                                                Color(0xffF6F0F0),
+                                                FontWeight.w800),
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
@@ -411,119 +410,212 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                           ),
                         ),
                         // start elements owned
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 20, 0, 0),
-                          child: ReusableText(
-                            text: "${usernameController.text} 's elements",
-                            style: appstyle(
-                                16, Color(0xffF6F0F0), FontWeight.w800),
-                          ),
-                        ),
 
                         SizedBox(
                           height: 20,
                         ),
 
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  index = 0;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors
-                                    .transparent, // Set the button background color to transparent
-                                shadowColor: Color(
-                                    0xff292929), // Set the shadow color to grey
-                                elevation:
-                                    2, // Set the elevation to create a shadow effect
-                                padding: EdgeInsets.all(4),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: width * 0.8,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(12, 8, 0, 0),
+                                  child: ElevatedButton(
+                                    onPressed: () async {
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      await prefs.setString(
+                                          "accountIdToBeViewed",
+                                          usernameController.text!);
+
+                                      Get.to(() =>
+                                          const ViewOthersApprovedElements());
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 8),
+                                      backgroundColor: Colors.grey,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Icon(MdiIcons.check),
+                                        Container(
+                                          width: width * 0.55,
+                                          child: Text(
+                                            "View your approved element ",
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(kLight.value),
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
-                              child: Icon(MdiIcons.check),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  index = 1;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors
-                                    .transparent, // Set the button background color to transparent
-                                shadowColor: Color(
-                                    0xff292929), // Set the shadow color to grey
-                                elevation:
-                                    2, // Set the elevation to create a shadow effect
-                                padding: EdgeInsets.all(4),
+                              Container(
+                                width: width * 0.8,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(12, 8, 0, 0),
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        SharedPreferences prefs =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        await prefs.setString(
+                                            "accountIdToBeViewed",
+                                            usernameController.text!);
+                                        Get.to(() =>
+                                            const ViewOthersPendingElements());
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 8),
+                                        backgroundColor: Colors.grey,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            MdiIcons.clockTimeThreeOutline,
+                                            color: Colors.amber,
+                                          ),
+                                          Container(
+                                            width: width * 0.55,
+                                            child: Text(
+                                              "View your pending element ",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Color(kLight.value),
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                              child: Icon(
-                                MdiIcons.clockTimeThreeOutline,
-                                color: Colors.amber,
+                              Container(
+                                width: width * 0.8,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(12, 8, 0, 0),
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        SharedPreferences prefs =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        await prefs.setString(
+                                            "accountIdToBeViewed",
+                                            usernameController.text!);
+                                        Get.to(() =>
+                                            const ViewOthersRejectedElements());
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 8),
+                                        backgroundColor: Colors.grey,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.close,
+                                            color: Colors.red,
+                                          ),
+                                          Container(
+                                            width: width * 0.55,
+                                            child: Text(
+                                              "View your rejected element ",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Color(kLight.value),
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  index = 2;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors
-                                    .transparent, // Set the button background color to transparent
-                                shadowColor: Color(
-                                    0xff292929), // Set the shadow color to grey
-                                elevation:
-                                    2, // Set the elevation to create a shadow effect
-                                padding: EdgeInsets.all(4),
+                              Container(
+                                width: width * 0.8,
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(12, 8, 0, 0),
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        SharedPreferences prefs =
+                                            await SharedPreferences
+                                                .getInstance();
+                                        await prefs.setString(
+                                            "accountIdToBeViewed",
+                                            usernameController.text!);
+                                        Get.to(() =>
+                                            const ViewOthersDraftElements());
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 8),
+                                        backgroundColor: Colors.grey,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            MdiIcons.folder,
+                                            color: Colors.blue,
+                                          ),
+                                          Container(
+                                            width: width * 0.55,
+                                            child: Text(
+                                              "View your draft element ",
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Color(kLight.value),
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                              child: Icon(
-                                Icons.close,
-                                color: Colors.red,
-                              ),
-                            ),
-                            ElevatedButton(
-                              onPressed: () {
-                                setState(() {
-                                  index = 3;
-                                });
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors
-                                    .transparent, // Set the button background color to transparent
-                                shadowColor: Color(
-                                    0xff292929), // Set the shadow color to grey
-                                elevation:
-                                    2, // Set the elevation to create a shadow effect
-                                padding: EdgeInsets.all(4),
-                              ),
-                              child: Icon(
-                                MdiIcons.folder,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ],
-                        ), //indexedstack in here
-                        IndexedStack(
-                          children: [
-                            Center(
-                                child: ReusableText(
-                                    text: "No element here yet!",
-                                    style: appstyle(14, Color(0xfff5f0f0),
-                                        FontWeight.w500))),
-                            Center(
-                              child: Image.asset("assets/flags/ki.png"),
-                            ),
-                            Center(
-                              child: Image.asset("assets/flags/vn.png"),
-                            ),
-                            Center(
-                              child: Image.asset("assets/flags/zw.png"),
-                            ),
-                          ],
-                          index: index,
+                            ],
+                          ),
                         ),
                       ]),
                 ),

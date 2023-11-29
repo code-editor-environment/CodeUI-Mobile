@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/model_validation.dart';
 import 'package:mobile/view/widget/admin_home_widget.dart';
-import 'package:mobile/view/widget/chat_front_page.dart';
+
 import 'package:mobile/view/widget/responsive_chat_page.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
@@ -38,7 +38,7 @@ class MyApp extends StatelessWidget {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
               useMaterial3: true,
             ),
-            home: const MyHomePage(),
+            home: const FakeSplashWidget(),
           );
         });
   }

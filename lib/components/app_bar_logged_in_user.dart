@@ -1,12 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mobile/view/widget/login_page.dart';
 import 'package:mobile/view/widget/membership_widget.dart';
 import 'package:mobile/view/widget/profile_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common/models/response/functionals/profile_res_model.dart';
 import '../services/helpers/profile_helper.dart';
+import '../view/widget/home_page_guest.dart';
 import '../view/widget/home_page_user_logged_in.dart';
 
 class CustomLoggedInUserAppBar extends StatefulWidget
@@ -78,7 +81,7 @@ class _CustomLoggedInUserAppBarState extends State<CustomLoggedInUserAppBar> {
                         ),
                       ),
                       PopupMenuButton<String>(
-                        onSelected: (value) {
+                        onSelected: (value) async {
                           // handle menu item selection here
                           if (value == title0) {
                             //get to profile page
@@ -91,9 +94,26 @@ class _CustomLoggedInUserAppBarState extends State<CustomLoggedInUserAppBar> {
                             //get to membership page4
                             Get.to(() => const MembershipWidget());
                           } else if (value == title3) {
-                            FirebaseAuth.instance.signOut();
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+
+                            prefs.remove("accessToken");
+                            var token = prefs.getString("accessToken");
+                            print(token);
+                            final GoogleSignIn googleSignIn = GoogleSignIn();
+                            final FirebaseAuth auth = FirebaseAuth.instance;
+                            await googleSignIn
+                                .signOut(); // Sign out from Google
+                            await auth.signOut(); // Sign out from Firebase
+
+                            // if (token == null) {
+                            //   Get.to(() => const CodeUIHomeScreenForGuest());
+                            // } else {
+                            //   Get.to(() => CodeUIHomeScreenForLoggedInUser());
+                            // }
+                            // FirebaseAuth.instance.signOut();
                             print(FirebaseAuth.instance.currentUser);
-                            Get.off(() => const LoginWidget());
+                            Get.off(() => const CodeUIHomeScreenForGuest());
                           }
                         },
                         itemBuilder: (context) => <PopupMenuEntry<String>>[
@@ -115,15 +135,15 @@ class _CustomLoggedInUserAppBarState extends State<CustomLoggedInUserAppBar> {
                               ],
                             ),
                           ),
-                          PopupMenuItem<String>(
-                            value: title2,
-                            child: Row(
-                              children: [
-                                Icon(Icons.card_membership),
-                                Text(title2),
-                              ],
-                            ),
-                          ),
+                          // PopupMenuItem<String>(
+                          //   value: title2,
+                          //   child: Row(
+                          //     children: [
+                          //       Icon(Icons.card_membership),
+                          //       Text(title2),
+                          //     ],
+                          //   ),
+                          // ),
                           PopupMenuItem<String>(
                             value: title3,
                             child: Row(
@@ -144,7 +164,7 @@ class _CustomLoggedInUserAppBarState extends State<CustomLoggedInUserAppBar> {
                                       CircularProgressIndicator()); // Show a loading indicator while waiting for data.
                             } else if (snapshot.hasError) {
                               return Center(
-                                child: Text('Error: ${snapshot.error}'),
+                                child: Icon(Icons.close),
                               ); // Handle the error.
                             } else if (!snapshot.hasData) {
                               return Center(

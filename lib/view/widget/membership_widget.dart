@@ -5,11 +5,13 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/components/app_bar_guest.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mobile/view/widget/login_page.dart';
+import 'package:mobile/view/widget/payment_widget.dart';
 import 'package:mobile/view/widget/profile_page.dart';
 import 'package:mobile/view/widget/responsive_chat_page.dart';
 import 'package:mobile/view/widget/search_page.dart';
 import 'package:mobile/view/widget/view_specific_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../common/models/response/functionals/create_sandbox_payment_test.dart';
 import '../../components/app_bar_logged_in_user.dart';
 import '../../components/reusable_text.dart';
 import '../../components/reusable_text_long.dart';
@@ -18,6 +20,7 @@ import '../../common/constants/app_style.dart';
 import '../../common/models/response/functionals/profile_res_model.dart';
 import '../../common/models/response/functionals/temp_creator_model.dart';
 import '../../services/helpers/creator_helper.dart';
+import '../../services/helpers/payment_helper.dart';
 import '../../services/helpers/profile_helper.dart';
 
 class MembershipWidget extends StatefulWidget {
@@ -31,67 +34,59 @@ class _MembershipWidgetState extends State<MembershipWidget>
     with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    PaymentService paymentService = PaymentService();
     TabController _tabController = TabController(length: 3, vsync: this);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
       //  extendBodyBehindAppBar: true,
       appBar: CustomLoggedInUserAppBar(),
-      bottomNavigationBar: NavigationBarTheme(
-        data: NavigationBarThemeData(indicatorColor: Colors.black),
-        child: NavigationBar(
-          height: 50,
-          backgroundColor: Color(0xff181818),
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-          indicatorColor: Color(0xff181818),
-          selectedIndex: 0,
-          indicatorShape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          // onDestinationSelected: (index) => setState(() => this.index = index),
-          destinations: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: NavigationDestination(
-                  icon: Icon(
-                    Icons.home_outlined,
-                    color: Color(0xffEC4899).withOpacity(0.4),
-                  ),
-                  label: ""),
-            ),
-            NavigationDestination(
-                icon: IconButton(
-                  icon: Icon(Icons.search),
-                  color: Color(0xffEC4899).withOpacity(0.4),
-                  onPressed: () {
-                    Get.to(SearchWidget());
-                  },
-                ),
-                label: ""),
-            NavigationDestination(
-                icon: Icon(
-                  MdiIcons.messageProcessing,
-                  color: Color(0xffEC4899).withOpacity(0.4),
-                ),
-                label: ""),
-            NavigationDestination(
-                icon: Icon(
-                  Icons.bookmarks_outlined,
-                  color: Color(0xffEC4899).withOpacity(0.4),
-                ),
-                label: ""),
-            NavigationDestination(
-                icon: IconButton(
-                  icon: Icon(Icons.shopping_cart_outlined),
-                  color: Color(0xffEC4899).withOpacity(0.4),
-                  onPressed: () {
-                    FirebaseAuth.instance.signOut();
-                    Get.off(() => const LoginWidget());
-                  },
-                ),
-                label: ""),
-          ],
-        ),
-      ),
+      // bottomNavigationBar: NavigationBarTheme(
+      //   data: NavigationBarThemeData(indicatorColor: Colors.black),
+      //   child: NavigationBar(
+      //     height: 50,
+      //     backgroundColor: Color(0xff181818),
+      //     labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+      //     indicatorColor: Color(0xff181818),
+      //     selectedIndex: 0,
+      //     indicatorShape:
+      //         RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      //     // onDestinationSelected: (index) => setState(() => this.index = index),
+      //     destinations: [
+      //       Padding(
+      //         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+      //         child: NavigationDestination(
+      //             icon: Icon(
+      //               Icons.home_outlined,
+      //               color: Color(0xffEC4899).withOpacity(0.4),
+      //             ),
+      //             label: ""),
+      //       ),
+      //       NavigationDestination(
+      //           icon: IconButton(
+      //             icon: Icon(Icons.search),
+      //             color: Color(0xffEC4899).withOpacity(0.4),
+      //             onPressed: () {
+      //               Get.to(SearchWidget());
+      //             },
+      //           ),
+      //           label: ""),
+      //       NavigationDestination(
+      //           icon: Icon(
+      //             MdiIcons.messageProcessing,
+      //             color: Color(0xffEC4899).withOpacity(0.4),
+      //           ),
+      //           label: ""),
+      //       NavigationDestination(
+      //           icon: Icon(
+      //             Icons.bookmarks_outlined,
+      //             color: Color(0xffEC4899).withOpacity(0.4),
+      //           ),
+      //           label: ""),
+
+      //     ],
+      //   ),
+      // ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
@@ -104,6 +99,16 @@ class _MembershipWidgetState extends State<MembershipWidget>
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: IconButton(
+                      onPressed: () {
+                        Get.back();
+                      },
+                      icon: Icon(Icons.arrow_back),
+                      color: Color(0xffEC4899),
+                    ),
+                  ),
                   ReusableText(
                     text: "Unleash your creativity to Soar",
                     style: appstyle(18, Color(0xfff5f0f0), FontWeight.w700),
@@ -271,7 +276,24 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                   padding:
                                       const EdgeInsets.fromLTRB(12, 12, 12, 0),
                                   child: ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      CreateSandBoxPaymentTest model =
+                                          CreateSandBoxPaymentTest(
+                                              money: 100000,
+                                              orderDescription: "string",
+                                              orderType: "string");
+                                      print(model);
+                                      paymentService
+                                          .createSandboxPayment(model);
+                                      dynamic response = await paymentService
+                                          .createSandboxPayment(model);
+                                      print(response);
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      var url = prefs.getString("urltoPay");
+                                      Get.to(() => PaymentWidget(url: url!));
+                                      // var urlToPay = response[];
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8, vertical: 8),
@@ -300,7 +322,23 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                   padding:
                                       const EdgeInsets.fromLTRB(12, 12, 12, 0),
                                   child: ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      CreateSandBoxPaymentTest model =
+                                          CreateSandBoxPaymentTest(
+                                              money: 100000,
+                                              orderDescription: "string",
+                                              orderType: "string");
+                                      print(model);
+                                      paymentService
+                                          .createSandboxPayment(model);
+                                      dynamic response = await paymentService
+                                          .createSandboxPayment(model);
+                                      print(response);
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      var url = prefs.getString("urltoPay");
+                                      Get.to(() => PaymentWidget(url: url!));
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8, vertical: 8),
@@ -414,7 +452,23 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                   padding:
                                       const EdgeInsets.fromLTRB(12, 12, 12, 0),
                                   child: ElevatedButton(
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      CreateSandBoxPaymentTest model =
+                                          CreateSandBoxPaymentTest(
+                                              money: 100000,
+                                              orderDescription: "string",
+                                              orderType: "string");
+                                      print(model);
+                                      paymentService
+                                          .createSandboxPayment(model);
+                                      dynamic response = await paymentService
+                                          .createSandboxPayment(model);
+                                      print(response);
+                                      SharedPreferences prefs =
+                                          await SharedPreferences.getInstance();
+                                      var url = prefs.getString("urltoPay");
+                                      Get.to(() => PaymentWidget(url: url!));
+                                    },
                                     style: ElevatedButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8, vertical: 8),

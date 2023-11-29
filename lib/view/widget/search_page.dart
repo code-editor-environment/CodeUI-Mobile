@@ -4,6 +4,9 @@ import 'package:mobile/components/app_bar_guest.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mobile/view/widget/save_favourite.dart';
 import 'package:mobile/view/widget/search_page.dart';
+import 'package:mobile/view/widget/user_get_approved_elements_by_category_filter.dart';
+import 'package:mobile/view/widget/user_get_approved_elements_by_username_filter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/app_bar_logged_in_user.dart';
 import '../../components/reusable_text.dart';
 import '../../common/constants/app_constants.dart';
@@ -11,6 +14,8 @@ import '../../common/constants/app_style.dart';
 import '../../common/constants/custom_textfield.dart';
 import 'elements_detail.dart';
 import 'home_page_user_logged_in.dart';
+import 'moderator_get_approved_elements_by_category_filter.dart';
+import 'moderator_get_approved_elements_by_username_filter.dart';
 
 class SearchWidget extends StatefulWidget {
   const SearchWidget({super.key});
@@ -21,8 +26,8 @@ class SearchWidget extends StatefulWidget {
 
 class _SearchWidgetState extends State<SearchWidget> {
   var sampleItems = [
-    "Search for elements",
-    "Search for creators",
+    "Search all approved elements by the creators name",
+    "Search by approved category name",
   ];
   var item = [];
   var searchHistory = [];
@@ -75,31 +80,19 @@ class _SearchWidgetState extends State<SearchWidget> {
           selectedIndex: 1,
           // onDestinationSelected: (index) => setState(() => this.index = index),
           destinations: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: NavigationDestination(
-                  icon: IconButton(
-                    icon: Icon(Icons.home_outlined),
-                    color: Color(0xffEC4899).withOpacity(0.4),
-                    onPressed: () {
-                      Get.to(CodeUIHomeScreenForLoggedInUser());
-                    },
-                  ),
-                  label: ""),
-            ),
+            NavigationDestination(
+                icon: Icon(
+                  Icons.home_outlined,
+                  color: Color(0xffEC4899).withOpacity(0.4),
+                ),
+                label: ""),
             NavigationDestination(
                 icon: IconButton(
                   icon: Icon(Icons.search),
                   color: Color(0xffEC4899),
                   onPressed: () {
-                    // Get.to(SearchWidget());
+                    Get.to(SearchWidget());
                   },
-                ),
-                label: ""),
-            NavigationDestination(
-                icon: Icon(
-                  MdiIcons.messageProcessing,
-                  color: Color(0xffEC4899).withOpacity(0.4),
                 ),
                 label: ""),
             NavigationDestination(
@@ -109,12 +102,6 @@ class _SearchWidgetState extends State<SearchWidget> {
                   onPressed: () {
                     Get.to(BookmarkedOwnedWidget());
                   },
-                ),
-                label: ""),
-            NavigationDestination(
-                icon: Icon(
-                  Icons.shopping_cart_outlined,
-                  color: Color(0xffEC4899).withOpacity(0.4),
                 ),
                 label: ""),
           ],
@@ -171,19 +158,43 @@ class _SearchWidgetState extends State<SearchWidget> {
                     // }
 
                     return GestureDetector(
-                      onTap: () {
-                        if (item == "Search for elements") {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => DetailedWidget()),
-                            // Replace DetailedWidget() with your actual element pages route.
-                          );
-                        } else if (item == "Search for creators") {
+                      onTap: () async {
+                        if (item ==
+                            "Search all approved elements by the creators name") {
+                          if (controller.text == '') {
+                          } else {
+                            var queryToPass = controller.text;
+                            print(queryToPass);
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            await prefs.setString(
+                                "usernamesElementToFilter", queryToPass);
+                            Get.to(() =>
+                                const UserGetApprovedElementsListViewByFiltering());
+                          }
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //       builder: (context) => DetailedWidget()),
+                          //   // Replace DetailedWidget() with your actual element pages route.
+                          // );
+                        } else if (item == "Search by approved category name") {
                           // Navigator.push(
                           //   context,
                           //   MaterialPageRoute(builder: (context) => CreatorPages()), // Replace CreatorPages() with your actual creator pages route.
                           // );
+
+                          if (controller.text == '') {
+                          } else {
+                            var categoriesNameToFilter = controller.text;
+                            print(categoriesNameToFilter);
+                            SharedPreferences prefs =
+                                await SharedPreferences.getInstance();
+                            await prefs.setString("categoriesNameToFilter",
+                                categoriesNameToFilter);
+                            Get.to(() =>
+                                const UserApprovedElementsListViewByCategoryFiltering());
+                          }
                         }
                       },
                       child: ListTile(

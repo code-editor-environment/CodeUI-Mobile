@@ -75,12 +75,14 @@ class Data {
 }
 
 class Account1 {
+  String? id;
   String? username;
   Profile1? profile;
 
-  Account1({this.username, this.profile});
+  Account1({this.id, this.username, this.profile});
 
   Account1.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
     username = json["username"];
     profile =
         json["profile"] == null ? null : Profile1.fromJson(json["profile"]);
@@ -88,6 +90,7 @@ class Account1 {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["id"] = id;
     _data["username"] = username;
     if (profile != null) {
       _data["profile"] = profile?.toJson();
@@ -149,12 +152,14 @@ class InverseRootComment {
 }
 
 class Account {
+  String? id;
   String? username;
   Profile? profile;
 
-  Account({this.username, this.profile});
+  Account({this.id, this.username, this.profile});
 
   Account.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
     username = json["username"];
     profile =
         json["profile"] == null ? null : Profile.fromJson(json["profile"]);
@@ -162,6 +167,7 @@ class Account {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> _data = <String, dynamic>{};
+    _data["id"] = id;
     _data["username"] = username;
     if (profile != null) {
       _data["profile"] = profile?.toJson();

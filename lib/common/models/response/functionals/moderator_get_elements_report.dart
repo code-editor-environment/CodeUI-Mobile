@@ -29,6 +29,7 @@ class ModeratorGetElementsReport {
 }
 
 class Data {
+    int? id;
     String? reportContent;
     String? reason;
     String? type;
@@ -37,9 +38,10 @@ class Data {
     String? timestamp;
     List<ReportImages>? reportImages;
 
-    Data({this.reportContent, this.reason, this.type, this.status, this.response, this.timestamp, this.reportImages});
+    Data({this.id, this.reportContent, this.reason, this.type, this.status, this.response, this.timestamp, this.reportImages});
 
     Data.fromJson(Map<String, dynamic> json) {
+        id = json["id"];
         reportContent = json["reportContent"];
         reason = json["reason"];
         type = json["type"];
@@ -51,6 +53,7 @@ class Data {
 
     Map<String, dynamic> toJson() {
         final Map<String, dynamic> _data = <String, dynamic>{};
+        _data["id"] = id;
         _data["reportContent"] = reportContent;
         _data["reason"] = reason;
         _data["type"] = type;

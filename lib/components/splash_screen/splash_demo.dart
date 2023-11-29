@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:mobile/view/widget/home_page_user_logged_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../view/widget/home_page_guest.dart';
 
 class FakeSplashWidget extends StatelessWidget {
@@ -25,8 +26,16 @@ class FakeSplashWidget extends StatelessWidget {
                 padding: EdgeInsets.zero, // Remove default button padding
                 // Reduce the button's tap target size
               ),
-              onPressed: () {
-                Get.to(CodeUIHomeScreenForGuest());
+              onPressed: () async {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                var token = prefs.getString("accessToken");
+                print(token);
+                if (token == null) {
+                  Get.off(() => const CodeUIHomeScreenForGuest());
+                } else {
+                  Get.off(() => CodeUIHomeScreenForLoggedInUser());
+                }
+                // Get.to(CodeUIHomeScreenForGuest());
               },
               child: Image.asset(
                 "assets/images/logo.png",

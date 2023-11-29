@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/models/response/functionals/moderator_get_approved_elements.dart';
 import '../../common/models/response/functionals/moderator_get_elements_report.dart';
 import '../../common/models/response/functionals/moderator_get_pending.dart';
+import '../../common/models/response/functionals/moderator_get_pending_reports.dart';
 import '../../common/models/response/functionals/save_favourite_elements_by_current_logged_in_user.dart';
 import '../../components/app_bar_logged_in_user.dart';
 
@@ -22,6 +23,7 @@ import 'Moderator_element_details_approved_block.dart';
 import 'Moderator_element_details_approved_pending.dart';
 import 'elements_detail.dart';
 import 'home_page_user_logged_in.dart';
+import 'moderator_get_pending_reports_in_elements_report.dart';
 
 class ReportedElementsListView extends StatefulWidget {
   const ReportedElementsListView({super.key});
@@ -32,10 +34,11 @@ class ReportedElementsListView extends StatefulWidget {
 }
 
 class _ReportedElementsListViewState extends State<ReportedElementsListView> {
-  late Future<ModeratorGetElementsReport> _profileFuture;
-  Future<ModeratorGetElementsReport> _getData() async {
+  late Future<ModeratorGetPendingElementReports> _profileFuture;
+  Future<ModeratorGetPendingElementReports> _getData() async {
     try {
-      final items = await GetElementService().moderatorGetElementsReport();
+      final items =
+          await GetElementService().moderatorGetPendingElementsReport();
       return items;
     } catch (e) {
       rethrow;
@@ -67,39 +70,6 @@ class _ReportedElementsListViewState extends State<ReportedElementsListView> {
     return Scaffold(
         //  extendBodyBehindAppBar: true,
         appBar: ModeratorAppBarWidget(),
-        bottomNavigationBar: NavigationBarTheme(
-          data: NavigationBarThemeData(indicatorColor: Colors.black),
-          child: NavigationBar(
-            height: 50,
-            backgroundColor: Color(0xff181818),
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-            indicatorColor: Color(0xff292929),
-            selectedIndex: 0,
-            indicatorShape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            // onDestinationSelected: (index) => setState(() => this.index = index),
-            destinations: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: NavigationDestination(
-                    icon: Icon(
-                      Icons.home_outlined,
-                      color: Color(0xffEC4899).withOpacity(0.4),
-                    ),
-                    label: ""),
-              ),
-              NavigationDestination(
-                  icon: IconButton(
-                    icon: Icon(Icons.person_pin),
-                    color: Color(0xffEC4899).withOpacity(0.4),
-                    onPressed: () {
-                      // Get.to(ProfileWidget());
-                    },
-                  ),
-                  label: ""),
-            ],
-          ),
-        ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Container(
@@ -150,41 +120,47 @@ class _ReportedElementsListViewState extends State<ReportedElementsListView> {
                           return Container(
                             child: SingleChildScrollView(
                               scrollDirection: Axis.vertical,
-                              child: Column(children: [
-                                //item1
-                                Row(
+                              child: Column(
                                   mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(12.0),
-                                      child: Image.network(
-                                        "${snapshot.data!.data![index].reportImages} ",
-                                        width: 120,
-                                        height: 100,
-                                        errorBuilder:
-                                            (context, error, stackTrace) {
-                                          // Handle the error and return a placeholder image or error message widget
-                                          return Icon(
-                                            Icons.error,
-                                            color: Colors.red,
-                                            size: 48.0,
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                    // trên là cái hình elements
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                    //item1
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: [
-                                        ReusableText(
-                                            text:
-                                                "${snapshot.data!.data![index].reportContent} ",
-                                            style: appstyle(
-                                                15,
-                                                Color(0xffEC4899),
-                                                FontWeight.w600)),
+                                        Padding(
+                                          padding: const EdgeInsets.all(12.0),
+                                          child: Image.asset(
+                                            "assets/images/Mask_group.png",
+                                            width: 96,
+                                            height: 84,
+                                            errorBuilder:
+                                                (context, error, stackTrace) {
+                                              // Handle the error and return a placeholder image or error message widget
+                                              return Icon(
+                                                Icons.error,
+                                                color: Colors.red,
+                                                size: 48.0,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                        // trên là cái hình elements
                                         ElevatedButton(
+                                          onPressed: () async {
+                                            var idElementToSeeReport = snapshot
+                                                .data!.data![index].elementId.toString();
+                                            print(idElementToSeeReport);
+                                            SharedPreferences prefs =
+                                                await SharedPreferences
+                                                    .getInstance();
+                                            await prefs.setString(
+                                                "idElementToSeeReport",
+                                                idElementToSeeReport!);
+                                            Get.to(() =>
+                                                const PendingReportedElementsListView());
+                                          },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors
                                                 .transparent, // Set the button background color to transparent
@@ -194,49 +170,43 @@ class _ReportedElementsListViewState extends State<ReportedElementsListView> {
                                                 .zero, // Remove default button padding
                                             // Reduce the button's tap target size
                                           ),
-                                          onPressed: () async {
-                                            print(index);
-                                            // var idForElements2 =
-                                            //     snapshot.data!.data![index].id;
-                                            // print(idForElements2);
-                                            // print(snapshot.data!.data![index]
-                                            //     .toJson());
-                                            // SharedPreferences prefs =
-                                            //     await SharedPreferences
-                                            //         .getInstance();
-                                            // await prefs.setInt("idForElements",
-                                            //     idForElements2!);
-                                            // Get.to(() =>
-                                            //     const ModeratorApprovedElementsDetail());
-                                          },
-                                          child: ReusableText(
-                                              text:
-                                                  "${snapshot.data!.data![index].reason} ",
-                                              style: appstyle(
-                                                  15,
-                                                  Color(0xffF6F0F0),
-                                                  FontWeight.w600)),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              ReusableText(
+                                                  text:
+                                                      "Element Id:${snapshot.data!.data![index].elementId} ",
+                                                  style: appstyle(
+                                                      15,
+                                                      Color(0xffEC4899),
+                                                      FontWeight.w600)),
+                                              Container(
+                                                width: width * 0.6,
+                                                child: ReusableText(
+                                                    text:
+                                                        "Owner:${snapshot.data!.data![index].userName} ",
+                                                    style: appstyle(
+                                                        15,
+                                                        Color(0xffF6F0F0),
+                                                        FontWeight.w600)),
+                                              ),
+                                              ReusableText(
+                                                  text:
+                                                      "Total reports:${snapshot.data!.data![index].totalReport} ",
+                                                  style: appstyle(
+                                                      15,
+                                                      Color(0xffA855F7),
+                                                      FontWeight.w600)),
+                                            ],
+                                          ),
                                         ),
-                                        ReusableText(
-                                            text:
-                                                "${snapshot.data!.data![index].timestamp} ",
-                                            style: appstyle(
-                                                15,
-                                                Color(0xffA855F7),
-                                                FontWeight.w600)),
                                       ],
                                     ),
-                                    ReusableText(
-                                        text:
-                                            "${snapshot.data!.data![index].status} ",
-                                        style: appstyle(15, Color(0xffA855F7),
-                                            FontWeight.w600)),
-                                  ],
-                                ),
-                                //item1 ending
+                                    //item1 ending
 
-                                //item1 ending
-                              ]),
+                                    //item1 ending
+                                  ]),
                             ),
                           );
                         },

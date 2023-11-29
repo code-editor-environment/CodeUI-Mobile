@@ -41,7 +41,7 @@ class ChatAppBar extends StatelessWidget implements PreferredSizeWidget {
                       children: [
                         Ink.image(
                           image: NetworkImage(
-                              "https://scontent.fsgn5-15.fna.fbcdn.net/v/t1.6435-9/149013484_190222949125848_8721369720258518493_n.jpg?_nc_cat=111&ccb=1-7&_nc_sid=7a1959&_nc_ohc=N32UJLQwOdoAX94R7wG&_nc_ht=scontent.fsgn5-15.fna&_nc_e2o=f&oh=00_AfBLjixnY7hmvy7hpaVx_4AuzB7z2MJ32NxxT6JNV1gw-w&oe=6554FBF9"),
+                              "https://cdn1.iconfinder.com/data/icons/google-s-logo/150/Google_Icons-09-512.png"),
                           height: 64,
                           width: 64,
                           fit: BoxFit.cover,

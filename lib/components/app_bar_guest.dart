@@ -39,7 +39,7 @@ class CustomGuestAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      Get.to(LoginWidget());
+                      Get.off(() => const LoginWidget());
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(

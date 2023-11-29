@@ -9,6 +9,7 @@ import '../../common/constants/app_constants.dart';
 import '../../common/models/request/functional/update_profile_model.dart';
 import '../../common/models/response/functionals/moderator_get_accounts_report.dart';
 import '../../common/models/response/functionals/temp_creator_model.dart';
+import '../../common/models/response/functionals/get_top_creator.dart';
 
 var client = https.Client();
 
@@ -33,10 +34,32 @@ class GetAllCreatorService {
       throw Exception('Failed to load ');
     }
   }
- Future<ModeratorGetAccountsReport> moderatorGetAccountsReport() async {
+
+  Future<GetTopCreator> getAll1() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("accessToken");
-   
+    var accountId = prefs.getString("accountId");
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+    };
+    var Client = https.Client();
+
+    var uri = Uri.parse(
+        "https://dev.codeui-api.io.vn/api/account/topAccounts?PageSize=10");
+    var response = await Client.get(uri, headers: requestHeaders);
+    if (response.statusCode == 200) {
+      var json = response.body;
+      print(json);
+      return GetTopCreator.fromJson(jsonDecode(json));
+    } else {
+      throw Exception('Failed to load ');
+    }
+  }
+
+  Future<ModeratorGetAccountsReport> moderatorGetAccountsReport() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("accessToken");
+
     Map<String, String> requestHeaders = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token'
@@ -48,13 +71,14 @@ class GetAllCreatorService {
     var response = await Client.get(uri, headers: requestHeaders);
     if (response.statusCode == 200) {
       var json = response.body;
-     
+
       print(json);
       return ModeratorGetAccountsReport.fromJson(jsonDecode(json));
     } else {
       throw Exception('Failed to load ');
     }
   }
+
   Future followCreator() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var token = prefs.getString("accessToken");

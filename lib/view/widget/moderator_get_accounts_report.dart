@@ -69,45 +69,22 @@ class _ReportedAccountsListViewState extends State<ReportedAccountsListView> {
     return Scaffold(
         //  extendBodyBehindAppBar: true,
         appBar: ModeratorAppBarWidget(),
-        bottomNavigationBar: NavigationBarTheme(
-          data: NavigationBarThemeData(indicatorColor: Colors.black),
-          child: NavigationBar(
-            height: 50,
-            backgroundColor: Color(0xff181818),
-            labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-            indicatorColor: Color(0xff292929),
-            selectedIndex: 0,
-            indicatorShape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            // onDestinationSelected: (index) => setState(() => this.index = index),
-            destinations: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                child: NavigationDestination(
-                    icon: Icon(
-                      Icons.home_outlined,
-                      color: Color(0xffEC4899).withOpacity(0.4),
-                    ),
-                    label: ""),
-              ),
-              NavigationDestination(
-                  icon: IconButton(
-                    icon: Icon(Icons.person_pin),
-                    color: Color(0xffEC4899).withOpacity(0.4),
-                    onPressed: () {
-                      // Get.to(ProfileWidget());
-                    },
-                  ),
-                  label: ""),
-            ],
-          ),
-        ),
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
           child: Container(
             height: height,
             color: Colors.black,
-            child: Column(children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              IconButton(
+                onPressed: () {
+                  Get.back();
+                },
+                icon: Icon(
+                  MdiIcons.arrowLeft,
+                  color: Color(0xffEC4899),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
                 child: Row(
@@ -179,13 +156,16 @@ class _ReportedAccountsListViewState extends State<ReportedAccountsListView> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        ReusableText(
-                                            text:
-                                                "${snapshot.data!.data![index].reportContent} ",
-                                            style: appstyle(
-                                                15,
-                                                Color(0xffEC4899),
-                                                FontWeight.w600)),
+                                        Container(
+                                          width: width * 0.6,
+                                          child: ReusableText(
+                                              text:
+                                                  "${snapshot.data!.data![index].reportContent} ",
+                                              style: appstyle(
+                                                  15,
+                                                  Color(0xffEC4899),
+                                                  FontWeight.w600)),
+                                        ),
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors

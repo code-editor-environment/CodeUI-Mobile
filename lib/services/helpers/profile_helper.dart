@@ -87,14 +87,16 @@ class UpdateProfileService {
         duration: Duration(seconds: 4),
       );
       print("hehe");
-      Get.to(() => const ProfileWidget());
+      Get.off(() => const ProfileWidget());
 
       return true;
     } else {
-      Get.snackbar("Sign failed", "Please check your credentials",
+      Get.snackbar("Failed", "Error occurred",
           colorText: Color(kLight.value),
           backgroundColor: Colors.red,
           icon: Icon(Icons.add_alert));
+      Get.off(() => const ProfileWidget());
+
       return false;
     }
   }
