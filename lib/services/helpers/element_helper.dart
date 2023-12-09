@@ -1,3 +1,4 @@
+import 'package:mobile/view/widget/view_owned_draft_elements.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
@@ -441,6 +442,43 @@ class GetElementService {
       return true;
     } else {
       Get.snackbar("Sign failed", "Please check your credentials",
+          colorText: Color(kLight.value),
+          backgroundColor: Colors.red,
+          icon: Icon(Icons.add_alert));
+      return false;
+    }
+  }
+
+  Future<bool> deleteElement(int Id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("accessToken");
+    var accountId = prefs.getString("accountId");
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var url = Uri.parse(
+        "https://dev.codeui-api.io.vn/api/element/deleteElement?id=$Id");
+    var response = await client.delete(
+      url,
+      headers: requestHeaders,
+    );
+    if (response.statusCode == 200) {
+      jsonDecode(response.body);
+      Get.snackbar(
+        "Deleted",
+        "Your draft elements has been deleted successfully!",
+        icon: Icon(Icons.alarm),
+        backgroundColor: Colors.cyanAccent,
+        barBlur: 20,
+        isDismissible: true,
+        duration: Duration(seconds: 4),
+      );
+      print("hehe like siuu");
+      Get.off(() => const ViewOwnedDraftElements());
+      return true;
+    } else {
+      Get.snackbar("Failed", "Something is wrong",
           colorText: Color(kLight.value),
           backgroundColor: Colors.red,
           icon: Icon(Icons.add_alert));

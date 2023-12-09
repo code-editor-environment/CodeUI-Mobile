@@ -11,6 +11,7 @@ import 'package:mobile/view/widget/search_page.dart';
 import 'package:mobile/view/widget/view_others_approved_elements.dart';
 import 'package:mobile/view/widget/view_others_draft_elements.dart';
 import 'package:mobile/view/widget/view_others_rejected_elements.dart';
+import 'package:mobile/view/widget/view_owned_rejected_elements.dart';
 import 'package:mobile/view/widget/view_pending_approved_elements.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../components/app_bar_logged_in_user.dart';
@@ -20,9 +21,9 @@ import '../../common/constants/app_style.dart';
 import '../../common/constants/custom_textfield.dart';
 import '../../common/constants/custom_textfield_lock.dart';
 import '../../common/models/response/functionals/profile_res_model.dart';
-
+import 'chat_front_page.dart';
 import 'home_page_user_logged_in.dart';
-
+import 'package:mobile/view/widget/view_owned_draft_elements.dart';
 class ProfileWidget extends StatefulWidget {
   const ProfileWidget({super.key});
 
@@ -121,7 +122,15 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   },
                 ),
                 label: ""),
-           
+            NavigationDestination(
+                icon: IconButton(
+                  icon: Icon(Icons.message),
+                  color: Color(0xffEC4899).withOpacity(0.4),
+                  onPressed: () {
+                    Get.to(ChatFrontPage());
+                  },
+                ),
+                label: ""),
             NavigationDestination(
                 icon: IconButton(
                   icon: Icon(Icons.bookmarks_outlined),
@@ -530,7 +539,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                             "accountIdToBeViewed",
                                             usernameController.text!);
                                         Get.to(() =>
-                                            const ViewOthersRejectedElements());
+                                            const ViewOwnedRejectedElements());
                                       },
                                       style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.symmetric(
@@ -580,7 +589,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                                             "accountIdToBeViewed",
                                             usernameController.text!);
                                         Get.to(() =>
-                                            const ViewOthersDraftElements());
+                                            const ViewOwnedDraftElements());
                                       },
                                       style: ElevatedButton.styleFrom(
                                         padding: const EdgeInsets.symmetric(

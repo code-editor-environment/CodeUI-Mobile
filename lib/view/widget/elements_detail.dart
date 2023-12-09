@@ -142,7 +142,7 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                       icon: Icon(Icons.home_outlined),
                       color: Color(0xffEC4899).withOpacity(0.4),
                       onPressed: () {
-                        // Get.to(CodeUIHomeScreenForLoggedInUser());
+                        Get.to(CodeUIHomeScreenForLoggedInUser());
                       },
                     ),
                     label: ""),
@@ -247,8 +247,8 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                               child: Card(
                                 clipBehavior: Clip.antiAlias,
                                 child: Container(
-                                  height: height / 5.5,
-                                  width: width * 0.7,
+                                  height: height / 4.5,
+                                  width: width * 0.9,
                                   child: ListView.builder(
                                     itemCount: 1,
                                     shrinkWrap: true,
@@ -263,7 +263,7 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                                               //item1
                                               Container(
                                                 width: width * 0.7,
-                                                height: height,
+                                                height: height / 4.5,
                                                 child: Card(
                                                   child: ElevatedButton(
                                                     onPressed: () async {},
@@ -314,7 +314,7 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                                                               document['css'];
 
                                                           var fullHtmlCode =
-                                                              '<style>body {             zoom: 3;      }$cssCode</style>$htmlCode';
+                                                              '$htmlCode<style>body { width: 35%; height: 35%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
                                                           var hexColor =
                                                               document[
                                                                   'background'];
@@ -740,7 +740,7 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                                                 // Reduce the button's tap target size
                                               ),
                                               child: Icon(
-                                                MdiIcons.thumbUpOutline,
+                                                MdiIcons.heartOutline,
                                                 color: Color(0xffAB55F7),
                                                 size: 20,
                                               ),
@@ -774,7 +774,7 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                                                 // Reduce the button's tap target size
                                               ),
                                               child: Icon(
-                                                MdiIcons.thumbUp,
+                                                MdiIcons.heart,
                                                 color: Color(0xffAB55F7),
                                                 size: 20,
                                               ),
@@ -849,27 +849,6 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                                                 size: 20,
                                               ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.fromLTRB(
-                                            0, 0, 0, 0),
-                                        child: ElevatedButton(
-                                          onPressed: () {},
-                                          style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors
-                                                .transparent, // Set the button background color to transparent
-                                            elevation:
-                                                0, // Remove the button shadow
-                                            padding: EdgeInsets
-                                                .zero, // Remove default button padding
-                                            // Reduce the button's tap target size
-                                          ),
-                                          child: Icon(
-                                            MdiIcons.share,
-                                            color: Color(0xffAB55F7),
-                                            size: 20,
                                           ),
                                         ),
                                       ),

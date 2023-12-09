@@ -29,7 +29,7 @@ class ReportService {
       'Authorization': 'Bearer $token'
     };
     var url = Uri.parse(
-        "https://dev.codeui-api.io.vn/api/report/createElementReport?elementId=$idForElements&reason=$reasonId");
+        "https://dev.codeui-api.io.vn//api/report/createElementReport?elementId=$idForElements&reason=$reasonId");
     var response = await client.post(
       url,
       headers: requestHeaders,
@@ -72,7 +72,7 @@ class ReportService {
       'Authorization': 'Bearer $token'
     };
     var url = Uri.parse(
-        "https://dev.codeui-api.io.vn/api/report/createElementReport?elementId=$idForElements&reason=$reasonId");
+        "https://dev.codeui-api.io.vn//api/report/createElementReport?elementId=$idForElements&reason=$reasonId");
     var response = await client.post(
       url,
       headers: requestHeaders,
@@ -115,7 +115,7 @@ class ReportService {
       'Authorization': 'Bearer $token'
     };
     var url = Uri.parse(
-        "https://dev.codeui-api.io.vn/api/report/createAccountReport?username=$accountIdToBeViewedInElements&reason=$reasonId");
+        "https://dev.codeui-api.io.vn//api/report/createAccountReport?username=$accountIdToBeViewedInElements&reason=$reasonId");
     var response = await client.post(
       url,
       headers: requestHeaders,

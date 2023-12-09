@@ -24,8 +24,7 @@ class GetProfileService {
     };
     var Client = https.Client();
 
-    var uri =
-        Uri.parse("https://dev.codeui-api.io.vn/api/account/getByAccessToken");
+    var uri = Uri.parse("https://dev.codeui-api.io.vn/api/account/getByAccessToken");
     var response = await Client.get(uri, headers: requestHeaders);
     if (response.statusCode == 200) {
       var json = response.body;
@@ -48,6 +47,28 @@ class GetProfileService {
 
     var uri = Uri.parse(
         "https://dev.codeui-api.io.vn/api/profile/getByUsername?username=$accountIdToBeViewed");
+    var response = await Client.get(uri, headers: requestHeaders);
+    if (response.statusCode == 200) {
+      var json = response.body;
+      print(json);
+
+      return ViewSpecificProfileResponse.fromJson(jsonDecode(json));
+    } else {
+      throw Exception('Failed to load ');
+    }
+  }
+  Future<ViewSpecificProfileResponse> getOneById(String Id) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("accessToken");
+    var accountIdToBeViewed = prefs.getString("accountIdToBeViewed");
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    };
+    var Client = https.Client();
+
+    var uri = Uri.parse(
+        "https://dev.codeui-api.io.vn/api/profile/getByAccountId?accountId=$Id");
     var response = await Client.get(uri, headers: requestHeaders);
     if (response.statusCode == 200) {
       var json = response.body;

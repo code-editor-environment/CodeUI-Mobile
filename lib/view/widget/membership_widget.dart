@@ -12,6 +12,7 @@ import 'package:mobile/view/widget/search_page.dart';
 import 'package:mobile/view/widget/view_specific_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/models/response/functionals/create_sandbox_payment_test.dart';
+import '../../common/models/response/functionals/get_package_to_show.dart';
 import '../../components/app_bar_logged_in_user.dart';
 import '../../components/reusable_text.dart';
 import '../../components/reusable_text_long.dart';
@@ -32,61 +33,23 @@ class MembershipWidget extends StatefulWidget {
 
 class _MembershipWidgetState extends State<MembershipWidget>
     with TickerProviderStateMixin {
+  Future<PackageToShowToUser> _getData() async {
+    try {
+      final items = await PaymentService().getPackageToShow();
+      return items;
+    } catch (e) {
+      throw e;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     PaymentService paymentService = PaymentService();
-    TabController _tabController = TabController(length: 3, vsync: this);
+    TabController _tabController = TabController(length: 2, vsync: this);
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
     return Scaffold(
-      //  extendBodyBehindAppBar: true,
       appBar: CustomLoggedInUserAppBar(),
-      // bottomNavigationBar: NavigationBarTheme(
-      //   data: NavigationBarThemeData(indicatorColor: Colors.black),
-      //   child: NavigationBar(
-      //     height: 50,
-      //     backgroundColor: Color(0xff181818),
-      //     labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-      //     indicatorColor: Color(0xff181818),
-      //     selectedIndex: 0,
-      //     indicatorShape:
-      //         RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      //     // onDestinationSelected: (index) => setState(() => this.index = index),
-      //     destinations: [
-      //       Padding(
-      //         padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-      //         child: NavigationDestination(
-      //             icon: Icon(
-      //               Icons.home_outlined,
-      //               color: Color(0xffEC4899).withOpacity(0.4),
-      //             ),
-      //             label: ""),
-      //       ),
-      //       NavigationDestination(
-      //           icon: IconButton(
-      //             icon: Icon(Icons.search),
-      //             color: Color(0xffEC4899).withOpacity(0.4),
-      //             onPressed: () {
-      //               Get.to(SearchWidget());
-      //             },
-      //           ),
-      //           label: ""),
-      //       NavigationDestination(
-      //           icon: Icon(
-      //             MdiIcons.messageProcessing,
-      //             color: Color(0xffEC4899).withOpacity(0.4),
-      //           ),
-      //           label: ""),
-      //       NavigationDestination(
-      //           icon: Icon(
-      //             Icons.bookmarks_outlined,
-      //             color: Color(0xffEC4899).withOpacity(0.4),
-      //           ),
-      //           label: ""),
-
-      //     ],
-      //   ),
-      // ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Container(
@@ -143,499 +106,368 @@ class _MembershipWidgetState extends State<MembershipWidget>
                     Tab(
                       text: "Pro+",
                     ),
-                    Tab(
-                      text: "Pro++",
-                    ),
                   ])),
-              Column(
-                children: [
-                  SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: SizedBox(
-                      height: height * 0.8,
-                      child: TabBarView(controller: _tabController, children: [
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+              SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: SizedBox(
+                  height: height * 0.8,
+                  child: TabBarView(controller: _tabController, children: [
+                    FutureBuilder(
+                      future: _getData(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                              child:
+                                  CircularProgressIndicator()); // Show a loading indicator while waiting for data.
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          ); // Handle the error.
+                        } else if (!snapshot.hasData) {
+                          return Center(
+                            child: Text(
+                                'No data available'), // Handle no data case.
+                          );
+                        } else if (snapshot.data!.data!.isEmpty) {
+                          return Column(
                             children: [
-                              Center(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 8),
-                                      backgroundColor: Color(0xff4f46e5),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Pro ',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Color(kLight.value),
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Center(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          12, 6, 6, 0),
-                                      child: ReusableText(
-                                        text: "\$4.99",
-                                        style: appstyle(18, Color(0xfff5f0f0),
-                                            FontWeight.w800),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                                      child: ReusableText(
-                                        text: "/month",
-                                        style: appstyle(16, Color(0xfff5f0f0),
-                                            FontWeight.w400),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // brief description about the package name
-                              Container(
-                                width: width * 0.95,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                  child: ReusableText(
-                                    text:
-                                        "With this plan, you'll gain access to advanced extra features.",
-                                    style: appstyle(
-                                        16, Color(0xfff5f0f0), FontWeight.w500),
-                                  ),
-                                ),
-                              ),
-                              // content
-                              Container(
-                                width: double.maxFinite,
-                                height: height * 0.4,
-                                child: ListView.builder(
-                                  itemCount: 6,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          12, 8, 0, 0),
-                                      child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Icon(
-                                              Icons.check,
-                                              color: Color(0xff818cf8),
-                                            ),
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                ReusableText(
-                                                  text: "Special Pro Badge",
-                                                  style: appstyle(
-                                                      18,
-                                                      Color(0xfff5f0f0),
-                                                      FontWeight.w600),
-                                                ),
-                                                Container(
-                                                  width: width * 0.8,
-                                                  child: ReusableText(
-                                                    text:
-                                                        "Stand out in the community with a unique Pro badge.",
-                                                    style: appstyle(
-                                                        14,
-                                                        Color(0xfff5f0f0),
-                                                        FontWeight.w500),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ]),
-                                    );
-                                  },
-                                ),
-                              ),
-                              Center(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      CreateSandBoxPaymentTest model =
-                                          CreateSandBoxPaymentTest(
-                                              money: 100000,
-                                              orderDescription: "string",
-                                              orderType: "string");
-                                      print(model);
-                                      paymentService
-                                          .createSandboxPayment(model);
-                                      dynamic response = await paymentService
-                                          .createSandboxPayment(model);
-                                      print(response);
-                                      SharedPreferences prefs =
-                                          await SharedPreferences.getInstance();
-                                      var url = prefs.getString("urltoPay");
-                                      Get.to(() => PaymentWidget(url: url!));
-                                      // var urlToPay = response[];
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      // Get.off(() =>
+                                      //     const CodeUIHomeScreenForLoggedInUser());
+                                      Get.back();
                                     },
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 8),
-                                      backgroundColor: Color(0xffc026d3),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Get started ',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Color(kLight.value),
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
+                                    icon: Icon(Icons.arrow_back),
+                                    color: Color(0xffEC4899),
                                   ),
-                                ),
+                                ],
                               ),
-                            ]),
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      CreateSandBoxPaymentTest model =
-                                          CreateSandBoxPaymentTest(
-                                              money: 100000,
-                                              orderDescription: "string",
-                                              orderType: "string");
-                                      print(model);
-                                      paymentService
-                                          .createSandboxPayment(model);
-                                      dynamic response = await paymentService
-                                          .createSandboxPayment(model);
-                                      print(response);
-                                      SharedPreferences prefs =
-                                          await SharedPreferences.getInstance();
-                                      var url = prefs.getString("urltoPay");
-                                      Get.to(() => PaymentWidget(url: url!));
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 8),
-                                      backgroundColor: Color(0xff4f46e5),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Pro ',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Color(kLight.value),
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Center(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          12, 6, 6, 0),
-                                      child: ReusableText(
-                                        text: "\$4.99",
-                                        style: appstyle(18, Color(0xfff5f0f0),
-                                            FontWeight.w800),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                                      child: ReusableText(
-                                        text: "/month",
-                                        style: appstyle(16, Color(0xfff5f0f0),
-                                            FontWeight.w400),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // brief description about the package name
                               Container(
-                                width: width * 0.95,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                  child: ReusableText(
-                                    text:
-                                        "With this plan, you'll gain access to advanced extra features.",
-                                    style: appstyle(
-                                        16, Color(0xfff5f0f0), FontWeight.w500),
+                                height: 200,
+                                child: Center(
+                                    child: ReusableText(
+                                        text: "Nothing here to be shown",
+                                        style: appstyle(
+                                            14, Colors.amber, FontWeight.w400))
+                                    // Handle no data case.
+                                    ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 6, 6, 0),
+                                        child: ReusableText(
+                                          text:
+                                              "${snapshot.data!.data?[0].price?.toStringAsFixed(0)} đ",
+                                          style: appstyle(18, Color(0xfff5f0f0),
+                                              FontWeight.w800),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 6, 0, 0),
+                                        child: ReusableText(
+                                          text: "/month",
+                                          style: appstyle(16, Color(0xfff5f0f0),
+                                              FontWeight.w400),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              ),
-                              // content
-                              Container(
-                                width: double.maxFinite,
-                                height: height * 0.4,
-                                child: ListView.builder(
-                                  itemCount: 6,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          12, 8, 0, 0),
-                                      child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Icon(
-                                              Icons.check,
-                                              color: Color(0xff818cf8),
-                                            ),
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                ReusableText(
-                                                  text: "Special Pro Badge",
-                                                  style: appstyle(
-                                                      18,
-                                                      Color(0xfff5f0f0),
-                                                      FontWeight.w600),
-                                                ),
-                                                Container(
-                                                  width: width * 0.8,
-                                                  child: ReusableText(
+                                // brief description about the package name
+                                Container(
+                                  width: width * 0.95,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(12, 0, 0, 0),
+                                    child: ReusableText(
+                                      text:
+                                          "With this plan, you'll gain access to advanced extra features.",
+                                      style: appstyle(16, Color(0xfff5f0f0),
+                                          FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                                // content
+                                Container(
+                                  width: double.maxFinite,
+                                  height: height * 0.4,
+                                  child: ListView.builder(
+                                    itemCount:
+                                        snapshot.data!.data![0].totalFeature,
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            12, 8, 0, 0),
+                                        child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Icon(
+                                                Icons.check,
+                                                color: Color(0xff818cf8),
+                                              ),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  ReusableText(
                                                     text:
-                                                        "Stand out in the community with a unique Pro badge.",
+                                                        "${snapshot.data!.data![0].features?[index].name}",
                                                     style: appstyle(
-                                                        14,
+                                                        18,
                                                         Color(0xfff5f0f0),
-                                                        FontWeight.w500),
+                                                        FontWeight.w600),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                          ]),
-                                    );
-                                  },
-                                ),
-                              ),
-                              Center(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                                  child: ElevatedButton(
-                                    onPressed: () async {
-                                      CreateSandBoxPaymentTest model =
-                                          CreateSandBoxPaymentTest(
-                                              money: 100000,
-                                              orderDescription: "string",
-                                              orderType: "string");
-                                      print(model);
-                                      paymentService
-                                          .createSandboxPayment(model);
-                                      dynamic response = await paymentService
-                                          .createSandboxPayment(model);
-                                      print(response);
-                                      SharedPreferences prefs =
-                                          await SharedPreferences.getInstance();
-                                      var url = prefs.getString("urltoPay");
-                                      Get.to(() => PaymentWidget(url: url!));
+                                                  Container(
+                                                    width: width * 0.8,
+                                                    child: ReusableText(
+                                                      text:
+                                                          "${snapshot.data!.data![0].features?[index].description}",
+                                                      style: appstyle(
+                                                          14,
+                                                          Color(0xfff5f0f0),
+                                                          FontWeight.w500),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ]),
+                                      );
                                     },
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 8),
-                                      backgroundColor: Color(0xffc026d3),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        12, 12, 12, 0),
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        // var urlToPay = response[];
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 8),
+                                        backgroundColor: Color(0xffc026d3),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
                                       ),
-                                    ),
-                                    child: Text(
-                                      'Get started ',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Color(kLight.value),
-                                        fontWeight: FontWeight.w800,
+                                      child: Text(
+                                        'Get started ',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Color(kLight.value),
+                                          fontWeight: FontWeight.w800,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                            ]),
-                        Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Center(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 8),
-                                      backgroundColor: Color(0xff4f46e5),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Pro ',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Color(kLight.value),
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Center(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          12, 6, 6, 0),
-                                      child: ReusableText(
-                                        text: "\$4.99",
-                                        style: appstyle(18, Color(0xfff5f0f0),
-                                            FontWeight.w800),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(0, 6, 0, 0),
-                                      child: ReusableText(
-                                        text: "/month",
-                                        style: appstyle(16, Color(0xfff5f0f0),
-                                            FontWeight.w400),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              // brief description about the package name
-                              Container(
-                                width: width * 0.95,
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                  child: ReusableText(
-                                    text:
-                                        "With this plan, you'll gain access to advanced extra features.",
-                                    style: appstyle(
-                                        16, Color(0xfff5f0f0), FontWeight.w500),
-                                  ),
-                                ),
-                              ),
-                              // content
-                              Container(
-                                width: double.maxFinite,
-                                height: height * 0.4,
-                                child: ListView.builder(
-                                  itemCount: 6,
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                          12, 8, 0, 0),
-                                      child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Icon(
-                                              Icons.check,
-                                              color: Color(0xff818cf8),
-                                            ),
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                ReusableText(
-                                                  text: "Special Pro Badge",
-                                                  style: appstyle(
-                                                      18,
-                                                      Color(0xfff5f0f0),
-                                                      FontWeight.w600),
-                                                ),
-                                                Container(
-                                                  width: width * 0.8,
-                                                  child: ReusableText(
-                                                    text:
-                                                        "Stand out in the community with a unique Pro badge.",
-                                                    style: appstyle(
-                                                        14,
-                                                        Color(0xfff5f0f0),
-                                                        FontWeight.w500),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ]),
-                                    );
-                                  },
-                                ),
-                              ),
-                              Center(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(12, 12, 12, 0),
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 8),
-                                      backgroundColor: Color(0xffc026d3),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                    ),
-                                    child: Text(
-                                      'Get started ',
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        color: Color(kLight.value),
-                                        fontWeight: FontWeight.w800,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ]),
-                      ]),
+                              ]);
+                        }
+                      },
                     ),
-                  ),
-                ],
+                    //content1
+                    FutureBuilder(
+                      future: _getData(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                              child:
+                                  CircularProgressIndicator()); // Show a loading indicator while waiting for data.
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          ); // Handle the error.
+                        } else if (!snapshot.hasData) {
+                          return Center(
+                            child: Text(
+                                'No data available'), // Handle no data case.
+                          );
+                        } else if (snapshot.data!.data!.isEmpty) {
+                          return Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      // Get.off(() =>
+                                      //     const CodeUIHomeScreenForLoggedInUser());
+                                      Get.back();
+                                    },
+                                    icon: Icon(Icons.arrow_back),
+                                    color: Color(0xffEC4899),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                height: 200,
+                                child: Center(
+                                    child: ReusableText(
+                                        text: "Nothing here to be shown",
+                                        style: appstyle(
+                                            14, Colors.amber, FontWeight.w400))
+                                    // Handle no data case.
+                                    ),
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Center(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 6, 6, 0),
+                                        child: ReusableText(
+                                          text:
+                                              "${snapshot.data!.data![1].price?.toStringAsFixed(0)} đ",
+                                          style: appstyle(18, Color(0xfff5f0f0),
+                                              FontWeight.w800),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 6, 0, 0),
+                                        child: ReusableText(
+                                          text: "/month",
+                                          style: appstyle(16, Color(0xfff5f0f0),
+                                              FontWeight.w400),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // brief description about the package name
+                                Container(
+                                  width: width * 0.95,
+                                  child: Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(12, 0, 0, 0),
+                                    child: ReusableText(
+                                      text:
+                                          "With this plan, you'll gain access to advanced extra features.",
+                                      style: appstyle(16, Color(0xfff5f0f0),
+                                          FontWeight.w500),
+                                    ),
+                                  ),
+                                ),
+                                // content
+                                Container(
+                                  width: double.maxFinite,
+                                  height: height * 0.4,
+                                  child: ListView.builder(
+                                    itemCount:
+                                        snapshot.data!.data![1].totalFeature,
+                                    itemBuilder: (context, index) {
+                                      return Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            12, 8, 0, 0),
+                                        child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Icon(
+                                                Icons.check,
+                                                color: Color(0xff818cf8),
+                                              ),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  ReusableText(
+                                                    text:
+                                                        "${snapshot.data!.data![1].features?[index].name}",
+                                                    style: appstyle(
+                                                        18,
+                                                        Color(0xfff5f0f0),
+                                                        FontWeight.w600),
+                                                  ),
+                                                  Container(
+                                                    width: width * 0.8,
+                                                    child: ReusableText(
+                                                      text:
+                                                          "${snapshot.data!.data![1].features?[index].description}",
+                                                      style: appstyle(
+                                                          14,
+                                                          Color(0xfff5f0f0),
+                                                          FontWeight.w500),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ]),
+                                      );
+                                    },
+                                  ),
+                                ),
+                                Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        12, 12, 12, 0),
+                                    child: ElevatedButton(
+                                      onPressed: () async {
+                                        // var urlToPay = response[];
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8, vertical: 8),
+                                        backgroundColor: Color(0xffc026d3),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                      ),
+                                      child: Text(
+                                        'Get started ',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          color: Color(kLight.value),
+                                          fontWeight: FontWeight.w800,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ]);
+                        }
+                      },
+                    ),
+                    //content1
+                  ]),
+                ),
               ),
             ],
           ),

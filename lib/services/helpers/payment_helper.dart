@@ -8,6 +8,7 @@ import 'package:http/http.dart' as https;
 import '../../common/constants/app_constants.dart';
 import '../../common/models/request/functional/update_profile_model.dart';
 import '../../common/models/response/functionals/create_sandbox_payment_test.dart';
+import '../../common/models/response/functionals/get_package_to_show.dart';
 import '../../common/models/response/functionals/moderator_get_accounts_report.dart';
 import '../../common/models/response/functionals/payment_response_test.dart';
 import '../../common/models/response/functionals/temp_creator_model.dart';
@@ -37,11 +38,8 @@ class PaymentService {
       var paymentResponse =
           CreateSandBoxPaymentTestResponse.fromJson(jsonResponse);
       var url1234 = paymentResponse.data!.paymentUrl!;
-         Uri httpUri = Uri.parse(url1234);
-         Uri httpsUri = httpUri.replace(scheme: 'https');
 
-  String httpsUrl = httpsUri.toString();
-      await prefs.setString("urltoPay", httpsUrl);
+      await prefs.setString("urltoPay", url1234);
       print("hehe");
       print(paymentResponse.data!.paymentUrl!);
       // Get.to(() => const ViewSpecificProfileWidget());
@@ -57,4 +55,25 @@ class PaymentService {
       return false;
     }
   }
+  Future<PackageToShowToUser> getPackageToShow() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var token = prefs.getString("accessToken");
+    var accountId = prefs.getString("accountId");
+    Map<String, String> requestHeaders = {
+      'Content-Type': 'application/json',
+    };
+    var Client = https.Client();
+
+    var uri = Uri.parse(
+        "https://dev.codeui-api.io.vn/api/package/getPackageToShow");
+    var response = await Client.get(uri, headers: requestHeaders);
+    if (response.statusCode == 200) {
+      var json = response.body;
+      print(json);
+      return PackageToShowToUser.fromJson(jsonDecode(json));
+    } else {
+      throw Exception('Failed to load ');
+    }
+  }
+
 }

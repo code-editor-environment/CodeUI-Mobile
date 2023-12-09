@@ -5,7 +5,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/components/app_bar_guest.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mobile/view/widget/login_page.dart';
-import 'package:mobile/view/widget/payment_widget_successful.dart';
 import 'package:mobile/view/widget/profile_page.dart';
 import 'package:mobile/view/widget/responsive_chat_page.dart';
 import 'package:mobile/view/widget/search_page.dart';
@@ -26,12 +25,14 @@ import '../../services/helpers/profile_helper.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:http/http.dart' as https;
 
-class PaymentWidget extends StatefulWidget {
-  final String url;
-  const PaymentWidget({super.key, required this.url});
+class PaymentWidgetSuccessful extends StatefulWidget {
+  const PaymentWidgetSuccessful({
+    super.key,
+  });
 
   @override
-  State<PaymentWidget> createState() => _PaymentWidgetState();
+  State<PaymentWidgetSuccessful> createState() =>
+      _PaymentWidgetSuccessfulState();
 }
 
 final MyInAppBrowser browser = new MyInAppBrowser();
@@ -72,7 +73,7 @@ class MyInAppBrowser extends InAppBrowser {
   }
 }
 
-class _PaymentWidgetState extends State<PaymentWidget> {
+class _PaymentWidgetSuccessfulState extends State<PaymentWidgetSuccessful> {
   final GlobalKey webViewKey = GlobalKey();
   InAppWebViewController? webViewController;
   InAppWebViewGroupOptions options = InAppWebViewGroupOptions(
@@ -126,8 +127,9 @@ class _PaymentWidgetState extends State<PaymentWidget> {
                     child: Card(
                       child: InAppWebView(
                         key: webViewKey,
-                        initialUrlRequest:
-                            URLRequest(url: Uri.parse("${widget.url}")),
+                        initialUrlRequest: URLRequest(
+                            url: Uri.parse(
+                                "https://taiducvng.github.io/paymentsuccessful.github.io/")),
                         initialOptions: options,
                         //    pullToRefreshController: pullToRefreshController,
                         onWebViewCreated: (controller) {
@@ -202,7 +204,7 @@ class _PaymentWidgetState extends State<PaymentWidget> {
                                   progressIndicatorBackgroundColor: Colors.red,
                                   duration: Duration(seconds: 4),
                                 );
-                                Get.to(PaymentWidgetSuccessful());
+                                Get.to(ProfileWidget());
                                 print('POST request payment successful!');
 
                                 print('Response: ${response.body}');

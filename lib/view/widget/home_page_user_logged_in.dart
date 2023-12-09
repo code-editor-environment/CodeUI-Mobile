@@ -23,6 +23,7 @@ import '../../common/constants/app_style.dart';
 import '../../common/models/response/functionals/temp_creator_model.dart';
 import '../../services/helpers/creator_helper.dart';
 import '../../services/helpers/element_helper.dart';
+import 'chat_front_page.dart';
 import 'home_page_guest.dart';
 import 'package:mobile/view/widget/top_creator_leaderboard.dart';
 
@@ -123,6 +124,15 @@ class _CodeUIHomeScreenForLoggedInUserState
                   color: Color(0xffEC4899).withOpacity(0.4),
                   onPressed: () {
                     Get.to(SearchWidget());
+                  },
+                ),
+                label: ""),
+            NavigationDestination(
+                icon: IconButton(
+                  icon: Icon(Icons.message),
+                  color: Color(0xffEC4899).withOpacity(0.4),
+                  onPressed: () {
+                    Get.to(ChatFrontPage());
                   },
                 ),
                 label: ""),

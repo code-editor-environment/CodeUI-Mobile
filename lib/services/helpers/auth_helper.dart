@@ -31,6 +31,7 @@ class AuthHelper {
 
         final OAuthCredential credential = GoogleAuthProvider.credential(
           idToken: googleAuth.idToken,
+          
           accessToken: googleAuth.accessToken,
         );
         //  print(googleAuth.accessToken);
@@ -77,7 +78,7 @@ class AuthHelper {
     githubAuthProvider.addScope('read:user');
     final UserCredential userCredential1 =
         await FirebaseAuth.instance.signInWithProvider(githubAuthProvider);
-
+   
     String? a = userCredential1.additionalUserInfo?.profile?['email'];
     final User? user2 = userCredential1.user;
     //  user2.email =
