@@ -23,6 +23,8 @@ import '../../common/constants/custom_textfield.dart';
 import '../../services/helpers/element_helper.dart';
 import 'Moderator_element_details_approved_block.dart';
 import 'Moderator_element_details_approved_pending.dart';
+import 'Request_widget.dart';
+import 'chat_front_page.dart';
 import 'elements_detail.dart';
 import 'home_page_user_logged_in.dart';
 import 'modeator_search_page.dart';
@@ -113,10 +115,28 @@ class _UserGetApprovedElementsListViewByFilteringState
                   label: ""),
               NavigationDestination(
                   icon: IconButton(
+                    icon: Icon(Icons.message),
+                    color: Color(0xffEC4899).withOpacity(0.4),
+                    onPressed: () {
+                      Get.to(ChatFrontPage());
+                    },
+                  ),
+                  label: ""),
+              NavigationDestination(
+                  icon: IconButton(
                     icon: Icon(Icons.bookmarks_outlined),
                     color: Color(0xffEC4899).withOpacity(0.4),
                     onPressed: () {
                       Get.to(BookmarkedOwnedWidget());
+                    },
+                  ),
+                  label: ""),
+              NavigationDestination(
+                  icon: IconButton(
+                    icon: Icon(MdiIcons.codeJson),
+                    color: Color(0xffEC4899).withOpacity(0.4),
+                    onPressed: () {
+                      Get.to(RequestWidget());
                     },
                   ),
                   label: ""),
@@ -243,6 +263,8 @@ class _UserGetApprovedElementsListViewByFilteringState
                                                                             111,
                                                                         child:
                                                                             Card(
+                                                                          color:
+                                                                              Colors.black,
                                                                           child: Padding(
                                                                               padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                                                                               child: FutureBuilder(
@@ -259,8 +281,16 @@ class _UserGetApprovedElementsListViewByFilteringState
 
                                                                                     var htmlCode = document['html'];
                                                                                     var cssCode = document['css'];
-                                                                                    var fullHtmlCode = '<style>body {             zoom: 1.75;      } $cssCode</style>$htmlCode';
+
                                                                                     var hexColor = document['background'];
+                                                                                    var typeCss = document['typeCSS'];
+                                                                                    var fullHtmlCode;
+                                                                                    if (typeCss == 'tailwind') {
+                                                                                      fullHtmlCode = '$htmlCode<style>body {height:55%, width: 30%;background:$hexColor; height:55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style><script src="https://cdn.tailwindcss.com"></script>';
+                                                                                    } else {
+                                                                                      fullHtmlCode = '$htmlCode<style>body { width: 30%;background:$hexColor; height: 55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
+                                                                                    }
+                                                                                    ;
                                                                                     int backgroundColor = int.parse(hexColor.substring(1), radix: 16);
                                                                                     return WebViewWidget(
                                                                                       controller: WebViewController()

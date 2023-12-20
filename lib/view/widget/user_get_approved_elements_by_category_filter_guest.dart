@@ -296,13 +296,18 @@ class _UserApprovedElementsListViewByCategoryFilteringGuestState
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      ReusableText(
-                                                          text:
-                                                              "Owner: ${snapshot.data!.data![index].profileResponse!.username} ",
-                                                          style: appstyle(
-                                                              15,
-                                                              Color(0xffEC4899),
-                                                              FontWeight.w600)),
+                                                      Container(
+                                                        width: width * 0.5,
+                                                        child: ReusableText(
+                                                            text:
+                                                                "Owner: ${snapshot.data!.data![index].profileResponse!.username} ",
+                                                            style: appstyle(
+                                                                15,
+                                                                Color(
+                                                                    0xffEC4899),
+                                                                FontWeight
+                                                                    .w600)),
+                                                      ),
                                                       ElevatedButton(
                                                         style: ElevatedButton
                                                             .styleFrom(

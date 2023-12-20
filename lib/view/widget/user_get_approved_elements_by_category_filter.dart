@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/components/app_bar_guest.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:mobile/view/widget/Request_widget.dart';
+import 'package:mobile/view/widget/chat_front_page.dart';
 import 'package:mobile/view/widget/save_favourite.dart';
 import 'package:mobile/view/widget/search_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -115,10 +117,10 @@ class _UserApprovedElementsListViewByCategoryFilteringState
                   label: ""),
               NavigationDestination(
                   icon: IconButton(
-                    icon: Icon(Icons.search),
+                    icon: Icon(Icons.message),
                     color: Color(0xffEC4899).withOpacity(0.4),
                     onPressed: () {
-                      Get.to(SearchWidget());
+                      Get.to(ChatFrontPage());
                     },
                   ),
                   label: ""),
@@ -128,6 +130,15 @@ class _UserApprovedElementsListViewByCategoryFilteringState
                     color: Color(0xffEC4899).withOpacity(0.4),
                     onPressed: () {
                       Get.to(BookmarkedOwnedWidget());
+                    },
+                  ),
+                  label: ""),
+              NavigationDestination(
+                  icon: IconButton(
+                    icon: Icon(MdiIcons.codeJson),
+                    color: Color(0xffEC4899).withOpacity(0.4),
+                    onPressed: () {
+                      Get.to(RequestWidget());
                     },
                   ),
                   label: ""),
@@ -251,6 +262,8 @@ class _UserApprovedElementsListViewByCategoryFilteringState
                                                                           111,
                                                                       child:
                                                                           Card(
+                                                                        color: Colors
+                                                                            .black,
                                                                         child: Padding(
                                                                             padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                                                                             child: FutureBuilder(
@@ -267,8 +280,16 @@ class _UserApprovedElementsListViewByCategoryFilteringState
 
                                                                                   var htmlCode = document['html'];
                                                                                   var cssCode = document['css'];
-                                                                                  var fullHtmlCode = '<style>body {             zoom: 1.75;      } $cssCode</style>$htmlCode';
+
                                                                                   var hexColor = document['background'];
+                                                                                  var typeCss = document['typeCSS'];
+                                                                                  var fullHtmlCode;
+                                                                                  if (typeCss == 'tailwind') {
+                                                                                    fullHtmlCode = '$htmlCode<style>body {height:55%, width: 30%;background:$hexColor; height:55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style><script src="https://cdn.tailwindcss.com"></script>';
+                                                                                  } else {
+                                                                                    fullHtmlCode = '$htmlCode<style>body { width: 30%;background:$hexColor; height: 55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
+                                                                                  }
+                                                                                  ;
                                                                                   int backgroundColor = int.parse(hexColor.substring(1), radix: 16);
                                                                                   return WebViewWidget(
                                                                                     controller: WebViewController()
@@ -303,13 +324,18 @@ class _UserApprovedElementsListViewByCategoryFilteringState
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      ReusableText(
-                                                          text:
-                                                              "Owner: ${snapshot.data!.data![index].profileResponse!.username} ",
-                                                          style: appstyle(
-                                                              15,
-                                                              Color(0xffEC4899),
-                                                              FontWeight.w600)),
+                                                      Container(
+                                                        width: width * 0.5,
+                                                        child: ReusableText(
+                                                            text:
+                                                                "Owner: ${snapshot.data!.data![index].profileResponse!.username} ",
+                                                            style: appstyle(
+                                                                15,
+                                                                Color(
+                                                                    0xffEC4899),
+                                                                FontWeight
+                                                                    .w600)),
+                                                      ),
                                                       ElevatedButton(
                                                         style: ElevatedButton
                                                             .styleFrom(
