@@ -35,6 +35,7 @@ class Data {
   String? name;
   double? price;
   int? duration;
+  String? endDate;
   bool? isBought;
   int? totalFeature;
   List<Features>? features;
@@ -44,6 +45,7 @@ class Data {
       this.name,
       this.price,
       this.duration,
+      this.endDate,
       this.isBought,
       this.totalFeature,
       this.features});
@@ -53,6 +55,7 @@ class Data {
     name = json["name"];
     price = json["price"];
     duration = json["duration"];
+    endDate = json["endDate"];
     isBought = json["isBought"];
     totalFeature = json["totalFeature"];
     features = json["features"] == null
@@ -66,6 +69,7 @@ class Data {
     _data["name"] = name;
     _data["price"] = price;
     _data["duration"] = duration;
+    _data["endDate"] = endDate;
     _data["isBought"] = isBought;
     _data["totalFeature"] = totalFeature;
     if (features != null) {

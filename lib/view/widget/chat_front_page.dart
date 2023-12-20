@@ -21,6 +21,7 @@ import '../../common/models/response/functionals/profile_res_model.dart';
 import '../../common/models/response/functionals/temp_creator_model.dart';
 import '../../services/helpers/creator_helper.dart';
 import '../../services/helpers/profile_helper.dart';
+import 'Request_widget.dart';
 import 'home_page_user_logged_in.dart';
 
 class ChatFrontPage extends StatefulWidget {
@@ -104,6 +105,15 @@ class _ChatFrontPageState extends State<ChatFrontPage> {
                   color: Color(0xffEC4899).withOpacity(0.4),
                   onPressed: () {
                     Get.to(BookmarkedOwnedWidget());
+                  },
+                ),
+                label: ""),
+            NavigationDestination(
+                icon: IconButton(
+                  icon: Icon(MdiIcons.codeJson),
+                  color: Color(0xffEC4899).withOpacity(0.4),
+                  onPressed: () {
+                    Get.to(RequestWidget());
                   },
                 ),
                 label: ""),

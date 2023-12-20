@@ -271,19 +271,6 @@ class _ViewSpecificProfileGuestWidgetState
                                         ),
                                       ],
                                     ),
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          MdiIcons.github,
-                                          color: Colors.grey,
-                                        ),
-                                        ReusableText(
-                                          text: "dowe",
-                                          style: appstyle(14, Color(0xffF6F0F0),
-                                              FontWeight.w400),
-                                        ),
-                                      ],
-                                    ),
                                   ],
                                 ),
                               ),

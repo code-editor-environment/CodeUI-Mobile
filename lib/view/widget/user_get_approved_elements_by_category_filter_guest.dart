@@ -234,6 +234,8 @@ class _UserApprovedElementsListViewByCategoryFilteringGuestState
                                                                           111,
                                                                       child:
                                                                           Card(
+                                                                        color: Colors
+                                                                            .black,
                                                                         child: Padding(
                                                                             padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
                                                                             child: FutureBuilder(
@@ -250,8 +252,16 @@ class _UserApprovedElementsListViewByCategoryFilteringGuestState
 
                                                                                   var htmlCode = document['html'];
                                                                                   var cssCode = document['css'];
-                                                                                  var fullHtmlCode = '<style>body {             zoom: 1.75;      } $cssCode</style>$htmlCode';
+
                                                                                   var hexColor = document['background'];
+                                                                                  var typeCss = document['typeCSS'];
+                                                                                  var fullHtmlCode;
+                                                                                  if (typeCss == 'tailwind') {
+                                                                                    fullHtmlCode = '$htmlCode<style>body { width: 40%;background:$hexColor; height:45%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style><script src="https://cdn.tailwindcss.com"></script>';
+                                                                                  } else {
+                                                                                    fullHtmlCode = '$htmlCode<style>body { width: 40%;background:$hexColor; height: 45%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
+                                                                                  }
+                                                                                  ;
                                                                                   int backgroundColor = int.parse(hexColor.substring(1), radix: 16);
                                                                                   return WebViewWidget(
                                                                                     controller: WebViewController()

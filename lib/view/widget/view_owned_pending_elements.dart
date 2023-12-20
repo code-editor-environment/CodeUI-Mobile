@@ -25,17 +25,20 @@ import 'home_page_user_logged_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class ViewOwnedDraftElements extends StatefulWidget {
-  const ViewOwnedDraftElements({super.key});
+import 'owned_pending_elements_detail.dart';
+
+class ViewOwnedPendingElements extends StatefulWidget {
+  const ViewOwnedPendingElements({super.key});
 
   @override
-  State<ViewOwnedDraftElements> createState() => _ViewOwnedDraftElementsState();
+  State<ViewOwnedPendingElements> createState() =>
+      _ViewOwnedPendingElementsState();
 }
 
-class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
+class _ViewOwnedPendingElementsState extends State<ViewOwnedPendingElements> {
   GetElementService getElementService = GetElementService();
-  Future<GetElementsFromASpecificUser1> _getElementData() async {
-    final items1 = await getElementService.getAll1();
+  Future<GetElementsFromASpecificUser2> _getElementData() async {
+    final items1 = await getElementService.getAll2();
     return items1;
   }
 
@@ -103,7 +106,7 @@ class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
                   },
                 ),
                 label: ""),
-             NavigationDestination(
+            NavigationDestination(
                 icon: IconButton(
                   icon: Icon(Icons.message),
                   color: Color(0xffEC4899).withOpacity(0.4),
@@ -141,7 +144,7 @@ class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
           color: Colors.black,
           child: Column(
             children: [
-              FutureBuilder<GetElementsFromASpecificUser1>(
+              FutureBuilder<GetElementsFromASpecificUser2>(
                 future: _getElementData(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -177,7 +180,7 @@ class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
                           height: 200,
                           child: Center(
                               child: ReusableText(
-                                  text: "No draft element here",
+                                  text: "No pending element here",
                                   style: appstyle(
                                       14, Colors.amber, FontWeight.w400))
                               // Handle no data case.
@@ -214,7 +217,7 @@ class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             ReusableText(
-                                text: "Your draft elements",
+                                text: "Your pending elements",
                                 style: appstyle(
                                     16, Color(0xffab55f7), FontWeight.w800))
                           ],
@@ -251,7 +254,7 @@ class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
                                           await prefs.setInt(
                                               "idForElements", idForElements!);
                                           Get.to(
-                                            () => DraftDetailedWidget(),
+                                            () => PendingDetailedWidget(),
                                           );
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -368,7 +371,7 @@ class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
                                             await prefs.setInt("idForElements",
                                                 idForElements!);
                                             Get.to(
-                                              () => DraftDetailedWidget(),
+                                              () => PendingDetailedWidget(),
                                             );
                                           },
                                           child: ReusableText(

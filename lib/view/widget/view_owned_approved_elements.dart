@@ -19,23 +19,25 @@ import '../../common/models/response/functionals/view_profile_res_model.dart';
 import '../../services/helpers/element_helper.dart';
 import 'Request_widget.dart';
 import 'chat_front_page.dart';
+import 'owned_approved_elements_detail .dart';
 import 'owned_draft_elements_detail.dart';
 import 'elements_detail.dart';
 import 'home_page_user_logged_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class ViewOwnedDraftElements extends StatefulWidget {
-  const ViewOwnedDraftElements({super.key});
+class ViewOwnedApprovedElements extends StatefulWidget {
+  const ViewOwnedApprovedElements({super.key});
 
   @override
-  State<ViewOwnedDraftElements> createState() => _ViewOwnedDraftElementsState();
+  State<ViewOwnedApprovedElements> createState() =>
+      _ViewOwnedApprovedElementsState();
 }
 
-class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
+class _ViewOwnedApprovedElementsState extends State<ViewOwnedApprovedElements> {
   GetElementService getElementService = GetElementService();
-  Future<GetElementsFromASpecificUser1> _getElementData() async {
-    final items1 = await getElementService.getAll1();
+  Future<GetElementsFromASpecificUser> _getElementData() async {
+    final items1 = await getElementService.getAll();
     return items1;
   }
 
@@ -103,7 +105,7 @@ class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
                   },
                 ),
                 label: ""),
-             NavigationDestination(
+              NavigationDestination(
                 icon: IconButton(
                   icon: Icon(Icons.message),
                   color: Color(0xffEC4899).withOpacity(0.4),
@@ -141,7 +143,7 @@ class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
           color: Colors.black,
           child: Column(
             children: [
-              FutureBuilder<GetElementsFromASpecificUser1>(
+              FutureBuilder<GetElementsFromASpecificUser>(
                 future: _getElementData(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -214,7 +216,7 @@ class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             ReusableText(
-                                text: "Your draft elements",
+                                text: "Your public elements",
                                 style: appstyle(
                                     16, Color(0xffab55f7), FontWeight.w800))
                           ],
@@ -251,7 +253,7 @@ class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
                                           await prefs.setInt(
                                               "idForElements", idForElements!);
                                           Get.to(
-                                            () => DraftDetailedWidget(),
+                                            () => ApprovedDetailedWidget(),
                                           );
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -368,7 +370,7 @@ class _ViewOwnedDraftElementsState extends State<ViewOwnedDraftElements> {
                                             await prefs.setInt("idForElements",
                                                 idForElements!);
                                             Get.to(
-                                              () => DraftDetailedWidget(),
+                                              () => ApprovedDetailedWidget(),
                                             );
                                           },
                                           child: ReusableText(

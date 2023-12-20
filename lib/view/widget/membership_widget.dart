@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/components/app_bar_guest.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -9,6 +10,7 @@ import 'package:mobile/view/widget/payment_widget.dart';
 import 'package:mobile/view/widget/profile_page.dart';
 import 'package:mobile/view/widget/responsive_chat_page.dart';
 import 'package:mobile/view/widget/search_page.dart';
+import 'package:mobile/view/widget/subscription_history_widget.dart';
 import 'package:mobile/view/widget/view_specific_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/models/response/functionals/create_sandbox_payment_test.dart';
@@ -62,26 +64,39 @@ class _MembershipWidgetState extends State<MembershipWidget>
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: IconButton(
-                      onPressed: () {
-                        Get.back();
-                      },
-                      icon: Icon(Icons.arrow_back),
-                      color: Color(0xffEC4899),
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          Get.back();
+                        },
+                        icon: Icon(Icons.arrow_back),
+                        color: Color(0xffEC4899),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          Get.to(() =>
+                              const SubscriptionHistoryWidget());
+                          //Get.back();
+                        },
+                        icon: Icon(Icons.history),
+                        color: Color(0xffEC4899),
+                      ),
+                    ],
                   ),
-                  ReusableText(
-                    text: "Unleash your creativity to Soar",
-                    style: appstyle(18, Color(0xfff5f0f0), FontWeight.w700),
+                  Center(
+                    child: ReusableText(
+                      text: "Unleash your creativity to Soar",
+                      style: appstyle(22, Color(0xfff5f0f0), FontWeight.w700),
+                    ),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ReusableText(
                         text: "Among the Universe!",
-                        style: appstyle(18, Color(0xfff5f0f0), FontWeight.w700),
+                        style: appstyle(22, Color(0xfff5f0f0), FontWeight.w700),
                       ),
                       Image.asset(
                         "assets/images/rocket-ae8889ff.png",
@@ -130,6 +145,13 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                 'No data available'), // Handle no data case.
                           );
                         } else if (snapshot.data!.data!.isEmpty) {
+                          final price = snapshot.data!.data?[0].price ??
+                              0; // Replace '0' with the default value if price is null
+
+                          final formattedPrice =
+                              NumberFormat.currency(locale: 'vi_VN', symbol: '')
+                                  .format(price)
+                                  .replaceAll(',', '.');
                           return Column(
                             children: [
                               Row(
@@ -175,7 +197,7 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                         child: ReusableText(
                                           text:
                                               "${snapshot.data!.data?[0].price?.toStringAsFixed(0)} đ",
-                                          style: appstyle(18, Color(0xfff5f0f0),
+                                          style: appstyle(20, Color(0xfff5f0f0),
                                               FontWeight.w800),
                                         ),
                                       ),
@@ -184,7 +206,7 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                             0, 6, 0, 0),
                                         child: ReusableText(
                                           text: "/month",
-                                          style: appstyle(16, Color(0xfff5f0f0),
+                                          style: appstyle(20, Color(0xfff5f0f0),
                                               FontWeight.w400),
                                         ),
                                       ),
@@ -200,7 +222,7 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                     child: ReusableText(
                                       text:
                                           "With this plan, you'll gain access to advanced extra features.",
-                                      style: appstyle(16, Color(0xfff5f0f0),
+                                      style: appstyle(18, Color(0xfff5f0f0),
                                           FontWeight.w500),
                                     ),
                                   ),
@@ -230,13 +252,16 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
                                                 children: [
-                                                  ReusableText(
-                                                    text:
-                                                        "${snapshot.data!.data![0].features?[index].name}",
-                                                    style: appstyle(
-                                                        18,
-                                                        Color(0xfff5f0f0),
-                                                        FontWeight.w600),
+                                                  Container(
+                                                    width: width * 0.8,
+                                                    child: ReusableText(
+                                                      text:
+                                                          "${snapshot.data!.data![0].features?[index].name}",
+                                                      style: appstyle(
+                                                          16,
+                                                          Color(0xffab55f7),
+                                                          FontWeight.w600),
+                                                    ),
                                                   ),
                                                   Container(
                                                     width: width * 0.8,
@@ -246,7 +271,7 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                                       style: appstyle(
                                                           14,
                                                           Color(0xfff5f0f0),
-                                                          FontWeight.w500),
+                                                          FontWeight.w600),
                                                     ),
                                                   ),
                                                 ],
@@ -262,6 +287,43 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                         12, 12, 12, 0),
                                     child: ElevatedButton(
                                       onPressed: () async {
+                                        print(
+                                            "${snapshot.data!.data?[0].id}:Buy this haha");
+                                        Get.defaultDialog(
+                                          middleTextStyle: appstyle(
+                                              16,
+                                              Color(0xffA855F7),
+                                              FontWeight.w600),
+                                          title: "Buy?",
+                                          titleStyle: appstyle(
+                                              18,
+                                              Color(0xffEC4899),
+                                              FontWeight.w600),
+                                          middleText:
+                                              "You want to buy this package?",
+                                          backgroundColor: Colors.white,
+                                          radius: 10.0,
+                                          actions: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                // Perform actions when the button in the dialog is pressed
+                                                //   Get.back(); // Close the dialog
+                                                var id =
+                                                    snapshot.data!.data![0].id;
+                                                paymentService.buyPackage(id!);
+                                                Get.back();
+                                              },
+                                              child: Text("OK"),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                // Perform actions when the button in the dialog is pressed
+                                                Get.back(); // Close the dialog
+                                              },
+                                              child: Text("Cancel"),
+                                            ),
+                                          ],
+                                        );
                                         // var urlToPay = response[];
                                       },
                                       style: ElevatedButton.styleFrom(
@@ -352,7 +414,7 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                         child: ReusableText(
                                           text:
                                               "${snapshot.data!.data![1].price?.toStringAsFixed(0)} đ",
-                                          style: appstyle(18, Color(0xfff5f0f0),
+                                          style: appstyle(20, Color(0xfff5f0f0),
                                               FontWeight.w800),
                                         ),
                                       ),
@@ -361,7 +423,7 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                             0, 6, 0, 0),
                                         child: ReusableText(
                                           text: "/month",
-                                          style: appstyle(16, Color(0xfff5f0f0),
+                                          style: appstyle(20, Color(0xfff5f0f0),
                                               FontWeight.w400),
                                         ),
                                       ),
@@ -377,7 +439,7 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                     child: ReusableText(
                                       text:
                                           "With this plan, you'll gain access to advanced extra features.",
-                                      style: appstyle(16, Color(0xfff5f0f0),
+                                      style: appstyle(18, Color(0xfff5f0f0),
                                           FontWeight.w500),
                                     ),
                                   ),
@@ -411,8 +473,8 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                                     text:
                                                         "${snapshot.data!.data![1].features?[index].name}",
                                                     style: appstyle(
-                                                        18,
-                                                        Color(0xfff5f0f0),
+                                                        16,
+                                                        Color(0xffab55f7),
                                                         FontWeight.w600),
                                                   ),
                                                   Container(
@@ -439,6 +501,43 @@ class _MembershipWidgetState extends State<MembershipWidget>
                                         12, 12, 12, 0),
                                     child: ElevatedButton(
                                       onPressed: () async {
+                                        print(
+                                            "${snapshot.data!.data?[0].id}:Buy this haha");
+                                        Get.defaultDialog(
+                                          middleTextStyle: appstyle(
+                                              16,
+                                              Color(0xffA855F7),
+                                              FontWeight.w600),
+                                          title: "Buy?",
+                                          titleStyle: appstyle(
+                                              18,
+                                              Color(0xffEC4899),
+                                              FontWeight.w600),
+                                          middleText:
+                                              "You want to buy this package?",
+                                          backgroundColor: Colors.white,
+                                          radius: 10.0,
+                                          actions: [
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                // Perform actions when the button in the dialog is pressed
+                                                //   Get.back(); // Close the dialog
+                                                var id =
+                                                    snapshot.data!.data![1].id;
+                                                paymentService.buyPackage(id!);
+                                                Get.back();
+                                              },
+                                              child: Text("OK"),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                // Perform actions when the button in the dialog is pressed
+                                                Get.back(); // Close the dialog
+                                              },
+                                              child: Text("Cancel"),
+                                            ),
+                                          ],
+                                        );
                                         // var urlToPay = response[];
                                       },
                                       style: ElevatedButton.styleFrom(

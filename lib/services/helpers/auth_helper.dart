@@ -31,7 +31,6 @@ class AuthHelper {
 
         final OAuthCredential credential = GoogleAuthProvider.credential(
           idToken: googleAuth.idToken,
-          
           accessToken: googleAuth.accessToken,
         );
         //  print(googleAuth.accessToken);
@@ -78,7 +77,7 @@ class AuthHelper {
     githubAuthProvider.addScope('read:user');
     final UserCredential userCredential1 =
         await FirebaseAuth.instance.signInWithProvider(githubAuthProvider);
-   
+
     String? a = userCredential1.additionalUserInfo?.profile?['email'];
     final User? user2 = userCredential1.user;
     //  user2.email =
@@ -145,7 +144,10 @@ class AuthHelper {
     if (response.data!.account!.role == "FreeCreator" &&
         response.data!.account!.isActive == true) {
       Get.off(() => const CodeUIHomeScreenForLoggedInUser());
-    } else if (response.data!.account!.role == "PaidCreator" &&
+    } else if (response.data!.account!.role == "ProCreator" &&
+        response.data!.account!.isActive == true) {
+      Get.off(() => const CodeUIHomeScreenForLoggedInUser());
+    } else if (response.data!.account!.role == "ProPlusCreator" &&
         response.data!.account!.isActive == true) {
       Get.off(() => const CodeUIHomeScreenForLoggedInUser());
     } else if (response.data!.account!.role == "Moderator" &&
@@ -164,7 +166,6 @@ class AuthHelper {
           colorText: Color(kLight.value),
           backgroundColor: Colors.red,
           icon: Icon(Icons.add_alert));
-        
     }
     {}
     ;

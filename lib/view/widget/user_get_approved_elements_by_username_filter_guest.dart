@@ -201,7 +201,7 @@ class _UserGetApprovedElementsListViewByFilteringGuestState
                                                     MainAxisAlignment.start,
                                                 children: [
                                                   Container(
-                                                    height: 125,
+                                                    height: 145,
                                                     width: 114,
                                                     decoration: BoxDecoration(
                                                       borderRadius:
@@ -217,7 +217,7 @@ class _UserGetApprovedElementsListViewByFilteringGuestState
                                                           RoundedRectangleBorder(
                                                         borderRadius:
                                                             BorderRadius
-                                                                .circular(24),
+                                                                .circular(12),
                                                       ),
                                                       child: Stack(
                                                         children: [
@@ -230,13 +230,15 @@ class _UserGetApprovedElementsListViewByFilteringGuestState
                                                                     children: [
                                                                       Container(
                                                                         width:
-                                                                            104,
+                                                                            105,
                                                                         height:
-                                                                            111,
+                                                                            135,
                                                                         child:
                                                                             Card(
+                                                                          color:
+                                                                              Colors.black,
                                                                           child: Padding(
-                                                                              padding: const EdgeInsets.fromLTRB(0, 8, 0, 0),
+                                                                              padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                                                                               child: FutureBuilder(
                                                                                 future: FirebaseFirestore.instance.collection('elements').doc("${snapshot.data!.data![index].id}").get(),
                                                                                 builder: (context, snapshot) {
@@ -251,8 +253,16 @@ class _UserGetApprovedElementsListViewByFilteringGuestState
 
                                                                                     var htmlCode = document['html'];
                                                                                     var cssCode = document['css'];
-                                                                                    var fullHtmlCode = '<style>body {             zoom: 1.75;      } $cssCode</style>$htmlCode';
+
                                                                                     var hexColor = document['background'];
+                                                                                    var typeCss = document['typeCSS'];
+                                                                                    var fullHtmlCode;
+                                                                                    if (typeCss == 'tailwind') {
+                                                                                      fullHtmlCode = '$htmlCode<style>body { width: 40%;background:$hexColor; height:45%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style><script src="https://cdn.tailwindcss.com"></script>';
+                                                                                    } else {
+                                                                                      fullHtmlCode = '$htmlCode<style>body { width: 40%;background:$hexColor; height: 45%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
+                                                                                    }
+                                                                                    ;
                                                                                     int backgroundColor = int.parse(hexColor.substring(1), radix: 16);
                                                                                     return WebViewWidget(
                                                                                       controller: WebViewController()
@@ -288,15 +298,18 @@ class _UserGetApprovedElementsListViewByFilteringGuestState
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        ReusableText(
-                                                            text:
-                                                                "Owner: ${snapshot.data!.data![index].profileResponse!.username} ",
-                                                            style: appstyle(
-                                                                15,
-                                                                Color(
-                                                                    0xffEC4899),
-                                                                FontWeight
-                                                                    .w600)),
+                                                        Container(
+                                                          width: width * 0.6,
+                                                          child: ReusableText(
+                                                              text:
+                                                                  "Owner: ${snapshot.data!.data![index].profileResponse!.username} ",
+                                                              style: appstyle(
+                                                                  15,
+                                                                  Color(
+                                                                      0xffEC4899),
+                                                                  FontWeight
+                                                                      .w600)),
+                                                        ),
                                                         ElevatedButton(
                                                           style: ElevatedButton
                                                               .styleFrom(

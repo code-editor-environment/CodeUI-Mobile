@@ -35,14 +35,14 @@ import '../../services/helpers/comment_helper.dart';
 import 'add_image_data.dart';
 import 'home_page_user_logged_in.dart';
 
-class DraftDetailedWidget extends StatefulWidget {
-  const DraftDetailedWidget({super.key});
+class PendingDetailedWidget extends StatefulWidget {
+  const PendingDetailedWidget({super.key});
 
   @override
-  State<DraftDetailedWidget> createState() => _DraftDetailedWidgetState();
+  State<PendingDetailedWidget> createState() => _PendingDetailedWidgetState();
 }
 
-class _DraftDetailedWidgetState extends State<DraftDetailedWidget> {
+class _PendingDetailedWidgetState extends State<PendingDetailedWidget> {
   String? selectedValue = "Choose your reason";
   bool isCodeVisible = false;
   RxBool isLiked = false.obs;
@@ -239,7 +239,8 @@ class _DraftDetailedWidgetState extends State<DraftDetailedWidget> {
                                                 // Perform actions when the button in the dialog is pressed
                                                 //   Get.back(); // Close the dialog
                                                 getElementService
-                                                    .deleteElement(idToDelete);
+                                                    .deleteElementForPending(
+                                                        idToDelete);
                                                 FirebaseFirestore.instance
                                                     .collection('elements')
                                                     .doc("$idToDelete")

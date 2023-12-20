@@ -234,6 +234,7 @@ class _ViewOthersApprovedElementsState
                                           // Reduce the button's tap target size
                                         ),
                                         child: Card(
+                                          color: Colors.black,
                                           child: Padding(
                                               padding:
                                                   const EdgeInsets.fromLTRB(
@@ -269,10 +270,20 @@ class _ViewOthersApprovedElementsState
                                                         document['html'];
                                                     var cssCode =
                                                         document['css'];
-                                                    var fullHtmlCode =
-                                                        '<style>body {             zoom: 3;      } $cssCode</style>$htmlCode';
+
                                                     var hexColor =
                                                         document['background'];
+                                                    var typeCss =
+                                                        document['typeCSS'];
+                                                    var fullHtmlCode;
+                                                    if (typeCss == 'tailwind') {
+                                                      fullHtmlCode =
+                                                          '$htmlCode<style>body { width: 40%;background:$hexColor; height:45%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style><script src="https://cdn.tailwindcss.com"></script>';
+                                                    } else {
+                                                      fullHtmlCode =
+                                                          '$htmlCode<style>body { width: 40%;background:$hexColor; height: 45%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
+                                                    }
+                                                    ;
                                                     int backgroundColor =
                                                         int.parse(
                                                             hexColor

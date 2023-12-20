@@ -12,6 +12,8 @@ import '../../components/reusable_text.dart';
 import '../../common/constants/app_constants.dart';
 import '../../common/constants/app_style.dart';
 import '../../common/constants/custom_textfield.dart';
+import 'Request_widget.dart';
+import 'chat_front_page.dart';
 import 'elements_detail.dart';
 import 'home_page_user_logged_in.dart';
 import 'moderator_get_approved_elements_by_category_filter.dart';
@@ -97,10 +99,28 @@ class _SearchWidgetState extends State<SearchWidget> {
                 label: ""),
             NavigationDestination(
                 icon: IconButton(
+                  icon: Icon(Icons.message),
+                  color: Color(0xffEC4899).withOpacity(0.4),
+                  onPressed: () {
+                    Get.to(ChatFrontPage());
+                  },
+                ),
+                label: ""),
+            NavigationDestination(
+                icon: IconButton(
                   icon: Icon(Icons.bookmarks_outlined),
                   color: Color(0xffEC4899).withOpacity(0.4),
                   onPressed: () {
                     Get.to(BookmarkedOwnedWidget());
+                  },
+                ),
+                label: ""),
+            NavigationDestination(
+                icon: IconButton(
+                  icon: Icon(MdiIcons.codeJson),
+                  color: Color(0xffEC4899).withOpacity(0.4),
+                  onPressed: () {
+                    Get.to(RequestWidget());
                   },
                 ),
                 label: ""),

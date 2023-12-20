@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile/components/app_bar_guest.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:mobile/view/widget/chat_front_page.dart';
 import 'package:mobile/view/widget/save_favourite.dart';
 import 'package:mobile/view/widget/search_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../common/models/response/functionals/get_all_elements_to_show.dart';
 import '../../common/models/response/functionals/get_top_creator.dart';
 import '../../common/models/response/functionals/save_favourite_elements_by_current_logged_in_user.dart';
 import '../../components/app_bar_logged_in_user.dart';
@@ -17,6 +19,7 @@ import '../../common/constants/app_style.dart';
 import '../../common/constants/custom_textfield.dart';
 import '../../services/helpers/creator_helper.dart';
 import '../../services/helpers/element_helper.dart';
+import 'Request_widget.dart';
 import 'elements_detail.dart';
 import 'home_page_user_logged_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -32,20 +35,20 @@ import '../../common/models/response/functionals/temp_creator_model.dart';
 import 'home_page_guest.dart';
 import 'package:mobile/view/widget/top_creator_leaderboard.dart';
 
-class RandomElementsWidget extends StatefulWidget {
-  const RandomElementsWidget({super.key});
+class PublicElementsWidget extends StatefulWidget {
+  const PublicElementsWidget({super.key});
 
   @override
-  State<RandomElementsWidget> createState() => _RandomElementsWidgetState();
+  State<PublicElementsWidget> createState() => _PublicElementsWidgetState();
 }
 
-class _RandomElementsWidgetState extends State<RandomElementsWidget> {
+class _PublicElementsWidgetState extends State<PublicElementsWidget> {
   late Future<SaveFavouriteElements> _profileFuture;
   late String _currentLoggedInUsername = "";
-  Future<GetRandomElements> getData2() async {
+  Future<GetAllElementsToShow> getData2() async {
     try {
-      final GetRandomElements response =
-          (await (GetElementService().getRandomElements1()));
+      final GetAllElementsToShow response =
+          (await (GetElementService().getAllElementsToShow1()));
 
       return response;
     } catch (e) {
@@ -112,10 +115,28 @@ class _RandomElementsWidgetState extends State<RandomElementsWidget> {
                   label: ""),
               NavigationDestination(
                   icon: IconButton(
+                    icon: Icon(Icons.message),
+                    color: Color(0xffEC4899).withOpacity(0.4),
+                    onPressed: () {
+                      Get.to(ChatFrontPage());
+                    },
+                  ),
+                  label: ""),
+              NavigationDestination(
+                  icon: IconButton(
                     icon: Icon(Icons.bookmarks_outlined),
                     color: Color(0xffEC4899).withOpacity(0.4),
                     onPressed: () {
                       Get.to(BookmarkedOwnedWidget());
+                    },
+                  ),
+                  label: ""),
+              NavigationDestination(
+                  icon: IconButton(
+                    icon: Icon(MdiIcons.codeJson),
+                    color: Color(0xffEC4899).withOpacity(0.4),
+                    onPressed: () {
+                      Get.to(RequestWidget());
                     },
                   ),
                   label: ""),
@@ -151,7 +172,7 @@ class _RandomElementsWidgetState extends State<RandomElementsWidget> {
                     color: Color(0xffEC4899),
                   ),
                   ReusableText(
-                    text: " Random elements",
+                    text: " Public elements",
                     style: appstyle(18, Color(0xffEC4899), FontWeight.w400),
                   ),
                 ],
@@ -161,7 +182,7 @@ class _RandomElementsWidgetState extends State<RandomElementsWidget> {
             SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Container(
-                height: height / 1.85,
+                height: height / 1.6,
                 child: FutureBuilder(
                   future: getData2(),
                   builder: (context, snapshot) {
@@ -180,13 +201,13 @@ class _RandomElementsWidgetState extends State<RandomElementsWidget> {
                       );
                     } else {
                       return ListView.builder(
-                        itemCount: 25,
+                        itemCount: snapshot.data?.metadata!.size,
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
                               Container(
-                                height: height / 1.5,
+                                height: height * 0.85,
                                 child: ListView.builder(
                                   itemCount: snapshot.data!.metadata?.total,
                                   shrinkWrap: true,
@@ -232,6 +253,7 @@ class _RandomElementsWidgetState extends State<RandomElementsWidget> {
                                                 // Reduce the button's tap target size
                                               ),
                                               child: Card(
+                                                color: Colors.black,
                                                 child: Padding(
                                                     padding: const EdgeInsets
                                                         .fromLTRB(0, 15, 0, 0),
@@ -270,11 +292,23 @@ class _RandomElementsWidgetState extends State<RandomElementsWidget> {
                                                               document['html'];
                                                           var cssCode =
                                                               document['css'];
-                                                          var fullHtmlCode =
-                                                              '<style>body {             zoom: 3;      } $cssCode</style>$htmlCode';
+
                                                           var hexColor =
                                                               document[
                                                                   'background'];
+                                                          var typeCss =
+                                                              document[
+                                                                  'typeCSS'];
+                                                          var fullHtmlCode;
+                                                          if (typeCss ==
+                                                              'tailwind') {
+                                                            fullHtmlCode =
+                                                                '$htmlCode<style>body {height:55%, width: 35%;background:$hexColor; height:55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style><script src="https://cdn.tailwindcss.com"></script>';
+                                                          } else {
+                                                            fullHtmlCode =
+                                                                '$htmlCode<style>body { width: 35%;background:$hexColor; height: 55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
+                                                          }
+                                                          ;
                                                           int backgroundColor =
                                                               int.parse(
                                                                   hexColor

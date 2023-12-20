@@ -36,7 +36,7 @@ class CustomLoggedInUserAppBar extends StatefulWidget
 class _CustomLoggedInUserAppBarState extends State<CustomLoggedInUserAppBar> {
   String title1 = "Profile";
   String title3 = "Log out";
-  String title2 = "Membership";
+  String title2 = "Subscription";
   String title0 = "Home";
   late Future<ViewProfileResponse> _profileFuture;
   Future<ViewProfileResponse> _getData() async {
@@ -150,14 +150,13 @@ class _CustomLoggedInUserAppBarState extends State<CustomLoggedInUserAppBar> {
                           // handle menu item selection here
                           if (value == title0) {
                             //get to profile page
-                            Get.to(
-                                () => const CodeUIHomeScreenForLoggedInUser());
+                            Get.to(() => CodeUIHomeScreenForLoggedInUser());
                           } else if (value == title1) {
                             //get to profile page
-                            Get.to(() => const ProfileWidget());
+                            Get.to(() => ProfileWidget());
                           } else if (value == title2) {
                             //get to membership page4
-                            Get.to(() => const MembershipWidget());
+                            Get.to(() => MembershipWidget());
                           } else if (value == title3) {
                             SharedPreferences prefs =
                                 await SharedPreferences.getInstance();
@@ -315,16 +314,16 @@ class _MyDialog1State extends State<MyDialog1> {
                     border: OutlineInputBorder(),
                   ),
                 ),
-                ReusableText(
-                    text: "Description",
-                    style: appstyle(14, Color(0xffec4899), FontWeight.w500)),
-                TextField(
-                  controller: reason,
-                  decoration: InputDecoration(
-                    hintText: "Enter your description",
-                    border: OutlineInputBorder(),
-                  ),
-                ),
+                // ReusableText(
+                //     text: "Description",
+                //     style: appstyle(14, Color(0xffec4899), FontWeight.w500)),
+                // TextField(
+                //   controller: reason,
+                //   decoration: InputDecoration(
+                //     hintText: "Enter your description",
+                //     border: OutlineInputBorder(),
+                //   ),
+                // ),
                 Center(
                     child: ElevatedButton(
                         onPressed: () async {
@@ -332,7 +331,7 @@ class _MyDialog1State extends State<MyDialog1> {
                           CreateSandBoxPaymentTest model = CreateSandBoxPaymentTest(
                               money: money1,
                               orderType: "billpayment",
-                              orderDescription: "${reason.text}",
+                              orderDescription: "Add cash to balance",
                               returnUrl:
                                   "https://dev.codeui-api.io.vn/api/payment/confirmPayment");
                           print(model.toJson());

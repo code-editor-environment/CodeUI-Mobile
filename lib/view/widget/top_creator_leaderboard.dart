@@ -17,6 +17,8 @@ import '../../common/constants/app_style.dart';
 import '../../common/constants/custom_textfield.dart';
 import '../../services/helpers/creator_helper.dart';
 import '../../services/helpers/element_helper.dart';
+import 'Request_widget.dart';
+import 'chat_front_page.dart';
 import 'elements_detail.dart';
 import 'home_page_user_logged_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -120,10 +122,28 @@ class _TopCreatorLeaderboardWidgetState
                   label: ""),
               NavigationDestination(
                   icon: IconButton(
+                    icon: Icon(Icons.message),
+                    color: Color(0xffEC4899).withOpacity(0.4),
+                    onPressed: () {
+                      Get.to(ChatFrontPage());
+                    },
+                  ),
+                  label: ""),
+              NavigationDestination(
+                  icon: IconButton(
                     icon: Icon(Icons.bookmarks_outlined),
                     color: Color(0xffEC4899).withOpacity(0.4),
                     onPressed: () {
                       Get.to(BookmarkedOwnedWidget());
+                    },
+                  ),
+                  label: ""),
+              NavigationDestination(
+                  icon: IconButton(
+                    icon: Icon(MdiIcons.codeJson),
+                    color: Color(0xffEC4899).withOpacity(0.4),
+                    onPressed: () {
+                      Get.to(RequestWidget());
                     },
                   ),
                   label: ""),

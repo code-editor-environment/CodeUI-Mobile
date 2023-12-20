@@ -6,6 +6,7 @@ import 'package:mobile/view/widget/search_page.dart';
 import 'package:mobile/view/widget/search_page_guest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../common/models/response/functionals/get_all_elements_to_show.dart';
 import '../../common/models/response/functionals/get_top_creator.dart';
 import '../../common/models/response/functionals/save_favourite_elements_by_current_logged_in_user.dart';
 import '../../components/app_bar_logged_in_user.dart';
@@ -33,21 +34,21 @@ import '../../common/models/response/functionals/temp_creator_model.dart';
 import 'home_page_guest.dart';
 import 'package:mobile/view/widget/top_creator_leaderboard.dart';
 
-class RandomElementsWidgetGuest extends StatefulWidget {
-  const RandomElementsWidgetGuest({super.key});
+class PublicElementsWidgetGuest extends StatefulWidget {
+  const PublicElementsWidgetGuest({super.key});
 
   @override
-  State<RandomElementsWidgetGuest> createState() =>
-      _RandomElementsWidgetGuestState();
+  State<PublicElementsWidgetGuest> createState() =>
+      _PublicElementsWidgetGuestState();
 }
 
-class _RandomElementsWidgetGuestState extends State<RandomElementsWidgetGuest> {
+class _PublicElementsWidgetGuestState extends State<PublicElementsWidgetGuest> {
   late Future<SaveFavouriteElements> _profileFuture;
 
-  Future<GetRandomElements> getData2() async {
+  Future<GetAllElementsToShow> getData2() async {
     try {
-      final GetRandomElements response =
-          (await (GetElementService().getRandomElements1()));
+      final GetAllElementsToShow response =
+          (await (GetElementService().getAllElementsToShow1()));
 
       return response;
     } catch (e) {
@@ -140,7 +141,7 @@ class _RandomElementsWidgetGuestState extends State<RandomElementsWidgetGuest> {
                     color: Color(0xffEC4899),
                   ),
                   ReusableText(
-                    text: " Random elements",
+                    text: " Public elements",
                     style: appstyle(18, Color(0xffEC4899), FontWeight.w400),
                   ),
                 ],
@@ -150,7 +151,7 @@ class _RandomElementsWidgetGuestState extends State<RandomElementsWidgetGuest> {
             SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Container(
-                height: height / 1.85,
+                height: height / 1.6,
                 child: FutureBuilder(
                   future: getData2(),
                   builder: (context, snapshot) {
@@ -175,7 +176,7 @@ class _RandomElementsWidgetGuestState extends State<RandomElementsWidgetGuest> {
                           return Column(
                             children: [
                               Container(
-                                height: height / 1.5,
+                                height: height * 0.85,
                                 child: ListView.builder(
                                   itemCount: snapshot.data!.metadata?.total,
                                   shrinkWrap: true,
@@ -186,104 +187,110 @@ class _RandomElementsWidgetGuestState extends State<RandomElementsWidgetGuest> {
                                     return Container(
                                       child: Row(children: [
                                         //item1
-                                        Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              8, 0, 0, 0),
-                                          child: Container(
-                                            width: 110,
-                                            height: 130,
-                                            child: ElevatedButton(
-                                              onPressed: () async {
-                                                print(index);
-                                                var idForElements = snapshot
-                                                    .data!.data![index].id;
-                                                print(idForElements);
-                                                print(snapshot
-                                                    .data!.data![index]
-                                                    .toJson());
-                                                SharedPreferences prefs =
-                                                    await SharedPreferences
-                                                        .getInstance();
-                                                await prefs.setInt(
-                                                    "idForElements",
-                                                    idForElements!);
-                                                Get.to(
-                                                  () => GuestDetailedWidget(),
-                                                );
-                                              },
-                                              style: ElevatedButton.styleFrom(
-                                                backgroundColor: Colors
-                                                    .transparent, // Set the button background color to transparent
-                                                elevation:
-                                                    0, // Remove the button shadow
-                                                padding: EdgeInsets
-                                                    .zero, // Remove default button padding
-                                                // Reduce the button's tap target size
-                                              ),
-                                              child: Card(
-                                                child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .fromLTRB(0, 15, 0, 0),
-                                                    child: FutureBuilder(
-                                                      future: FirebaseFirestore
-                                                          .instance
-                                                          .collection(
-                                                              'elements')
-                                                          .doc(
-                                                              "$idForElements1")
-                                                          .get(),
-                                                      builder:
-                                                          (context, snapshot) {
-                                                        if (snapshot
-                                                                .connectionState ==
-                                                            ConnectionState
-                                                                .waiting) {
-                                                          return Center(
-                                                              child:
-                                                                  CircularProgressIndicator());
-                                                        } else if (snapshot
-                                                            .hasError) {
-                                                          return Center(
-                                                              child: Text(
-                                                                  'Error loading data'));
-                                                        } else if (!snapshot
-                                                            .hasData) {
-                                                          return Center(
-                                                              child: Text(
-                                                                  'No data available'));
-                                                        } else {
-                                                          var document =
-                                                              snapshot.data!;
+                                        Container(
+                                          width: 110,
+                                          height: 130,
+                                          child: ElevatedButton(
+                                            onPressed: () async {
+                                              print(index);
+                                              var idForElements = snapshot
+                                                  .data!.data![index].id;
+                                              print(idForElements);
+                                              print(snapshot.data!.data![index]
+                                                  .toJson());
+                                              SharedPreferences prefs =
+                                                  await SharedPreferences
+                                                      .getInstance();
+                                              await prefs.setInt(
+                                                  "idForElements",
+                                                  idForElements!);
+                                              Get.to(
+                                                () => GuestDetailedWidget(),
+                                              );
+                                            },
+                                            style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors
+                                                  .transparent, // Set the button background color to transparent
+                                              elevation:
+                                                  0, // Remove the button shadow
+                                              padding: EdgeInsets
+                                                  .zero, // Remove default button padding
+                                              // Reduce the button's tap target size
+                                            ),
+                                            child: Card(
+                                              color: Colors.black,
+                                              child: Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          0, 15, 0, 0),
+                                                  child: FutureBuilder(
+                                                    future: FirebaseFirestore
+                                                        .instance
+                                                        .collection('elements')
+                                                        .doc("$idForElements1")
+                                                        .get(),
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      if (snapshot
+                                                              .connectionState ==
+                                                          ConnectionState
+                                                              .waiting) {
+                                                        return Center(
+                                                            child:
+                                                                CircularProgressIndicator());
+                                                      } else if (snapshot
+                                                          .hasError) {
+                                                        return Center(
+                                                            child: Text(
+                                                                'Error loading data'));
+                                                      } else if (!snapshot
+                                                          .hasData) {
+                                                        return Center(
+                                                            child: Text(
+                                                                'No data available'));
+                                                      } else {
+                                                        var document =
+                                                            snapshot.data!;
 
-                                                          var htmlCode =
-                                                              document['html'];
-                                                          var cssCode =
-                                                              document['css'];
-                                                          var fullHtmlCode =
-                                                              '<style>body {             zoom: 3;      } $cssCode</style>$htmlCode';
-                                                          var hexColor =
-                                                              document[
-                                                                  'background'];
-                                                          int backgroundColor =
-                                                              int.parse(
-                                                                  hexColor
-                                                                      .substring(
-                                                                          1),
-                                                                  radix: 16);
-                                                          return WebViewWidget(
-                                                            controller:
-                                                                WebViewController()
-                                                                  ..setJavaScriptMode(
-                                                                      JavaScriptMode
-                                                                          .unrestricted)
-                                                                  ..loadHtmlString(
-                                                                      fullHtmlCode)
-                                                                  ..clearLocalStorage(),
-                                                          );
+                                                        var htmlCode =
+                                                            document['html'];
+                                                        var cssCode =
+                                                            document['css'];
+
+                                                        var hexColor = document[
+                                                            'background'];
+                                                        var typeCss =
+                                                            document['typeCSS'];
+                                                        var fullHtmlCode;
+                                                        if (typeCss ==
+                                                            'tailwind') {
+                                                          fullHtmlCode =
+                                                              '$htmlCode<style>body {height:55%, width: 35%;background:$hexColor; height:55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style><script src="https://cdn.tailwindcss.com"></script>';
+                                                        } else {
+                                                          fullHtmlCode =
+                                                              '$htmlCode<style>body { width: 35%;background:$hexColor; height: 55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
                                                         }
-                                                      },
-                                                    )),
-                                              ),
+                                                        ;
+
+                                                        int backgroundColor =
+                                                            int.parse(
+                                                                hexColor
+                                                                    .substring(
+                                                                        1),
+                                                                radix: 16);
+                                                        return WebViewWidget(
+                                                          controller:
+                                                              WebViewController()
+                                                                ..setJavaScriptMode(
+                                                                    JavaScriptMode
+                                                                        .unrestricted)
+                                                                ..loadHtmlString(
+                                                                    fullHtmlCode)
+                                                                ..clearLocalStorage(),
+                                                        );
+                                                      }
+                                                    },
+                                                  )),
                                             ),
                                           ),
                                         ),

@@ -35,14 +35,14 @@ import '../../services/helpers/comment_helper.dart';
 import 'add_image_data.dart';
 import 'home_page_user_logged_in.dart';
 
-class DraftDetailedWidget extends StatefulWidget {
-  const DraftDetailedWidget({super.key});
+class ApprovedDetailedWidget extends StatefulWidget {
+  const ApprovedDetailedWidget({super.key});
 
   @override
-  State<DraftDetailedWidget> createState() => _DraftDetailedWidgetState();
+  State<ApprovedDetailedWidget> createState() => _ApprovedDetailedWidgetState();
 }
 
-class _DraftDetailedWidgetState extends State<DraftDetailedWidget> {
+class _ApprovedDetailedWidgetState extends State<ApprovedDetailedWidget> {
   String? selectedValue = "Choose your reason";
   bool isCodeVisible = false;
   RxBool isLiked = false.obs;
@@ -257,6 +257,13 @@ class _DraftDetailedWidgetState extends State<DraftDetailedWidget> {
                                           ],
                                         );
                                         // Perform the action for the settings option
+                                      } else if (value == 'settings2') {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => MyDialog(
+                                            elementsNameToReport: '$tempName',
+                                          ),
+                                        );
                                       }
                                     },
                                     itemBuilder: (BuildContext context) =>
@@ -268,6 +275,16 @@ class _DraftDetailedWidgetState extends State<DraftDetailedWidget> {
                                             Icon(Icons.close,
                                                 color: Color(0xffAB55F7)),
                                             Text('Delete this element'),
+                                          ],
+                                        ),
+                                      ),
+                                      PopupMenuItem<String>(
+                                        value: 'settings2',
+                                        child: Row(
+                                          children: [
+                                            Icon(Icons.report,
+                                                color: Color(0xffAB55F7)),
+                                            Text('Report your owned element'),
                                           ],
                                         ),
                                       ),
@@ -599,5 +616,176 @@ class _DraftDetailedWidgetState extends State<DraftDetailedWidget> {
                 }
               },
             )));
+  }
+}
+
+class MyDialog extends StatefulWidget {
+  final String elementsNameToReport;
+
+  MyDialog({required this.elementsNameToReport});
+  @override
+  _MyDialogState createState() => _MyDialogState();
+}
+
+class _MyDialogState extends State<MyDialog> {
+  Uint8List? _image;
+  void selectImage() async {
+    Uint8List img = await pickImage(ImageSource.gallery);
+    setState(() {
+      _image = img;
+    });
+  }
+
+  String selectedValue = "Choose your reason";
+  late String elementsNameToReport1;
+  TextEditingController reason = TextEditingController();
+  @override
+  void initState() {
+    super.initState();
+    elementsNameToReport1 = widget.elementsNameToReport;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return AlertDialog(
+          title: Text("Report Element $elementsNameToReport1"),
+          content: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                DropdownButton<String>(
+                  value: selectedValue,
+                  onChanged: (value) {
+                    setState(() {
+                      selectedValue = value!;
+                    });
+                  },
+                  items: <String>[
+                    "Choose your reason",
+                    "Low quality's code",
+                    "Code plagiarism",
+                    "Misleading information",
+                    "Code is harmful",
+                    "Harassment code",
+                    "Plaintext passwords",
+                    "Performance concerns",
+                    "Sensitive_comments",
+                    "Non-coding content",
+                    "Other",
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                ),
+                TextField(
+                  controller: reason,
+                  decoration: InputDecoration(
+                    hintText: "Enter your reason",
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: selectImage,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors
+                            .transparent, // Set the button background color to transparent
+                        shadowColor:
+                            Color(0xff292929), // Set the shadow color to grey
+                        elevation:
+                            2, // Set the elevation to create a shadow effect
+                        padding: EdgeInsets.all(4),
+                      ),
+                      child: _image != null
+                          ? CircleAvatar(
+                              radius: 32,
+                              backgroundImage: MemoryImage(_image!),
+                            )
+                          : CircleAvatar(
+                              radius: 32,
+                              backgroundImage: AssetImage(
+                                  "assets/images/element_lambda_icon.png"),
+                            ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 0, 0, 0),
+                      child: ReusableText(
+                          text: "Upload Image\n(optional)",
+                          style:
+                              appstyle(14, Color(0xffab55f7), FontWeight.w400)),
+                    )
+                  ],
+                ),
+                ElevatedButton(
+                    onPressed: () async {
+                      int reasonId = 0;
+                      if (selectedValue == "Low quality's code") {
+                        reasonId = 1;
+                      } else if (selectedValue == "Code plagiarism") {
+                        reasonId = 2;
+                      } else if (selectedValue == "Misleading information") {
+                        reasonId = 3;
+                      } else if (selectedValue == "Code is harmful") {
+                        reasonId = 4;
+                      } else if (selectedValue == "Harassment code") {
+                        reasonId = 5;
+                      } else if (selectedValue == "Plaintext passwords") {
+                        reasonId = 6;
+                      } else if (selectedValue == "Performance concerns") {
+                        reasonId = 7;
+                      } else if (selectedValue == "Sensitive_comments") {
+                        reasonId = 8;
+                      } else if (selectedValue == "Non-coding content") {
+                        reasonId = 9;
+                      } else if (selectedValue == "Other") {
+                        reasonId = 10;
+                      }
+
+                      if (_image != null &&
+                          reason.text != null &&
+                          selectedValue != "Choose your reason") {
+                        var uuid = Uuid();
+                        String imageToUpload = await StoreData()
+                            .uploadImageToStorage("${uuid.v4()}.png", _image!);
+                        ReportImages image =
+                            ReportImages(imageUrl: imageToUpload);
+                        List<ReportImages> imagesList = [image];
+                        SendReportForElements model = SendReportForElements(
+                          reportContent: reason.text,
+                          reportImages: imagesList,
+                        );
+                        print("vietnam + ${model.toJson()}");
+                        ReportService reportService = ReportService();
+
+                        // FocusScope.of(context).unfocus();
+                        reportService.sendElementReportsWithImage(
+                            model, reasonId);
+                        Navigator.pop(context);
+                      } else if (_image == null &&
+                          reason.text != null &&
+                          selectedValue != "Choose your reason") {
+                        SendReportForElementsWithoutImages model =
+                            SendReportForElementsWithoutImages(
+                          reportContent: reason.text,
+                        );
+                        print("vietnamkhongcohinh + ${model.toJson()}");
+                        ReportService reportService = ReportService();
+                        reportService.sendElementReportsWithoutImage(
+                            model, reasonId);
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: Text("Submit")),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

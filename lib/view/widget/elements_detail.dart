@@ -32,7 +32,9 @@ import '../../common/constants/app_style.dart';
 import '../../common/constants/custom_textfield.dart';
 import '../../common/constants/custom_textfield_with_hint_text.dart';
 import '../../services/helpers/comment_helper.dart';
+import 'Request_widget.dart';
 import 'add_image_data.dart';
+import 'chat_front_page.dart';
 import 'home_page_user_logged_in.dart';
 
 class DetailedWidget extends StatefulWidget {
@@ -158,10 +160,30 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                   label: ""),
               NavigationDestination(
                   icon: IconButton(
+                    icon: Icon(Icons.message),
+                    color: Color(0xffEC4899).withOpacity(0.4),
+                    onPressed: () {
+                      Get.to(ChatFrontPage());
+                    },
+                  ),
+                  label: ""),
+              NavigationDestination(
+                  icon: IconButton(
                     icon: Icon(Icons.bookmarks_outlined),
                     color: Color(0xffEC4899).withOpacity(0.4),
                     onPressed: () {
-                      Get.to(BookmarkedOwnedWidget());
+                      Get.to(
+                        () => BookmarkedOwnedWidget(),
+                      );
+                    },
+                  ),
+                  label: ""),
+              NavigationDestination(
+                  icon: IconButton(
+                    icon: Icon(MdiIcons.codeJson),
+                    color: Color(0xffEC4899).withOpacity(0.4),
+                    onPressed: () {
+                      Get.to(RequestWidget());
                     },
                   ),
                   label: ""),
@@ -242,113 +264,113 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                             ),
                             // elements after built ,cái này về sau gắn html css qua package để  webview
 
-                            Padding(
-                              padding: const EdgeInsets.all(24.0),
-                              child: Card(
-                                clipBehavior: Clip.antiAlias,
-                                child: Container(
-                                  height: height / 4.5,
-                                  width: width * 0.9,
-                                  child: ListView.builder(
-                                    itemCount: 1,
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, index) {
-                                      var idForElements1 = items.data!.id;
-                                      print(idForElements1);
+                            Card(
+                              clipBehavior: Clip.antiAlias,
+                              child: Container(
+                                height: height / 4.5,
+                                width: width * 0.902,
+                                child: ListView.builder(
+                                  itemCount: 1,
+                                  shrinkWrap: true,
+                                  itemBuilder: (context, index) {
+                                    var idForElements1 = items.data!.id;
+                                    print(idForElements1);
 
-                                      return Container(
-                                        child: Column(
-                                          children: [
-                                            Row(children: [
-                                              //item1
-                                              Container(
-                                                width: width * 0.7,
-                                                height: height / 4.5,
-                                                child: Card(
-                                                  child: ElevatedButton(
-                                                    onPressed: () async {},
-                                                    style: ElevatedButton
-                                                        .styleFrom(
-                                                      backgroundColor: Colors
-                                                          .transparent, // Set the button background color to transparent
-                                                      elevation:
-                                                          0, // Remove the button shadow
-                                                      padding: EdgeInsets
-                                                          .zero, // Remove default button padding
-                                                      // Reduce the button's tap target size
-                                                    ),
-                                                    child: FutureBuilder(
-                                                      future: FirebaseFirestore
-                                                          .instance
-                                                          .collection(
-                                                              'elements')
-                                                          .doc(
-                                                              "$idForElements1")
-                                                          .get(),
-                                                      builder:
-                                                          (context, snapshot) {
-                                                        if (snapshot
-                                                                .connectionState ==
-                                                            ConnectionState
-                                                                .waiting) {
-                                                          return Center(
-                                                              child:
-                                                                  CircularProgressIndicator());
-                                                        } else if (snapshot
-                                                            .hasError) {
-                                                          return Center(
-                                                              child: Text(
-                                                                  'Error loading data'));
-                                                        } else if (!snapshot
-                                                            .hasData) {
-                                                          return Center(
-                                                              child: Text(
-                                                                  'No data available'));
+                                    return Container(
+                                      child: Column(
+                                        children: [
+                                          Row(children: [
+                                            //item1
+                                            Container(
+                                              color: Colors.black,
+                                              width: width * 0.902,
+                                              height: height / 4.5,
+                                              child: Card(
+                                                child: ElevatedButton(
+                                                  onPressed: () async {},
+                                                  style:
+                                                      ElevatedButton.styleFrom(
+                                                    backgroundColor: Colors
+                                                        .transparent, // Set the button background color to transparent
+                                                    elevation:
+                                                        0, // Remove the button shadow
+                                                    padding: EdgeInsets
+                                                        .zero, // Remove default button padding
+                                                    // Reduce the button's tap target size
+                                                  ),
+                                                  child: FutureBuilder(
+                                                    future: FirebaseFirestore
+                                                        .instance
+                                                        .collection('elements')
+                                                        .doc("$idForElements1")
+                                                        .get(),
+                                                    builder:
+                                                        (context, snapshot) {
+                                                      if (snapshot
+                                                              .connectionState ==
+                                                          ConnectionState
+                                                              .waiting) {
+                                                        return Center(
+                                                            child:
+                                                                CircularProgressIndicator());
+                                                      } else if (snapshot
+                                                          .hasError) {
+                                                        return Center(
+                                                            child: Text(
+                                                                'Error loading data'));
+                                                      } else if (!snapshot
+                                                          .hasData) {
+                                                        return Center(
+                                                            child: Text(
+                                                                'No data available'));
+                                                      } else {
+                                                        var document =
+                                                            snapshot.data!;
+
+                                                        var htmlCode =
+                                                            document['html'];
+                                                        var cssCode =
+                                                            document['css'];
+
+                                                        var hexColor = document[
+                                                            'background'];
+                                                        var typeCss =
+                                                            document['typeCSS'];
+                                                        var fullHtmlCode;
+                                                        if (typeCss ==
+                                                            'tailwind') {
+                                                          fullHtmlCode =
+                                                              '$htmlCode<style>body { width: 95%;background:$hexColor; height: 95%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style><script src="https://cdn.tailwindcss.com"></script>';
                                                         } else {
-                                                          var document =
-                                                              snapshot.data!;
-
-                                                          var htmlCode =
-                                                              document['html'];
-                                                          var cssCode =
-                                                              document['css'];
-
-                                                          var fullHtmlCode =
-                                                              '$htmlCode<style>body { width: 35%; height: 35%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
-                                                          var hexColor =
-                                                              document[
-                                                                  'background'];
-                                                          int backgroundColor =
-                                                              int.parse(
-                                                                  hexColor
-                                                                      .substring(
-                                                                          1),
-                                                                  radix: 16);
-                                                          return WebViewWidget(
-                                                            controller:
-                                                                WebViewController()
-                                                                  ..setJavaScriptMode(
-                                                                      JavaScriptMode
-                                                                          .unrestricted)
-                                                                  ..loadHtmlString(
-                                                                      fullHtmlCode)
-                                                                  ..clearLocalStorage(),
-                                                          );
+                                                          fullHtmlCode =
+                                                              '$htmlCode<style>body { width: 95%;background:$hexColor; height: 95%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
                                                         }
-                                                      },
-                                                    ),
+                                                        ;
+
+                                                        return WebViewWidget(
+                                                          controller:
+                                                              WebViewController()
+                                                                ..setJavaScriptMode(
+                                                                    JavaScriptMode
+                                                                        .unrestricted)
+                                                                ..loadHtmlString(
+                                                                    fullHtmlCode)
+                                                                ..clearLocalStorage(),
+                                                        );
+                                                      }
+                                                    },
                                                   ),
                                                 ),
                                               ),
-                                              //item1 ending
+                                            ),
+                                            //item1 ending
 
-                                              //item1 ending
-                                            ]),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
+                                            //item1 ending
+                                          ]),
+                                        ],
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ),
@@ -537,7 +559,7 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.fromLTRB(
-                                              0, 28, 0, 0),
+                                              0, 48, 0, 0),
                                           child: Column(
                                             children: [
                                               IconButton(
@@ -553,13 +575,6 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                                                 },
                                                 icon: Icon(Icons
                                                     .account_circle_outlined),
-                                                color: Color(0xff8026D9),
-                                                iconSize: 36,
-                                              ),
-                                              IconButton(
-                                                onPressed: () {},
-                                                icon: Icon(
-                                                    MdiIcons.messageProcessing),
                                                 color: Color(0xff8026D9),
                                                 iconSize: 36,
                                               ),
@@ -617,33 +632,6 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                                       text: "${items.data!.title} ",
                                       style: appstyle(15, Color(0xffF6F0F0),
                                           FontWeight.w600)),
-                                ),
-                                Align(
-                                  alignment: Alignment.topLeft,
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(12, 0, 0, 0),
-                                    child: ElevatedButton(
-                                      onPressed: () {},
-                                      style: ElevatedButton.styleFrom(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 8, vertical: 8),
-                                        backgroundColor: Colors.grey,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                        ),
-                                      ),
-                                      child: Text(
-                                        "Buy $creatorName a coffee",
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Color(kLight.value),
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
                                 ),
                               ],
                             ),
@@ -1011,7 +999,7 @@ class _DetailedWidgetState extends State<DetailedWidget> {
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
-                                                                          10.sp),
+                                                                          4.sp),
                                                             ),
                                                             width: width * 0.65,
                                                             child: Column(

@@ -16,6 +16,8 @@ import '../../common/constants/app_constants.dart';
 import '../../common/constants/app_style.dart';
 import '../../common/constants/custom_textfield.dart';
 import '../../services/helpers/element_helper.dart';
+import 'Request_widget.dart';
+import 'chat_front_page.dart';
 import 'elements_detail.dart';
 import 'home_page_user_logged_in.dart';
 
@@ -70,7 +72,7 @@ class _BookmarkedOwnedWidgetState extends State<BookmarkedOwnedWidget> {
             indicatorColor: Color(0xff292929),
             indicatorShape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-            selectedIndex: 2,
+            selectedIndex: 3,
             // onDestinationSelected: (index) => setState(() => this.index = index),
             destinations: [
               Padding(
@@ -96,10 +98,28 @@ class _BookmarkedOwnedWidgetState extends State<BookmarkedOwnedWidget> {
                   label: ""),
               NavigationDestination(
                   icon: IconButton(
+                    icon: Icon(Icons.message),
+                    color: Color(0xffEC4899).withOpacity(0.4),
+                    onPressed: () {
+                      Get.to(ChatFrontPage());
+                    },
+                  ),
+                  label: ""),
+              NavigationDestination(
+                  icon: IconButton(
                     icon: Icon(Icons.bookmarks_outlined),
                     color: Color(0xffEC4899),
                     onPressed: () {
                       Get.to(BookmarkedOwnedWidget());
+                    },
+                  ),
+                  label: ""),
+              NavigationDestination(
+                  icon: IconButton(
+                    icon: Icon(MdiIcons.codeJson),
+                    color: Color(0xffEC4899).withOpacity(0.4),
+                    onPressed: () {
+                      Get.to(RequestWidget());
                     },
                   ),
                   label: ""),
@@ -131,7 +151,7 @@ class _BookmarkedOwnedWidgetState extends State<BookmarkedOwnedWidget> {
             SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Container(
-                height: height / 1.65,
+                height: height * 0.65,
                 child: FutureBuilder(
                   future: _profileFuture,
                   builder: (context, snapshot) {
@@ -154,7 +174,7 @@ class _BookmarkedOwnedWidgetState extends State<BookmarkedOwnedWidget> {
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 28, 0, 0),
+                            padding: const EdgeInsets.fromLTRB(0, 14, 0, 0),
                             child: SingleChildScrollView(
                               scrollDirection: Axis.vertical,
                               child: Column(children: [
@@ -163,25 +183,18 @@ class _BookmarkedOwnedWidgetState extends State<BookmarkedOwnedWidget> {
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Container(
-                                      height: 125,
-                                      width: 114,
+                                      height: 145,
+                                      width: 124,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(24),
-                                        boxShadow: [
-                                          BoxShadow(
-                                            color: Color(0xFFAB55F7),
-                                            offset: Offset(0, 1),
-                                            blurRadius: 12,
-                                            spreadRadius: 1.0,
-                                          ),
-                                        ],
+                                        boxShadow: [],
                                       ),
                                       child: Card(
                                         color: Color(0xff292929),
                                         clipBehavior: Clip.antiAlias,
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
-                                              BorderRadius.circular(24),
+                                              BorderRadius.circular(12),
                                         ),
                                         child: Stack(
                                           children: [
@@ -193,8 +206,8 @@ class _BookmarkedOwnedWidgetState extends State<BookmarkedOwnedWidget> {
                                                     Column(
                                                       children: [
                                                         Container(
-                                                          width: 104,
-                                                          height: 101,
+                                                          width: 115,
+                                                          height: 131,
                                                           child: ElevatedButton(
                                                             onPressed:
                                                                 () async {
@@ -233,19 +246,21 @@ class _BookmarkedOwnedWidgetState extends State<BookmarkedOwnedWidget> {
                                                                   1, // Remove the button shadow
                                                               padding: EdgeInsets
                                                                   .fromLTRB(
-                                                                      8,
-                                                                      24,
                                                                       0,
-                                                                      12), // Remove default button padding
+                                                                      2,
+                                                                      0,
+                                                                      0), // Remove default button padding
                                                               // Reduce the button's tap target size
                                                             ),
                                                             child: Card(
+                                                              color:
+                                                                  Colors.black,
                                                               child: Padding(
                                                                   padding:
                                                                       const EdgeInsets
                                                                               .fromLTRB(
                                                                           0,
-                                                                          8,
+                                                                          0,
                                                                           0,
                                                                           0),
                                                                   child:
@@ -285,10 +300,21 @@ class _BookmarkedOwnedWidgetState extends State<BookmarkedOwnedWidget> {
                                                                             document['html'];
                                                                         var cssCode =
                                                                             document['css'];
-                                                                        var fullHtmlCode =
-                                                                            '<style>body {             zoom: 1.75;      } $cssCode</style>$htmlCode';
+
                                                                         var hexColor =
                                                                             document['background'];
+                                                                        var typeCss =
+                                                                            document['typeCSS'];
+                                                                        var fullHtmlCode;
+                                                                        if (typeCss ==
+                                                                            'tailwind') {
+                                                                          fullHtmlCode =
+                                                                              '$htmlCode<style>body {height:55%, width: 30%;background:$hexColor; height:55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style><script src="https://cdn.tailwindcss.com"></script>';
+                                                                        } else {
+                                                                          fullHtmlCode =
+                                                                              '$htmlCode<style>body { width: 30%;background:$hexColor; height: 55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
+                                                                        }
+                                                                        ;
                                                                         int backgroundColor = int.parse(
                                                                             hexColor.substring(
                                                                                 1),

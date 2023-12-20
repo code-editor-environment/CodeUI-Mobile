@@ -26,36 +26,26 @@ import '../../common/models/response/functionals/temp_creator_model.dart';
 import '../../services/helpers/creator_helper.dart';
 import '../../services/helpers/payment_helper.dart';
 import '../../services/helpers/profile_helper.dart';
-import 'chat_front_page.dart';
 import 'Request_widget.dart';
+import 'chat_front_page.dart';
 
-class NotificationWidget extends StatefulWidget {
-  const NotificationWidget({super.key});
+class SubscriptionHistoryWidget extends StatefulWidget {
+  const SubscriptionHistoryWidget({super.key});
 
   @override
-  State<NotificationWidget> createState() => _NotificationWidgetState();
+  State<SubscriptionHistoryWidget> createState() =>
+      _SubscriptionHistoryWidgetState();
 }
 
-class _NotificationWidgetState extends State<NotificationWidget> {
+class _SubscriptionHistoryWidgetState extends State<SubscriptionHistoryWidget> {
   String? accountIdToViewNotifications1;
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      var token = prefs.getString("accessToken");
-      var _currentLoggedInUsername =
-          prefs.getString("currentLoggedInUsername")!;
-      var accountIdToBeViewedInElements =
-          prefs.getString("accountIdToBeViewed");
-      var accountIdToViewNotifications = prefs.getString("accountId");
-      print(_currentLoggedInUsername);
-      print("Notification check: $accountIdToViewNotifications");
-      setState(() {
-        accountIdToViewNotifications1 = accountIdToViewNotifications;
-      });
-    });
-
-    super.initState();
+  Future<PackageToShowToUser> _getData() async {
+    try {
+      final items = await PaymentService().getPackageToShow();
+      return items;
+    } catch (e) {
+      throw e;
+    }
   }
 
   @override
@@ -145,60 +135,90 @@ class _NotificationWidgetState extends State<NotificationWidget> {
                     ),
                   ),
                   ReusableText(
-                      text: "Notification",
+                      text: "Subscription History",
                       style: appstyle(16, Color(0xffEC4899), FontWeight.w600)),
                 ],
               ),
               // noti content
               Expanded(
                 child: FutureBuilder(
-                  future: FirebaseFirestore.instance
-                      .collection('notifications')
-                      .doc("$accountIdToViewNotifications1")
-                      .get(),
+                  future: _getData(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error loading data'));
-                    } else if (!snapshot.hasData ||
-                        snapshot.data!['data'] == null) {
+                    } else if (!snapshot.hasData || snapshot.data! == null) {
                       return Center(child: Text('No data available'));
                     } else {
-                      var document = snapshot.data!.data();
-                      List<dynamic> dataList = List.from(document!['data']);
-
-                      // Sort the list based on the 'date' field
-                      dataList.sort((a, b) => DateTime.parse(b['date'])
-                          .compareTo(DateTime.parse(a['date'])));
-
-                      return ListView.builder(
-                        itemCount: dataList.length,
-                        itemBuilder: (context, index) {
-                          var document1 = dataList[index];
-                          return Container(
-                            width: 30,
-                            child: Card(
-                              margin: EdgeInsets.all(18),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  ListTile(
-                                    leading: Icon(
-                                      Icons.notification_important,
-                                      color: Color(0xffa855f7),
+                      var document = snapshot.data!;
+                      if (document.data![0]!.endDate == null) {
+                        return ListView.builder(
+                          itemCount: 1,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              width: 30,
+                              child: Card(
+                                margin: EdgeInsets.all(18),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    ListTile(
+                                      leading: Icon(
+                                        Icons.card_membership,
+                                        color: Color(0xffa855f7),
+                                      ),
+                                      title: Text(
+                                          'Name of the package: ${document.data![1]!.name}'),
                                     ),
-                                    title: Text(
-                                        'Your button ${document1['title']} has updated status'),
-                                    subtitle: Text(
-                                        'Time:${DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(document1['date']))}'),
-                                  ),
-                                ],
+                                    ListTile(
+                                      leading: Icon(
+                                        Icons.card_travel_outlined,
+                                        color: Color(0xffa855f7),
+                                      ),
+                                      title: Text(
+                                          'Expore in: ${DateFormat('dd--MM--yyyy').format(DateTime.parse(document.data![1]!.endDate!))}'),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      );
+                            );
+                          },
+                        );
+                      } else {
+                        return ListView.builder(
+                          itemCount: 1,
+                          itemBuilder: (context, index) {
+                            return Container(
+                              width: 30,
+                              child: Card(
+                                margin: EdgeInsets.all(18),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    ListTile(
+                                      leading: Icon(
+                                        Icons.card_membership,
+                                        color: Color(0xffa855f7),
+                                      ),
+                                      title: Text(
+                                          'Name of the package: ${document.data![0]!.name}'),
+                                    ),
+                                    ListTile(
+                                      leading: Icon(
+                                        Icons.card_travel_outlined,
+                                        color: Color(0xffa855f7),
+                                      ),
+                                      title: Text(
+                                          'Expore in: ${DateFormat('dd--MM--yyyy').format(DateTime.parse(document.data![0]!.endDate!))}'),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
                     }
                   },
                 ),

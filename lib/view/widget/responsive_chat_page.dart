@@ -143,8 +143,7 @@ class _SinglePeopleChatPageState extends State<SinglePeopleChatPage> {
                               }
 
                               // Check senderID and return appropriate Container
-                              if (senderID ==
-                                  'cfa24f7b-6394-43bc-ac19-cfab5fc07e61') {
+                              if (senderID == '${senderId}') {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
@@ -178,8 +177,8 @@ class _SinglePeopleChatPageState extends State<SinglePeopleChatPage> {
                                     ),
                                   ],
                                 );
-                              } else if (senderID ==
-                                  '36685722-1d53-45d6-9e19-59d04becb327') {
+                              }
+                              if (senderID == '${recieverId}') {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [

@@ -17,11 +17,15 @@ import '../../common/constants/app_constants.dart';
 import '../../common/constants/app_style.dart';
 import '../../common/models/response/functionals/view_profile_res_model.dart';
 import '../../services/helpers/element_helper.dart';
+import 'Request_widget.dart';
+import 'chat_front_page.dart';
 import 'owned_draft_elements_detail.dart';
 import 'elements_detail.dart';
 import 'home_page_user_logged_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+
+import 'owned_rejected_elements_detail.dart';
 
 class ViewOwnedRejectedElements extends StatefulWidget {
   const ViewOwnedRejectedElements({super.key});
@@ -104,10 +108,28 @@ class _ViewOwnedRejectedElementsState extends State<ViewOwnedRejectedElements> {
                 label: ""),
             NavigationDestination(
                 icon: IconButton(
+                  icon: Icon(Icons.message),
+                  color: Color(0xffEC4899).withOpacity(0.4),
+                  onPressed: () {
+                    Get.to(ChatFrontPage());
+                  },
+                ),
+                label: ""),
+            NavigationDestination(
+                icon: IconButton(
                   icon: Icon(Icons.bookmarks_outlined),
                   color: Color(0xffEC4899).withOpacity(0.4),
                   onPressed: () {
                     Get.to(BookmarkedOwnedWidget());
+                  },
+                ),
+                label: ""),
+            NavigationDestination(
+                icon: IconButton(
+                  icon: Icon(MdiIcons.codeJson),
+                  color: Color(0xffEC4899).withOpacity(0.4),
+                  onPressed: () {
+                    Get.to(RequestWidget());
                   },
                 ),
                 label: ""),
@@ -158,7 +180,7 @@ class _ViewOwnedRejectedElementsState extends State<ViewOwnedRejectedElements> {
                           height: 200,
                           child: Center(
                               child: ReusableText(
-                                  text: "Nothing here to be shown",
+                                  text: "No rejected element here",
                                   style: appstyle(
                                       14, Colors.amber, FontWeight.w400))
                               // Handle no data case.
@@ -195,7 +217,7 @@ class _ViewOwnedRejectedElementsState extends State<ViewOwnedRejectedElements> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             ReusableText(
-                                text: "Your draft elements",
+                                text: "Your rejected elements",
                                 style: appstyle(
                                     16, Color(0xffab55f7), FontWeight.w800))
                           ],
@@ -232,7 +254,7 @@ class _ViewOwnedRejectedElementsState extends State<ViewOwnedRejectedElements> {
                                           await prefs.setInt(
                                               "idForElements", idForElements!);
                                           Get.to(
-                                            () => DraftDetailedWidget(),
+                                            () => RejectedDetailedWidget(),
                                           );
                                         },
                                         style: ElevatedButton.styleFrom(
@@ -245,6 +267,7 @@ class _ViewOwnedRejectedElementsState extends State<ViewOwnedRejectedElements> {
                                           // Reduce the button's tap target size
                                         ),
                                         child: Card(
+                                          color: Colors.black,
                                           child: Padding(
                                               padding:
                                                   const EdgeInsets.fromLTRB(
@@ -280,10 +303,20 @@ class _ViewOwnedRejectedElementsState extends State<ViewOwnedRejectedElements> {
                                                         document['html'];
                                                     var cssCode =
                                                         document['css'];
-                                                    var fullHtmlCode =
-                                                        '<style>body {             zoom: 3;      } $cssCode</style>$htmlCode';
+
                                                     var hexColor =
                                                         document['background'];
+                                                    var typeCss =
+                                                        document['typeCSS'];
+                                                    var fullHtmlCode;
+                                                    if (typeCss == 'tailwind') {
+                                                      fullHtmlCode =
+                                                          '$htmlCode<style>body {height:55%, width: 35%;background:$hexColor; height:55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style><script src="https://cdn.tailwindcss.com"></script>';
+                                                    } else {
+                                                      fullHtmlCode =
+                                                          '$htmlCode<style>body { width: 35%;background:$hexColor; height: 55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
+                                                    }
+                                                    ;
                                                     int backgroundColor =
                                                         int.parse(
                                                             hexColor
@@ -338,7 +371,7 @@ class _ViewOwnedRejectedElementsState extends State<ViewOwnedRejectedElements> {
                                             await prefs.setInt("idForElements",
                                                 idForElements!);
                                             Get.to(
-                                              () => DraftDetailedWidget(),
+                                              () => RejectedDetailedWidget(),
                                             );
                                           },
                                           child: ReusableText(

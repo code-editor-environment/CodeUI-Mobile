@@ -7,12 +7,13 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:mobile/view/widget/elements_detail.dart';
 import 'package:mobile/view/widget/login_page.dart';
 import 'package:mobile/view/widget/profile_page.dart';
-import 'package:mobile/view/widget/random_elements_widget.dart';
+import 'package:mobile/view/widget/public_elements_widget.dart';
 import 'package:mobile/view/widget/save_favourite.dart';
 import 'package:mobile/view/widget/search_page.dart';
 import 'package:mobile/view/widget/view_specific_profile.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import '../../common/models/response/functionals/get_all_elements_to_show.dart';
 import '../../common/models/response/functionals/get_random_elements_landing.dart';
 import '../../common/models/response/functionals/get_top_creator.dart';
 import '../../components/app_bar_logged_in_user.dart';
@@ -23,6 +24,7 @@ import '../../common/constants/app_style.dart';
 import '../../common/models/response/functionals/temp_creator_model.dart';
 import '../../services/helpers/creator_helper.dart';
 import '../../services/helpers/element_helper.dart';
+import 'Request_widget.dart';
 import 'chat_front_page.dart';
 import 'home_page_guest.dart';
 import 'package:mobile/view/widget/top_creator_leaderboard.dart';
@@ -80,10 +82,10 @@ class _CodeUIHomeScreenForLoggedInUserState
     }
   }
 
-  Future<GetRandomElements> getData2() async {
+  Future<GetAllElementsToShow> getData2() async {
     try {
-      final GetRandomElements response =
-          (await (GetElementService().getRandomElements()));
+      final GetAllElementsToShow response =
+          (await (GetElementService().getAllElementsToShow()));
 
       return response;
     } catch (e) {
@@ -142,6 +144,15 @@ class _CodeUIHomeScreenForLoggedInUserState
                   color: Color(0xffEC4899).withOpacity(0.4),
                   onPressed: () {
                     Get.to(BookmarkedOwnedWidget());
+                  },
+                ),
+                label: ""),
+            NavigationDestination(
+                icon: IconButton(
+                  icon: Icon(MdiIcons.codeJson),
+                  color: Color(0xffEC4899).withOpacity(0.4),
+                  onPressed: () {
+                    Get.to(RequestWidget());
                   },
                 ),
                 label: ""),
@@ -616,7 +627,7 @@ class _CodeUIHomeScreenForLoggedInUserState
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
                     child: ReusableText(
-                      text: "RANDOM ELEMENTS",
+                      text: "PUBLIC ELEMENTS",
                       style: appstyle(16, Color(0xFFF6F0F0), FontWeight.w600),
                     ),
                   ),
@@ -626,7 +637,7 @@ class _CodeUIHomeScreenForLoggedInUserState
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => const RandomElementsWidget());
+                          Get.to(() => const PublicElementsWidget());
                         },
                         child: ReusableText(
                           text: "See more",
@@ -645,8 +656,8 @@ class _CodeUIHomeScreenForLoggedInUserState
               // starting categories
               Container(
                   width: width,
-                  height: 250,
-                  child: FutureBuilder<GetRandomElements>(
+                  height: 240,
+                  child: FutureBuilder<GetAllElementsToShow>(
                     future: getData2(),
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
@@ -667,28 +678,26 @@ class _CodeUIHomeScreenForLoggedInUserState
                         var items = snapshot.data!;
 
                         return ListView.builder(
-                          itemCount: 10,
+                          itemCount: snapshot.data!.data!.length,
                           scrollDirection: Axis.horizontal,
                           itemBuilder: (context, index) {
-                            return Row(
-                              children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.fromLTRB(8, 0, 8, 8),
-                                  child: Column(
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(5, 0, 8, 0),
+                              child: Row(
+                                children: [
+                                  Column(
                                     children: [
                                       Container(
                                         height: 125,
-                                        width: 160,
+                                        width: 153,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(24),
+                                              BorderRadius.circular(21),
                                           boxShadow: [
                                             BoxShadow(
                                               color: Color(0xFFAB55F7),
                                               offset: Offset(0, 1),
                                               blurRadius: 12,
-                                              spreadRadius: 1.0,
                                             ),
                                           ],
                                         ),
@@ -697,11 +706,12 @@ class _CodeUIHomeScreenForLoggedInUserState
                                           clipBehavior: Clip.antiAlias,
                                           shape: RoundedRectangleBorder(
                                             borderRadius:
-                                                BorderRadius.circular(24),
+                                                BorderRadius.circular(12),
                                           ),
                                           child: Stack(
                                             children: [
                                               Container(
+                                                color: Colors.black,
                                                 child: Column(
                                                   children: [
                                                     Row(children: [
@@ -709,72 +719,82 @@ class _CodeUIHomeScreenForLoggedInUserState
                                                       Column(
                                                         children: [
                                                           Container(
-                                                            width: 144,
-                                                            height: 111,
+                                                            width: 145,
+                                                            height: 116.85,
                                                             child: Card(
-                                                              child: Padding(
-                                                                  padding:
-                                                                      const EdgeInsets
-                                                                              .fromLTRB(
-                                                                          0,
-                                                                          8,
-                                                                          0,
-                                                                          0),
-                                                                  child:
-                                                                      FutureBuilder(
-                                                                    future: FirebaseFirestore
-                                                                        .instance
-                                                                        .collection(
-                                                                            'elements')
-                                                                        .doc(
-                                                                            "${snapshot.data!.data![index].id}")
-                                                                        .get(),
-                                                                    builder:
-                                                                        (context,
-                                                                            snapshot) {
-                                                                      if (snapshot
-                                                                              .connectionState ==
-                                                                          ConnectionState
-                                                                              .waiting) {
-                                                                        return Center(
-                                                                            child:
-                                                                                CircularProgressIndicator());
-                                                                      } else if (snapshot
-                                                                          .hasError) {
-                                                                        return Center(
-                                                                            child:
-                                                                                Text('Error loading data'));
-                                                                      } else if (!snapshot
-                                                                          .hasData) {
-                                                                        return Center(
-                                                                            child:
-                                                                                Text('No data available'));
-                                                                      } else {
-                                                                        var document =
-                                                                            snapshot.data!;
+                                                              child:
+                                                                  FutureBuilder(
+                                                                future: FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'elements')
+                                                                    .doc(
+                                                                        "${snapshot.data!.data![index].id}")
+                                                                    .get(),
+                                                                builder: (context,
+                                                                    snapshot) {
+                                                                  if (snapshot
+                                                                          .connectionState ==
+                                                                      ConnectionState
+                                                                          .waiting) {
+                                                                    return Center(
+                                                                        child:
+                                                                            CircularProgressIndicator());
+                                                                  } else if (snapshot
+                                                                      .hasError) {
+                                                                    return Center(
+                                                                        child: Text(
+                                                                            'Error loading data'));
+                                                                  } else if (!snapshot
+                                                                      .hasData) {
+                                                                    return Center(
+                                                                        child: Text(
+                                                                            'No data available'));
+                                                                  } else {
+                                                                    var document =
+                                                                        snapshot
+                                                                            .data!;
 
-                                                                        var htmlCode =
-                                                                            document['html'];
-                                                                        var cssCode =
-                                                                            document['css'];
-                                                                        var fullHtmlCode =
-                                                                            '<style>body {             zoom: 1.75;      } $cssCode</style>$htmlCode';
-                                                                        var hexColor =
-                                                                            document['background'];
-                                                                        int backgroundColor = int.parse(
-                                                                            hexColor.substring(
+                                                                    var htmlCode =
+                                                                        document[
+                                                                            'html'];
+                                                                    var cssCode =
+                                                                        document[
+                                                                            'css'];
+
+                                                                    var hexColor =
+                                                                        document[
+                                                                            'background'];
+                                                                    var typeCss =
+                                                                        document[
+                                                                            'typeCSS'];
+                                                                    var fullHtmlCode;
+                                                                    if (typeCss ==
+                                                                        'tailwind') {
+                                                                      fullHtmlCode =
+                                                                          '$htmlCode<style>body { width: 55%;background:$hexColor; height:55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style><script src="https://cdn.tailwindcss.com"></script>';
+                                                                    } else {
+                                                                      fullHtmlCode =
+                                                                          '$htmlCode<style>body { width: 55%;background:$hexColor; height: 55%; display: flex; align-items: center; justify-content: center; font-family: Montserrat, sans-serif;   }$cssCode</style>';
+                                                                    }
+                                                                    ;
+
+                                                                    int backgroundColor = int.parse(
+                                                                        hexColor
+                                                                            .substring(
                                                                                 1),
-                                                                            radix:
-                                                                                16);
-                                                                        return WebViewWidget(
-                                                                          controller: WebViewController()
+                                                                        radix:
+                                                                            16);
+                                                                    return WebViewWidget(
+                                                                      controller:
+                                                                          WebViewController()
                                                                             ..setJavaScriptMode(JavaScriptMode.unrestricted)
                                                                             ..loadHtmlString(fullHtmlCode)
                                                                             ..clearLocalStorage(),
-                                                                        );
-                                                                      }
-                                                                    },
-                                                                  )),
+                                                                    );
+                                                                  }
+                                                                },
+                                                              ),
                                                             ),
                                                           ),
                                                         ],
@@ -832,8 +852,8 @@ class _CodeUIHomeScreenForLoggedInUserState
                                       ),
                                     ],
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             );
                           },
                         );

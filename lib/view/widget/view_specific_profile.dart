@@ -22,6 +22,8 @@ import '../../common/constants/app_constants.dart';
 import '../../common/constants/app_style.dart';
 import '../../common/models/response/functionals/view_profile_res_model.dart';
 import '../../services/helpers/element_helper.dart';
+import 'Request_widget.dart';
+import 'chat_front_page.dart';
 import 'elements_detail.dart';
 import 'home_page_user_logged_in.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -116,10 +118,28 @@ class _ViewSpecificProfileWidgetState extends State<ViewSpecificProfileWidget> {
                 label: ""),
             NavigationDestination(
                 icon: IconButton(
+                  icon: Icon(Icons.message),
+                  color: Color(0xffEC4899).withOpacity(0.4),
+                  onPressed: () {
+                    Get.to(ChatFrontPage());
+                  },
+                ),
+                label: ""),
+            NavigationDestination(
+                icon: IconButton(
                   icon: Icon(Icons.bookmarks_outlined),
                   color: Color(0xffEC4899).withOpacity(0.4),
                   onPressed: () {
                     Get.to(BookmarkedOwnedWidget());
+                  },
+                ),
+                label: ""),
+            NavigationDestination(
+                icon: IconButton(
+                  icon: Icon(MdiIcons.codeJson),
+                  color: Color(0xffEC4899).withOpacity(0.4),
+                  onPressed: () {
+                    Get.to(RequestWidget());
                   },
                 ),
                 label: ""),
@@ -563,104 +583,7 @@ class _ViewSpecificProfileWidgetState extends State<ViewSpecificProfileWidget> {
                                         ),
                                       ),
                                     ),
-                                    Container(
-                                      width: width * 0.8,
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              12, 12, 0, 0),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              Get.to(() =>
-                                                  const ViewOthersPendingElements());
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8,
-                                                      vertical: 8),
-                                              backgroundColor: Colors.grey,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  MdiIcons
-                                                      .clockTimeThreeOutline,
-                                                  color: Colors.amber,
-                                                ),
-                                                Container(
-                                                  width: width * 0.55,
-                                                  child: Text(
-                                                    "View this creator's pending element ",
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color:
-                                                          Color(kLight.value),
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: width * 0.8,
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Padding(
-                                          padding: const EdgeInsets.fromLTRB(
-                                              12, 12, 0, 0),
-                                          child: ElevatedButton(
-                                            onPressed: () {
-                                              Get.to(() =>
-                                                  const ViewOthersRejectedElements());
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 8,
-                                                      vertical: 8),
-                                              backgroundColor: Colors.grey,
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.close,
-                                                  color: Colors.red,
-                                                ),
-                                                Container(
-                                                  width: width * 0.55,
-                                                  child: Text(
-                                                    "View this creator's rejected element ",
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color:
-                                                          Color(kLight.value),
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    // Container(
+
                                     //   width: width * 0.8,
                                     //   child: Align(
                                     //     alignment: Alignment.center,
